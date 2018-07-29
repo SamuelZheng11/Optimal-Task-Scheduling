@@ -3,7 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="cdb932d9-7e58-4d94-93a9-e7b232ef17da" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/cost_function/CostFunction.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/cost_function/CostFunction.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/cost_function/CostFunction.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/cost_function/CostFunctionService.java" afterDir="false" />
     </list>
     <ignored path="JavaFxApplication.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -70,11 +70,15 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="CostFunction.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/cost_function/CostFunction.java">
+      <file leaf-file-name="CostFunctionService.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/cost_function/CostFunctionService.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="272">
-              <caret line="19" lean-forward="true" selection-start-line="19" selection-end-line="19" />
+            <state relative-caret-position="102">
+              <caret line="9" column="7" selection-start-line="9" selection-start-column="7" selection-end-line="9" selection-end-column="7" />
+              <folding>
+                <element signature="e#471#472#0" expanded="true" />
+                <element signature="e#490#491#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -104,6 +108,7 @@
         <option value="$PROJECT_DIR$/src/cost_function/GraphInterface.java" />
         <option value="$PROJECT_DIR$/src/exception_classes/CostFunctionException.java" />
         <option value="$PROJECT_DIR$/src/cost_function/CostFunction.java" />
+        <option value="$PROJECT_DIR$/src/cost_function/CostFunctionService.java" />
       </list>
     </option>
   </component>
@@ -125,8 +130,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="AndroidView" />
-      <pane id="PackagesPane" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -145,23 +149,12 @@
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="cost_function" type="462c0819:PsiDirectoryNode" />
             </path>
-            <path>
-              <item name="306_Parallel_Processes" type="b2602c69:ProjectViewProjectNode" />
-              <item name="306_Parallel_Processes" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="exception_classes" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="306_Parallel_Processes" type="b2602c69:ProjectViewProjectNode" />
-              <item name="306_Parallel_Processes" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="sample" type="462c0819:PsiDirectoryNode" />
-            </path>
           </expand>
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
+      <pane id="PackagesPane" />
+      <pane id="AndroidView" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -338,12 +331,30 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/src/sample/Main.java">
       <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="340">
+          <caret line="20" column="21" selection-start-line="20" selection-start-column="21" selection-end-line="20" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/cost_function/CostFunctionService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="323">
+          <caret line="24" lean-forward="true" selection-start-line="24" selection-end-line="24" />
+          <folding>
+            <element signature="e#471#472#0" expanded="true" />
+            <element signature="e#490#491#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/sample/Main.java">
+      <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="255">
           <caret line="20" column="21" selection-start-line="20" selection-start-column="21" selection-end-line="20" selection-end-column="21" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/cost_function/CostFunction.java">
+    <entry file="file://$PROJECT_DIR$/src/cost_function/CostFunctionService.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="306">
           <caret line="22" column="5" selection-start-line="22" selection-start-column="5" selection-end-line="22" selection-end-column="5" />
@@ -357,7 +368,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/cost_function/CostFunction.java">
+    <entry file="file://$PROJECT_DIR$/src/cost_function/CostFunctionService.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="374">
           <caret line="22" column="5" lean-forward="true" selection-start-line="22" selection-start-column="5" selection-end-line="22" selection-end-column="5" />
@@ -525,13 +536,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/sample/Main.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="20" column="21" selection-start-line="20" selection-start-column="21" selection-end-line="20" selection-end-column="21" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/cost_function/BestPathInterface.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="34">
@@ -553,10 +557,21 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/cost_function/CostFunction.java">
+    <entry file="file://$PROJECT_DIR$/src/sample/Main.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="19" lean-forward="true" selection-start-line="19" selection-end-line="19" />
+        <state relative-caret-position="255">
+          <caret line="20" column="21" selection-start-line="20" selection-start-column="21" selection-end-line="20" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/cost_function/CostFunctionService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="9" column="7" selection-start-line="9" selection-start-column="7" selection-end-line="9" selection-end-column="7" />
+          <folding>
+            <element signature="e#471#472#0" expanded="true" />
+            <element signature="e#490#491#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
