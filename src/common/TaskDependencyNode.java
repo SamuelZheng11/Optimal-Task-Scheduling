@@ -1,4 +1,4 @@
-package sample.common;
+package common;
 
 //Node of the acyclic Task Dependency Tree
 public class TaskDependencyNode {

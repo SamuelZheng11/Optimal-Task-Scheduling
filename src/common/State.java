@@ -1,4 +1,4 @@
-package sample.common;
+package common;
 
 public class State {
 //  Joblists consists of p arrays, each with an ordered list of Jobs for that processor, in the order which they are to
