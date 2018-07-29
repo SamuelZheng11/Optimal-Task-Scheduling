@@ -9,7 +9,7 @@ import cost_function.CostFunctionService;
 public class CostFunctionServiceTest {
 
     State currentState;
-    TaskJob[] targetProcessor;
+    Job[] targetProcessor;
     TaskDependencyNode node;
 
     @Before
@@ -41,19 +41,19 @@ public class CostFunctionServiceTest {
     @Test
     public void shouldScheduleFirstJob() {
         this.targetProcessor = new TaskJob[] {};
-        Job[][] jobList = new Job[][]{};
+        Job[][] jobList = new Job[][]{this.targetProcessor};
         this.currentState = new State(jobList, new int[]{0}, 0);
-        TaskDependencyNode rootNode = new TaskDependencyNode(1, new TaskDependencyEdge[2], new TaskDependencyEdge[2], "root node");
+        TaskDependencyNode rootNode = new TaskDependencyNode(1, new TaskDependencyEdge[]{}, new TaskDependencyEdge[]{}, "root node");
 
-        State result = new CostFunctionService().scheduleNode(node, this.targetProcessor, this.currentState);
+        State result = new CostFunctionService().scheduleNode(rootNode, this.targetProcessor, this.currentState);
 
         // check that the Job scheduled is a TaskJob
         try{
+            System.out.println(result.getJobLists()[0][0]);
             TaskJob scheduledJob =(TaskJob) result.getJobLists()[0][0];
 
             // check that the scheduled TaskJob is the root node
-            Assert.assertEquals(scheduledJob.getDuration(), rootNode._duration);
-            Assert.assertEquals(scheduledJob.getName(), rootNode._name);
+            Assert.assertEquals(scheduledJob.getNode(), rootNode);
         } catch (ClassCastException cce) {
             Assert.fail();
         }

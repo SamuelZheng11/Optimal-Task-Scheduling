@@ -3,6 +3,7 @@ package cost_function;
 import common.*;
 import exception_classes.CostFunctionException;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -13,18 +14,27 @@ public class CostFunctionService {
     private static final int INDEX_OFF_SET = 1;
     private State _state;
 
-    public State scheduleNode(TaskDependencyNode node, TaskJob[] onProcessor, State withCurrentState) {
+    public State scheduleNode(TaskDependencyNode node, Job[] onProcessor, State withCurrentState) {
 
-        int processorNumber = this.identifyProcessor(onProcessor[FIRST_INDEX]);
+        _state = withCurrentState;
+        List<Job> processor = new ArrayList<Job>(Arrays.asList(onProcessor));
+        // identify what processor the caller has send us
+        int processorNumber = 0;
+        if (onProcessor.length > 0) {
+            processorNumber = this.identifyProcessor(onProcessor[FIRST_INDEX]);
+        } else {
+            processorNumber = this.identifyProcessor(null);
+        }
+
         // check if the node has any parents
         if (node._parents.length == 0) {
             // returns the state with the new task on the processor
-            _state.getJobLists()[processorNumber][onProcessor.length] = new TaskJob(node._duration, node._name, node);
+            processor.add(new TaskJob(node._duration, node._name, node));
+            _state.getJobLists()[processorNumber] = processor.toArray(new Job[processor.size()]);
             return _state;
         }
 
         // otherwise attempt to find the parent with the lowest communication time
-        _state = withCurrentState;
         //TODO: room for optimisation by ranking the parents and children by lowest to highest communication delay reduces for loop time
         int lowestCommunicationTime = Integer.MAX_VALUE;
         for (int i = 0; i < node._parents.length; i++) {
@@ -43,8 +53,9 @@ public class CostFunctionService {
         }
 
         // add to processor with communication delay
-        _state.getJobLists()[processorNumber][onProcessor.length] = new DelayJob(lowestCommunicationTime);
-        _state.getJobLists()[processorNumber][onProcessor.length + INDEX_OFF_SET] = new TaskJob(lowestCommunicationTime, node._name, node);
+        processor.add(new DelayJob(lowestCommunicationTime));
+        processor.add(new TaskJob(lowestCommunicationTime, node._name, node));
+        _state.getJobLists()[processorNumber] = processor.toArray(new Job[processor.size()]);
         return _state;
     }
 
@@ -81,12 +92,13 @@ public class CostFunctionService {
 
     private int identifyProcessor(Job firstTaskOnProcessor) {
 
-        boolean enableShortCircut = false;
-        for (int i = 0; i < _state.getJobLists()[0].length; i++){
-            if (_state.getJobLists()[FIRST_INDEX][i] == firstTaskOnProcessor) {
-                return i;
-            } else if (enableShortCircut &&_state.getJobLists()[FIRST_INDEX][i] == null) {
+        boolean enableShortCircuit = (firstTaskOnProcessor == null);
+        for (int i = 0; i < _state.getJobLists().length; i++){
+            if (enableShortCircuit && _state.getJobLists()[i].length == 0) {
                 // if the first index is null and we want to find a processor with no tasks on it then return the processor number
+                return i;
+            } else if (_state.getJobLists()[FIRST_INDEX][i] == firstTaskOnProcessor) {
+                // otherwise try to identify the processor number
                 return i;
             }
         }
