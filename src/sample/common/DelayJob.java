@@ -1,10 +1,10 @@
 package sample.common;
 
-public class Delay implements Job {
+public class DelayJob implements Job {
 
     private final int _duration;
 
-    public Delay(int duration){
+    public DelayJob(int duration){
         _duration = duration;
     }
 
