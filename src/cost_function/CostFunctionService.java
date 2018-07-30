@@ -71,7 +71,7 @@ public class CostFunctionService {
                     TaskJob potentialParentJob = (TaskJob) _state.getJobLists()[i][j];
                     if (parents.contains(potentialParentJob.getNode())) {
                         parentFound[i] = true;
-                        if (buildingCostForProcessor[i] + potentialParentJob.getNode()._duration + commDelay[parents.indexOf(parents.contains(potentialParentJob.getNode()))] < currentBestForProcessor[i])
+                        if (buildingCostForProcessor[i] + potentialParentJob.getNode()._duration + commDelay[parents.indexOf(potentialParentJob.getNode())] < currentBestForProcessor[i])
                             currentBestForProcessor[i] += commDelay[parents.indexOf(parents.contains(potentialParentJob.getNode()))];
                         break;
                     }
