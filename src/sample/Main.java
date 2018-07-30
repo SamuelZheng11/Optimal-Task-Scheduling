@@ -11,23 +11,16 @@ import org.graphstream.stream.file.FileSource;
 import org.graphstream.stream.file.FileSourceDOT;
 import org.graphstream.stream.file.FileSourceFactory;
 import org.graphstream.stream.file.dot.DOTParser;
+import sample.common.DependencyGraph;
 
 import java.io.*;
 
 public class Main extends Application {
+    private DependencyGraph dg = DependencyGraph.getGraph();
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        String filePath = "Input/example-input-graphs/Nodes_7_OutTree.dot";
-        try {
-            FileSource fs = new FileSourceDOT();
-            Graph g = new DefaultGraph("Graph");
-            fs.addSink(g);
-            fs.readAll(filePath);
-            g.display();
-        }catch (IOException e){
-            e.printStackTrace();
-        }
+        dg.parse();
     }
 
 
