@@ -4,9 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,7 +22,7 @@ public class DependencyGraph {
     private DependencyGraph dg = DependencyGraph.getGraph();
 
     private static DependencyGraph _dg;
-    private List<TaskDependencyNode> _nodes = new ArrayList<TaskDependencyNode>();
+    private Map<String,TaskDependencyNode> _nodes = new HashMap<String,TaskDependencyNode>();
 
     private DependencyGraph(){
     }
@@ -40,12 +38,8 @@ public class DependencyGraph {
         return null;
     }
 
-    public boolean addNode(TaskDependencyNode node){
-        return(_nodes.add(node));
-    }
-
-    public boolean addAllNodes(Collection nodes){
-        return(_nodes.addAll(nodes));
+    public void addNode(TaskDependencyNode node){
+        _nodes.put(node._name, node);
     }
 
 
@@ -55,6 +49,7 @@ public class DependencyGraph {
 //    A edge always contains the '-' character as a part of the arrow symbol
 //    The first line is always some file header containing the word "digraph"
     public void parse() {
+        TaskDependencyNode previous;
         try {
             String filePath = "Input/example-input-graphs/Nodes_7_OutTree.dot";
             BufferedReader br = new BufferedReader(new FileReader(new File(filePath)));
@@ -68,13 +63,15 @@ public class DependencyGraph {
                     _edgeDestPatternMatcher.find();
                     _weightMatcher = WEIGHTPATTERN.matcher(s);
                     _weightMatcher.find();
-                    if(_nodes.contains())
+                    _nodes.get(_edgeDestPatternMatcher.group(1))._parents.add(new TaskDependencyEdge(_nodes.get(_edgeSourcePatternMatcher.group(1)),_nodes.get(_edgeDestPatternMatcher.group(1)),Integer.valueOf(_weightMatcher.group(1))));
+                    _nodes.get(_edgeSourcePatternMatcher.group(1))._children.add(new TaskDependencyEdge(_nodes.get(_edgeSourcePatternMatcher.group(1)),_nodes.get(_edgeDestPatternMatcher.group(1)),Integer.valueOf(_weightMatcher.group(1))));
                 }else {
                     _nodeNameMatcher = NODENAMEPATTERN.matcher(s);
                     _nodeNameMatcher.find();
                     _weightMatcher = WEIGHTPATTERN.matcher(s);
                     _weightMatcher.find();
-                    _nodes.add(new TaskDependencyNode(Integer.valueOf(_weightMatcher.group(1)), _nodeNameMatcher.group(1)));
+                    previous = new TaskDependencyNode(Integer.valueOf(_weightMatcher.group(1)), _nodeNameMatcher.group(1));
+                    _nodes.put(previous._name,previous);
                 }
                 s = br.readLine();
             }

@@ -41,5 +41,15 @@ public class TaskDependencyNode {
         return (this._name.equals(tdn._name));
     }
 
+    @Override
+    public int hashCode(){
+        int result = 17;
+        result = 31 * result + _name.hashCode();
+        result = 31 * result + _children.hashCode();
+        result = 31 * result + _parents.hashCode();
+        result = 31 * result + _duration;
+        return result;
+    }
+
 }
 
