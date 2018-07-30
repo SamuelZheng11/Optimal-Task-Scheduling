@@ -10,17 +10,6 @@ import java.util.regex.Pattern;
 
 public class DependencyGraph {
 
-    private final Pattern WEIGHTPATTERN = Pattern.compile("Weight=(\\d+)");
-    private final Pattern NODENAMEPATTERN = Pattern.compile("\t(\\d+)\t");
-    private final Pattern EDGESOURCEPATTERN = Pattern.compile("\t(\\d+) ");
-    private final Pattern EDGEDESTPATTERN = Pattern.compile(" (\\d+)\t");
-
-    private Matcher _weightMatcher;
-    private Matcher _nodeNameMatcher;
-    private Matcher _edgeSourcePatternMatcher;
-    private Matcher _edgeDestPatternMatcher;
-    private DependencyGraph dg = DependencyGraph.getGraph();
-
     private static DependencyGraph _dg;
     private Map<String,TaskDependencyNode> _nodes = new HashMap<String,TaskDependencyNode>();
 
@@ -49,13 +38,23 @@ public class DependencyGraph {
 //    A edge always contains the '-' character as a part of the arrow symbol
 //    The first line is always some file header containing the word "digraph"
     public void parse() {
+        Pattern WEIGHTPATTERN = Pattern.compile("Weight=(\\d+)");
+        Pattern NODENAMEPATTERN = Pattern.compile("\t(\\d+)\t");
+        Pattern EDGESOURCEPATTERN = Pattern.compile("\t(\\d+) ");
+        Pattern EDGEDESTPATTERN = Pattern.compile(" (\\d+)\t");
+
+        Matcher _weightMatcher;
+        Matcher _nodeNameMatcher;
+        Matcher _edgeSourcePatternMatcher;
+        Matcher _edgeDestPatternMatcher;
+
         TaskDependencyNode previous;
         try {
             String filePath = "Input/example-input-graphs/Nodes_7_OutTree.dot";
             BufferedReader br = new BufferedReader(new FileReader(new File(filePath)));
             String s = br.readLine();
             while (s != null) {
-                if (s.toLowerCase().contains("digraph")) {
+                if (s.contains("{") || s.contains("}") ) {
                 }else if(s.contains("-")){
                     _edgeSourcePatternMatcher = EDGESOURCEPATTERN.matcher(s);
                     _edgeSourcePatternMatcher.find();
@@ -74,6 +73,10 @@ public class DependencyGraph {
                     _nodes.put(previous._name,previous);
                 }
                 s = br.readLine();
+            }
+            for (Map.Entry<String, TaskDependencyNode> entry : _nodes.entrySet())
+            {
+                System.out.println(entry.getKey() + "/" + entry.getValue());
             }
         }catch (IOException e){
             e.printStackTrace();
