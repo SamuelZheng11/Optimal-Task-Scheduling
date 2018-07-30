@@ -60,16 +60,19 @@ public class CostFunctionService {
     private int calculateCostToSchedule(ArrayList<TaskDependencyNode> parents, int[] commDelay) {
 
         // find the parent's completion time on other processors
-        int[] costOfParentOnProcessor = {};
+        int[] buildingCostForProcessor = {};
+        int[] currentBestForProcessor = {};
         boolean[] parentFound = {};
         for (int i = 0; i < _state.getJobLists().length; i++){
+            currentBestForProcessor[i] = Integer.MAX_VALUE;
             for (int j = 0; j < _state.getJobLists()[i].length; j++){
-                costOfParentOnProcessor[i] += _state.getJobLists()[i][j].getDuration();
+                buildingCostForProcessor[i] += _state.getJobLists()[i][j].getDuration();
                 if (_state.getJobLists()[i][j] instanceof TaskJob) {
                     TaskJob potentialParentJob = (TaskJob) _state.getJobLists()[i][j];
                     if (parents.contains(potentialParentJob.getNode())) {
                         parentFound[i] = true;
-                        costOfParentOnProcessor[i] += commDelay[parents.indexOf(parents.contains(potentialParentJob.getNode()))];
+                        if (buildingCostForProcessor[i] + potentialParentJob.getNode()._duration + commDelay[parents.indexOf(parents.contains(potentialParentJob.getNode()))] < currentBestForProcessor[i])
+                            currentBestForProcessor[i] += commDelay[parents.indexOf(parents.contains(potentialParentJob.getNode()))];
                         break;
                     }
                 }
@@ -78,9 +81,9 @@ public class CostFunctionService {
 
         // calculate best cost to schedule with
         int lowestCost = Integer.MAX_VALUE;
-        for(int i = 0; i < costOfParentOnProcessor.length; i++){
-            if(parentFound[i] == true && costOfParentOnProcessor[i] < lowestCost){
-                lowestCost = costOfParentOnProcessor[i];
+        for(int i = 0; i < currentBestForProcessor.length; i++){
+            if(parentFound[i] == true && currentBestForProcessor[i] < lowestCost){
+                lowestCost = currentBestForProcessor[i];
             }
         }
 
