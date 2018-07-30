@@ -17,7 +17,7 @@ public class CostFunctionService {
     public State scheduleNode(TaskDependencyNode node, Job[] onProcessor, State withCurrentState) {
 
         _state = withCurrentState;
-        List<Job> processor = new ArrayList<Job>(Arrays.asList(onProcessor));
+        List<Job> processor = new ArrayList<>(Arrays.asList(onProcessor));
         // identify what processor the caller has send us
         int processorNumber = 0;
         if (onProcessor.length > 0) {
@@ -34,18 +34,16 @@ public class CostFunctionService {
             return _state;
         }
 
-        // otherwise attempt to find the parent with the lowest communication time
-        //TODO: room for optimisation by ranking the parents and children by lowest to highest communication delay reduces for loop time
-        int lowestCostToSchedule = Integer.MAX_VALUE;
-        for (int i = 0; i < node._parents.length; i++) {
-            int tempCommunicationTime = this.calculateCostToSchedule(node._parents[i], node._parents[i]._parent, onProcessor);
-
-            // stop the loop if any communication time return 0 as that's the best time we will have when scheduling on the processor
-            if (tempCommunicationTime == 0) {
-                lowestCostToSchedule = tempCommunicationTime;
-                break;
-            }
+        TaskDependencyNode[] parentNodes = {};
+        int[] parentCommDelayEdges = {};
+        for(int i = 0; i < node._parents.length; i++){
+            parentNodes[i] = node._parents[i]._parent;
+            parentCommDelayEdges[i] = node._parents[i]._communicationDelay;
         }
+
+        // otherwise attempt to find the parent with the lowest communication time
+        int lowestCostToSchedule = this.calculateCostToSchedule(new ArrayList<TaskDependencyNode>(Arrays.asList(parentNodes)), parentCommDelayEdges);
+
 
         // check that the lowest communication time is not infinity
         if (lowestCostToSchedule == Integer.MAX_VALUE){
@@ -59,37 +57,34 @@ public class CostFunctionService {
         return _state;
     }
 
-    private int calculateCostToSchedule(TaskDependencyEdge withEdge, TaskDependencyNode toParentNode, Job[] onProcessor) {
+    private int calculateCostToSchedule(ArrayList<TaskDependencyNode> parents, int[] commDelay) {
 
-
-        // attempt to find the parent on the provided processor
-        for (int i = 0; i < onProcessor.length; i++){
-            if (onProcessor[i] == toParentNode) {
-                return 0;
-            }
-        }
-
-        // find the parent on other processors
-        int[] cumulativeParentOnProcessorCost = {};
+        // find the parent's completion time on other processors
+        int[] costOfParentOnProcessor = {};
         boolean[] parentFound = {};
-        for (int i = 0; i < _state.getJobLists()[0].length; i++){
-            for (int j = 0; j < _state.getJobLists()[1].length; j++){
-                cumulativeParentOnProcessorCost[j] += _state.getJobLists()[i][j].getDuration();
-                if (_state.getJobLists()[i][j] == toParentNode) {
-                    parentFound[j] = true;
+        for (int i = 0; i < _state.getJobLists().length; i++){
+            for (int j = 0; j < _state.getJobLists()[i].length; j++){
+                costOfParentOnProcessor[i] += _state.getJobLists()[i][j].getDuration();
+                if (_state.getJobLists()[i][j] instanceof TaskJob) {
+                    TaskJob potentialParentJob = (TaskJob) _state.getJobLists()[i][j];
+                    if (parents.contains(potentialParentJob.getNode())) {
+                        parentFound[i] = true;
+                        costOfParentOnProcessor[i] += commDelay[parents.indexOf(parents.contains(potentialParentJob.getNode()))];
+                        break;
+                    }
                 }
             }
         }
 
         // calculate best cost to schedule with
-        int lowestCostToSchedule = Integer.MAX_VALUE;
-        for(int i = 0; i < cumulativeParentOnProcessorCost.length; i++){
-            if(parentFound[i] == true && cumulativeParentOnProcessorCost[i] + withEdge._communicationDelay  < lowestCostToSchedule){
-                lowestCostToSchedule = cumulativeParentOnProcessorCost[i];
+        int lowestCost = Integer.MAX_VALUE;
+        for(int i = 0; i < costOfParentOnProcessor.length; i++){
+            if(parentFound[i] == true && costOfParentOnProcessor[i] < lowestCost){
+                lowestCost = costOfParentOnProcessor[i];
             }
         }
 
-        return lowestCostToSchedule;
+        return lowestCost;
     }
 
     private int identifyProcessor(Job firstTaskOnProcessor) {
