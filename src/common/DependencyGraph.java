@@ -33,10 +33,11 @@ public class DependencyGraph {
 
 
 
-    //    Parsing Assumptions:
-//    A node occurs in the dot file prior to any of its edges either to or from
-//    A edge always contains the '-' character as a part of the arrow symbol
-//    The first line is always some file header containing the word "digraph"
+    //    Parsing Assumptions
+    //    A node occurs in the dot file prior to any of its edges either to or from
+    //    A edge always contains the '-' character as a part of the arrow symbol
+    //    The first line is always some file header containing the word "{"
+    //    The last line prior to null contains "}"
     public void parse() {
         Pattern WEIGHTPATTERN = Pattern.compile("Weight=(\\d+)");
         Pattern NODENAMEPATTERN = Pattern.compile("\t(\\d+)\t");
@@ -50,7 +51,7 @@ public class DependencyGraph {
 
         TaskDependencyNode previous;
         try {
-            String filePath = "Input/example-input-graphs/Nodes_7_OutTree.dot";
+            String filePath = "Input/example-input-graphs/Nodes_9_SeriesParallel.dot";
             BufferedReader br = new BufferedReader(new FileReader(new File(filePath)));
             String s = br.readLine();
             while (s != null) {
