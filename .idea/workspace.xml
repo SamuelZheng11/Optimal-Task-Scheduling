@@ -2,7 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="47a8de95-d7af-47b0-bf2a-135d3b6e7292" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/src/cost_function/CostFunctionService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/cost_function/CostFunctionService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/cost_function/BestPathInterface.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/cost_function/CostFunctionService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/exception_classes/CostFunctionException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/unit_tests/CostFunctionServiceTest.java" beforeDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -55,27 +59,16 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="CostFunctionService.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/cost_function/CostFunctionService.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="399">
-              <caret line="73" column="153" selection-start-line="73" selection-start-column="153" selection-end-line="73" selection-end-column="153" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
+      <file leaf-file-name="306_Parallel_Processes.iml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/306_Parallel_Processes.iml">
+          <provider selected="true" editor-type-id="text-editor" />
         </entry>
       </file>
-      <file leaf-file-name="ArrayList.java" pinned="false" current-in-tab="false">
-        <entry file="jar://C:/Program Files/Java/jdk-10.0.1/lib/src.zip!/java.base/java/util/ArrayList.java">
+      <file leaf-file-name="Job.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/common/Job.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="4656">
-              <caret line="1541" column="69" selection-start-line="1541" selection-start-column="65" selection-end-line="1541" selection-end-column="69" />
-              <folding>
-                <element signature="e#11264#11265#0" expanded="true" />
-                <element signature="e#11302#11303#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="102">
+              <caret line="6" lean-forward="true" selection-start-line="6" selection-end-line="6" />
             </state>
           </provider>
         </entry>
@@ -83,21 +76,8 @@
       <file leaf-file-name="TaskDependencyNode.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/common/TaskDependencyNode.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="102">
-              <caret line="6" column="32" selection-start-line="6" selection-start-column="32" selection-end-line="6" selection-end-column="32" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="State.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/common/State.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="289">
-              <caret line="17" column="19" selection-start-line="17" selection-start-column="19" selection-end-line="17" selection-end-column="19" />
-              <folding>
-                <element signature="e#724#725#0" expanded="true" />
-                <element signature="e#756#757#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="204">
+              <caret line="12" column="16" selection-start-line="12" selection-start-column="16" selection-end-line="12" selection-end-column="16" />
             </state>
           </provider>
         </entry>
@@ -148,8 +128,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -166,12 +144,21 @@
               <item name="306_Parallel_Processes" type="b2602c69:ProjectViewProjectNode" />
               <item name="306_Parallel_Processes" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="cost_function" type="462c0819:PsiDirectoryNode" />
+              <item name="common" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="306_Parallel_Processes" type="b2602c69:ProjectViewProjectNode" />
+              <item name="306_Parallel_Processes" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="common" type="462c0819:PsiDirectoryNode" />
+              <item name="TaskDependencyEdge.java" type="529ef68f:ClassesTreeStructureProvider$PsiClassOwnerTreeNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
+      <pane id="PackagesPane" />
       <pane id="AndroidView" />
     </panes>
   </component>
@@ -343,27 +330,27 @@
     </history-entry>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
-    <editor active="true" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <layout>
       <window_info anchor="right" id="Palette" order="3" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="right" id="Palette&#9;" order="8" />
+      <window_info anchor="bottom" id="Messages" order="7" weight="0.32943678" />
+      <window_info anchor="right" id="Palette&#9;" order="6" />
       <window_info id="Image Layers" order="4" />
-      <window_info anchor="right" id="Capture Analysis" order="7" />
-      <window_info anchor="bottom" id="Event Log" order="10" side_tool="true" />
-      <window_info anchor="right" id="Maven Projects" order="5" />
-      <window_info anchor="bottom" id="Run" order="2" weight="0.32897604" />
-      <window_info anchor="bottom" id="Version Control" order="13" />
-      <window_info anchor="bottom" id="Terminal" order="14" />
-      <window_info id="Capture Tool" order="6" />
-      <window_info id="Designer" order="3" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.6703755" visible="true" weight="0.21140939" />
+      <window_info anchor="right" id="Capture Analysis" order="6" />
+      <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" weight="0.32943678" />
+      <window_info anchor="right" id="Maven Projects" order="3" />
+      <window_info anchor="bottom" id="Run" order="2" weight="0.32837406" />
+      <window_info anchor="bottom" id="Version Control" order="7" />
+      <window_info anchor="bottom" id="Terminal" order="10" />
+      <window_info id="Capture Tool" order="4" />
+      <window_info id="Designer" order="4" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.6703755" visible="true" weight="0.2109375" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info id="UI Designer" order="5" />
-      <window_info anchor="right" id="Theme Preview" order="9" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info id="UI Designer" order="4" />
+      <window_info anchor="right" id="Theme Preview" order="6" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.3995749" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Event Log" order="7" side_tool="true" weight="0.32943678" />
@@ -371,6 +358,7 @@
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.6703755" visible="true" weight="0.2109375" />
+      <window_info anchor="bottom" id="Messages" order="7" weight="0.32943678" />
       <window_info anchor="bottom" id="Problems" order="7" />
       <window_info anchor="bottom" id="Application Servers" order="7" />
       <window_info id="UI Designer" order="4" />
@@ -389,12 +377,11 @@
       <window_info anchor="right" id="Capture Analysis" order="6" />
       <window_info anchor="bottom" id="TODO" order="6" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="Terminal" order="10" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="right" id="JetGradle" order="3" />
       <window_info anchor="bottom" id="Find" order="1" weight="0.32943678" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.32837406" />
-      <window_info anchor="bottom" id="Messages" order="7" weight="0.32943678" />
+      <window_info anchor="bottom" id="Terminal" order="10" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info id="Designer" order="4" />
     </layout>
@@ -403,34 +390,8 @@
     <option name="myLimit" value="2678400000" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/sample/common/DelayJob.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="136">
-          <caret line="10" column="27" selection-start-line="10" selection-start-column="27" selection-end-line="11" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/sample/common/TaskJob.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="340">
-          <caret line="26" selection-start-line="26" selection-end-line="26" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/sample/common/TaskDependencyNode.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" column="42" selection-start-line="2" selection-start-column="42" selection-end-line="2" selection-end-column="42" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/sample/common/TaskDependencyEdge.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" column="42" selection-start-line="2" selection-start-column="42" selection-end-line="2" selection-end-column="42" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/src/sample/common/TaskDependencyNode.java" />
+    <entry file="file://$PROJECT_DIR$/src/sample/common/TaskDependencyEdge.java" />
     <entry file="file://$PROJECT_DIR$/src/main/Main.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="340">
@@ -504,12 +465,12 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/main.fxml">
-      <provider editor-type-id="JavaFX-Scene-Builder" />
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
           <caret line="7" column="11" lean-forward="true" selection-start-line="7" selection-start-column="11" selection-end-line="7" selection-end-column="11" />
         </state>
       </provider>
+      <provider editor-type-id="JavaFX-Scene-Builder" />
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/Controller.java">
       <provider selected="true" editor-type-id="text-editor">
@@ -519,12 +480,12 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/main.fxml">
-      <provider editor-type-id="JavaFX-Scene-Builder" />
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
           <caret line="7" column="11" selection-start-line="7" selection-start-column="11" selection-end-line="7" selection-end-column="11" />
         </state>
       </provider>
+      <provider editor-type-id="JavaFX-Scene-Builder" />
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/Controller.java">
       <provider selected="true" editor-type-id="text-editor">
@@ -552,12 +513,12 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/main.fxml">
-      <provider editor-type-id="JavaFX-Scene-Builder" />
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
           <caret line="7" column="11" lean-forward="true" selection-start-line="7" selection-start-column="11" selection-end-line="7" selection-end-column="11" />
         </state>
       </provider>
+      <provider editor-type-id="JavaFX-Scene-Builder" />
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/Controller.java">
       <provider selected="true" editor-type-id="text-editor">
@@ -567,12 +528,12 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/main.fxml">
-      <provider editor-type-id="JavaFX-Scene-Builder" />
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
           <caret line="7" column="11" selection-start-line="7" selection-start-column="11" selection-end-line="7" selection-end-column="11" />
         </state>
       </provider>
+      <provider editor-type-id="JavaFX-Scene-Builder" />
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/Controller.java">
       <provider selected="true" editor-type-id="text-editor">
@@ -600,12 +561,12 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/main.fxml">
-      <provider editor-type-id="JavaFX-Scene-Builder" />
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
           <caret line="7" column="11" lean-forward="true" selection-start-line="7" selection-start-column="11" selection-end-line="7" selection-end-column="11" />
         </state>
       </provider>
+      <provider editor-type-id="JavaFX-Scene-Builder" />
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/Controller.java">
       <provider selected="true" editor-type-id="text-editor">
@@ -644,12 +605,12 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/main.fxml">
-      <provider editor-type-id="JavaFX-Scene-Builder" />
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="119">
           <caret line="7" column="11" lean-forward="true" selection-start-line="7" selection-start-column="11" selection-end-line="7" selection-end-column="11" />
         </state>
       </provider>
+      <provider editor-type-id="JavaFX-Scene-Builder" />
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/Main.java">
       <provider selected="true" editor-type-id="text-editor">
@@ -681,8 +642,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/unit_tests/CostFunctionServiceTest.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="969">
-          <caret line="57" column="26" lean-forward="true" selection-start-line="57" selection-start-column="26" selection-end-line="57" selection-end-column="26" />
+        <state relative-caret-position="170">
+          <caret line="38" column="5" selection-start-line="38" selection-start-column="5" selection-end-line="38" selection-end-column="5" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
@@ -696,20 +657,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/common/Job.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="4" column="24" selection-start-line="4" selection-start-column="24" selection-end-line="4" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/cost_function/GraphInterface.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="51">
-          <caret line="3" selection-start-line="3" selection-end-line="3" />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/src/cost_function/GraphInterface.java" />
     <entry file="file://$PROJECT_DIR$/src/common/State.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="289">
@@ -723,8 +671,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/common/TaskDependencyNode.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="6" column="32" selection-start-line="6" selection-start-column="32" selection-end-line="6" selection-end-column="32" />
+        <state relative-caret-position="204">
+          <caret line="12" column="16" selection-start-line="12" selection-start-column="16" selection-end-line="12" selection-end-column="16" />
         </state>
       </provider>
     </entry>
@@ -732,20 +680,29 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="4656">
           <caret line="1541" column="69" selection-start-line="1541" selection-start-column="65" selection-end-line="1541" selection-end-column="69" />
-          <folding>
-            <element signature="e#11264#11265#0" expanded="true" />
-            <element signature="e#11302#11303#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/cost_function/CostFunctionService.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="399">
-          <caret line="73" column="153" selection-start-line="73" selection-start-column="153" selection-end-line="73" selection-end-column="153" />
+        <state relative-caret-position="238">
+          <caret line="26" column="9" selection-start-line="26" selection-start-column="9" selection-end-line="26" selection-end-column="9" />
           <folding>
             <element signature="imports" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/common/DependencyGraph.java">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/306_Parallel_Processes.iml">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/common/Job.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="6" lean-forward="true" selection-start-line="6" selection-end-line="6" />
         </state>
       </provider>
     </entry>
