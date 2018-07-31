@@ -1,4 +1,4 @@
-package sample.common;
+package common;
 
 //Edge of the acyclic task dependency tree
 public class TaskDependencyEdge {

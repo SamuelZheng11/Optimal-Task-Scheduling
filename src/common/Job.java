@@ -1,4 +1,4 @@
-package sample.common;
+package common;
 
 public interface Job {
 
