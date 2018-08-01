@@ -1,11 +1,8 @@
 package gui.controller;
 
 import gui.model.StatisticsModel;
-import org.jfree.data.category.IntervalCategoryDataset;
-import org.jfree.data.gantt.TaskSeries;
-import org.jfree.data.gantt.Task;
-import org.jfree.data.gantt.TaskSeriesCollection;
-import org.jfree.data.time.SimpleTimePeriod;
+import org.jfree.data.category.CategoryDataset;
+import org.jfree.data.general.DatasetUtilities;
 
 public class MainController {
 
@@ -15,26 +12,16 @@ public class MainController {
         _model = model;
     }
 
-    public IntervalCategoryDataset getData(){
+    public CategoryDataset getData(){
 
         // todo implement logic
 
-        final TaskSeries schedule = new TaskSeries("Schedule");
-        final TaskSeries schedule2 = new TaskSeries("Schedule2");
-
-        schedule.add(new Task("Processor 1", new SimpleTimePeriod(0, 2)));
-        schedule.add(new Task("Processor 1", new SimpleTimePeriod(3, 5)));
-        schedule.add(new Task("Processor 2", new SimpleTimePeriod(1, 4)));
-
-        schedule2.add(new Task("Processor 1", new SimpleTimePeriod(0, 2)));
-
-
-        final TaskSeriesCollection collection = new TaskSeriesCollection();
-        collection.add(schedule);
-        collection.add(schedule2);
-
-
-        return collection;
+        final double[][] data = new double[][] {
+                {1.0, 43.0, 35.0, 58.0, 54.0, 77.0, 71.0, 89.0},
+                {54.0, 75.0, 63.0, 83.0, 43.0, 46.0, 27.0, 13.0},
+                {41.0, 33.0, 22.0, 34.0, 62.0, 32.0, 42.0, 34.0}
+        };
+        return DatasetUtilities.createCategoryDataset("Series ", "", data);
 
     };
 

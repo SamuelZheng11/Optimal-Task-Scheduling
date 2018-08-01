@@ -10,7 +10,8 @@ import javafx.scene.Scene;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
-import org.jfree.data.category.IntervalCategoryDataset;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.data.category.CategoryDataset;
 
 
 import javax.swing.*;
@@ -44,19 +45,21 @@ public class MainScreen {
             @Override
             public void run() {
 
-                IntervalCategoryDataset data = _controller.getData();
-                final JFreeChart chart = ChartFactory.createGanttChart(
+                CategoryDataset data = _controller.getData();
+                final JFreeChart chart = ChartFactory.createStackedBarChart(
                         "Current Optimal Schedule",  // chart title
-                        "Processor",              // domain axis label
-                        "Time",              // range axis label
-                        data,             // data
-                        true,                // include legend
-                        true,                // tooltips
-                        false                // urls
+                        "Processor",                  // domain axis label
+                        "Time",                     // range axis label
+                        data,                     // data
+                        PlotOrientation.HORIZONTAL,    // the plot orientation
+                        false,                        // legend
+                        true,                        // tooltips
+                        false                        // urls
                 );
 
 
                 swingNode.setContent(new ChartPanel(chart));
+
             }
         });
     }
