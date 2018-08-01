@@ -91,8 +91,7 @@ public class CostFunctionService {
             currentBestForProcessor.set(i, Integer.MAX_VALUE);
 
             for (int j = 0; j < _state.getJobLists()[i].length; j++){
-                buildingCostForProcessor.set(i, buildingCostForProcessor.get(i) + 1);
-
+                buildingCostForProcessor.set(i, buildingCostForProcessor.get(i) + _state.getJobLists()[i][j].getDuration());
                 if (_state.getJobLists()[i][j].getClass() == TaskJob.class) {
                     TaskJob potentialParentJob = (TaskJob) _state.getJobLists()[i][j];
 
@@ -117,7 +116,6 @@ public class CostFunctionService {
             // get the lowest cost out of all the processors
             if(parentFound.get(i) == true && currentBestForProcessor.get(i) < lowestCost){
                 lowestCost = currentBestForProcessor.get(i);
-
             }
         }
 

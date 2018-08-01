@@ -76,24 +76,6 @@ public class CostFunctionServiceTest {
         } catch (ClassCastException cce) {
             Assert.fail();
         }
-
-        this.targetProcessor = new TaskJob[] {};
-        jobList = new Job[][]{this.targetProcessor};
-        this.currentState = new State(jobList, new int[]{0}, 0);
-
-        result = new CostFunctionService().scheduleNode(_nodes.get(6), this.targetProcessor, this.currentState, this.SUM_OF_ALL_NODES);
-
-        // check that the Job scheduled is a TaskJob
-        try{
-            TaskJob scheduledJob =(TaskJob) result.getJobLists()[0][0];
-
-            // check that the scheduled TaskJob is the root node
-            Assert.assertEquals(scheduledJob.getNode(), _nodes.get(6));
-            Assert.assertEquals(result.getJobListDuration()[0], _nodes.get(6)._duration);
-            Assert.assertEquals(result.getHeuristicValue(), this.SUM_OF_ALL_NODES - _nodes.get(6)._duration);
-        } catch (ClassCastException cce) {
-            Assert.fail();
-        }
     }
 
     @Test
@@ -156,13 +138,16 @@ public class CostFunctionServiceTest {
     @Test
     public void shouldScheduleLastJob() {
 
-        Job rootJob = new TaskJob(1, _nodes.get(0)._name, _nodes.get(0));
-        Job job1 = new TaskJob(1, _nodes.get(1)._name, _nodes.get(1));
-        Job job2 = new TaskJob(1, _nodes.get(2)._name, _nodes.get(2));
-        Job job3 = new TaskJob(1, _nodes.get(3)._name, _nodes.get(3));
-        Job job4 = new TaskJob(1, _nodes.get(4)._name, _nodes.get(4));
+        Job rootJob = new TaskJob( _nodes.get(0)._duration, _nodes.get(0)._name, _nodes.get(0));
+        Job job1 = new TaskJob( _nodes.get(1)._duration, _nodes.get(1)._name, _nodes.get(1));
+        Job job2 = new TaskJob(_nodes.get(2)._duration, _nodes.get(2)._name, _nodes.get(2));
+        Job job3 = new TaskJob(_nodes.get(3)._duration, _nodes.get(3)._name, _nodes.get(3));
+        Job job4 = new TaskJob(_nodes.get(4)._duration, _nodes.get(4)._name, _nodes.get(4));
+        Job job5 = new TaskJob(_nodes.get(5)._duration, _nodes.get(5)._name, _nodes.get(5));
+        Job isolatedNode = new TaskJob(_nodes.get(6)._duration, _nodes.get(6)._name, _nodes.get(6));
 
-        this.targetProcessor = new Job[] {rootJob, job1, job2, job3, job4};
+
+        this.targetProcessor = new Job[] {rootJob, job1, job2, job3, job4, job5};
         this.currentState.getJobLists()[0] = this.targetProcessor;
 
         this.currentState.getJobListDuration()[0] += ((TaskJob) rootJob).getNode()._duration;
@@ -191,7 +176,33 @@ public class CostFunctionServiceTest {
     }
 
     @Test
-    public void shouldReturnCorrectHeuristic() {
+    public void shouldScheduleParentWithMultipleChildrenWithDelay() {
+        Job rootJob = new TaskJob(_nodes.get(0)._duration, _nodes.get(0)._name, _nodes.get(0));
+        Job job1 = new TaskJob(_nodes.get(1)._duration, _nodes.get(1)._name, _nodes.get(1));
+        Job job2 = new TaskJob(_nodes.get(2)._duration, _nodes.get(2)._name, _nodes.get(2));
 
+        this.targetProcessor = new Job[] {};
+        Job[] secondaryProcessor = new Job[] {rootJob, job1, job2};
+        this.currentState.getJobLists()[0] = this.targetProcessor;
+        this.currentState.getJobLists()[1] = secondaryProcessor;
+
+        this.currentState.getJobListDuration()[1] += ((TaskJob) rootJob).getNode()._duration;
+        this.currentState.getJobListDuration()[1] += ((TaskJob) job1).getNode()._duration;
+        this.currentState.getJobListDuration()[1] += ((TaskJob) job2).getNode()._duration;
+
+        System.out.println("breaker");
+        State result = new CostFunctionService().scheduleNode(_nodes.get(3), this.targetProcessor, this.currentState, this.SUM_OF_ALL_NODES);
+
+        // check that the Job scheduled is a TaskJob
+        try{
+            TaskJob scheduledJob =(TaskJob) result.getJobLists()[0][1];
+
+            // check that the scheduled TaskJob is the root node
+            Assert.assertEquals(scheduledJob.getNode(), _nodes.get(3));
+            Assert.assertEquals(result.getJobListDuration()[0], (_nodes.get(3)._duration + _nodes.get(0)._duration + _nodes.get(1)._duration + 1));
+            Assert.assertEquals(result.getHeuristicValue(), this.SUM_OF_ALL_NODES - (_nodes.get(3)._duration + 1 + 2*(_nodes.get(0)._duration + _nodes.get(1)._duration) + _nodes.get(2)._duration));
+        } catch (ClassCastException cce) {
+            Assert.fail();
+        }
     }
 }
