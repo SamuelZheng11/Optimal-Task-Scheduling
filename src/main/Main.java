@@ -43,7 +43,7 @@ public class Main extends Application {
                     }
                     freeTasks.remove(currentNode);
                     //create the new state with the task scheduled to evaluate pass to the recursion
-                    State newState = state.add(currentNode, j, linearScheduleTime);
+                    State newState = scheduleNode(currentNode, j, state, linearScheduleTime);
 
                     //if this state is complete and better than existing best, update.
                     if (newState.getHeuristicValue()<= bestFoundState.getHeuristicValue() && depth == numTasks){
