@@ -1,6 +1,7 @@
 package unit_tests;
 
 import common.*;
+import javafx.concurrent.Task;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -13,14 +14,21 @@ import java.util.List;
 public class CostFunctionServiceTest {
 
     State currentState;
-    Job[] targetProcessor;
+    List<Job> targetProcessor;
+    List<Job> secondaryProcessor;
+
     List<TaskDependencyNode> _nodes = new ArrayList<>();
     final static int SUM_OF_ALL_NODES = 28;
 
     @Before
     public void setUp() throws Exception {
-        this.targetProcessor = new TaskJob[] {};
-        Job[][] jobList = new Job[][]{{},{}};
+        // set up jobLists
+        this.targetProcessor = new ArrayList<>();
+        this.secondaryProcessor = new ArrayList<>();
+        List<List<Job>> jobList = new ArrayList<>();
+        jobList.add(this.targetProcessor);
+        jobList.add(this.secondaryProcessor);
+
         this.currentState = new State(jobList, new int[]{0,0}, 0);
 
         TaskDependencyNode rootNode = new TaskDependencyNode(1, new TaskDependencyEdge[]{}, new TaskDependencyEdge[]{}, "root node");
@@ -59,20 +67,21 @@ public class CostFunctionServiceTest {
 
     @Test
     public void shouldScheduleFirstOrIsolatedJob() {
-        this.targetProcessor = new TaskJob[] {};
-        Job[][] jobList = new Job[][]{this.targetProcessor};
-        this.currentState = new State(jobList, new int[]{0}, 0);
 
         State result = new CostFunctionService().scheduleNode(_nodes.get(0), 0, this.currentState, this.SUM_OF_ALL_NODES);
 
         // check that the Job scheduled is a TaskJob
         try{
-            TaskJob scheduledJob =(TaskJob) result.getJobLists()[0][0];
+            TaskJob scheduledJob =(TaskJob) result.getJobLists().get(0).get(0);
 
             // check that the scheduled TaskJob is the root node
             Assert.assertEquals(scheduledJob.getNode(), _nodes.get(0));
             Assert.assertEquals(result.getJobListDuration()[0], 1);
             Assert.assertEquals(result.getHeuristicValue(), 27);
+
+            Assert.assertNotSame(result.getJobLists(), this.currentState.getJobLists());
+            Assert.assertNotSame(result.getJobLists().get(0), this.currentState.getJobLists().get(0));
+            Assert.assertNotSame(result.getJobListDuration(), this.currentState.getJobListDuration());
         } catch (ClassCastException cce) {
             Assert.fail();
         }
@@ -83,23 +92,24 @@ public class CostFunctionServiceTest {
 
         TaskJob rootNodeTask = new TaskJob(_nodes.get(0)._duration, _nodes.get(0)._name, _nodes.get(0));
 
-        this.targetProcessor = new TaskJob[] {rootNodeTask};
-        Job[][] jobList = new Job[][]{this.targetProcessor};
-        this.currentState = new State(jobList, new int[]{0}, 0);
+        this.targetProcessor.add(rootNodeTask);
 
-        this.currentState.getJobLists()[0][0] = rootNodeTask;
         this.currentState.getJobListDuration()[0] += rootNodeTask.getDuration();
 
         State result = new CostFunctionService().scheduleNode(_nodes.get(1), 0, this.currentState, this.SUM_OF_ALL_NODES);
 
         // check that the Job scheduled is a TaskJob
         try{
-            TaskJob scheduledJob = (TaskJob) result.getJobLists()[0][1];
+            TaskJob scheduledJob = (TaskJob) result.getJobLists().get(0).get(1);
 
             // check that the scheduled TaskJob is the root node
             Assert.assertEquals(scheduledJob.getNode(), _nodes.get(1));
             Assert.assertEquals(result.getJobListDuration()[0], 3);
             Assert.assertEquals(result.getHeuristicValue(), 25);
+
+            Assert.assertNotSame(result.getJobLists(), this.currentState.getJobLists());
+            Assert.assertNotSame(result.getJobLists().get(0), this.currentState.getJobLists().get(0));
+            Assert.assertNotSame(result.getJobListDuration(), this.currentState.getJobListDuration());
         } catch (ClassCastException cce) {
             Assert.fail();
         }
@@ -110,10 +120,7 @@ public class CostFunctionServiceTest {
 
         Job rootJob = new TaskJob(1, _nodes.get(0)._name, _nodes.get(0));
 
-        this.targetProcessor = new Job[] {};
-        Job[] secondaryProcessor = new Job[] {rootJob};
-        this.currentState.getJobLists()[0] = this.targetProcessor;
-        this.currentState.getJobLists()[1] = secondaryProcessor;
+        this.secondaryProcessor.add(rootJob);
 
         this.currentState.getJobListDuration()[1] += ((TaskJob) rootJob).getNode()._duration;
 
@@ -122,7 +129,7 @@ public class CostFunctionServiceTest {
         // check that the Job scheduled is a TaskJob
         try{
 
-            TaskJob scheduledJob =(TaskJob) result.getJobLists()[0][1];
+            TaskJob scheduledJob =(TaskJob) result.getJobLists().get(0).get(1);
 
             // check that the scheduled TaskJob is the root node
             Assert.assertEquals(scheduledJob.getNode(), _nodes.get(1));
@@ -130,6 +137,34 @@ public class CostFunctionServiceTest {
             Assert.assertEquals(result.getJobListDuration()[0], 4);
             Assert.assertEquals(result.getJobListDuration()[1], 1);
             Assert.assertEquals(result.getHeuristicValue(), 23);
+
+            Assert.assertNotSame(result.getJobLists(), this.currentState.getJobLists());
+            Assert.assertNotSame(result.getJobLists().get(0), this.currentState.getJobLists().get(0));
+            Assert.assertNotSame(result.getJobListDuration(), this.currentState.getJobListDuration());
+        } catch (ClassCastException cce) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void shouldScheduleDelayJob() {
+
+        Job rootJob = new TaskJob(1, _nodes.get(0)._name, _nodes.get(0));
+
+        this.secondaryProcessor.add(rootJob);
+
+        this.currentState.getJobListDuration()[1] += ((TaskJob) rootJob).getNode()._duration;
+
+        State result = new CostFunctionService().scheduleNode(_nodes.get(1), 0, this.currentState, this.SUM_OF_ALL_NODES);
+
+        // check that the Job scheduled is a TaskJob
+        try{
+
+            Assert.assertEquals(result.getJobLists().get(0).get(0).getClass(), DelayJob.class);
+
+            Assert.assertNotSame(result.getJobLists(), this.currentState.getJobLists());
+            Assert.assertNotSame(result.getJobLists().get(0), this.currentState.getJobLists().get(0));
+            Assert.assertNotSame(result.getJobListDuration(), this.currentState.getJobListDuration());
         } catch (ClassCastException cce) {
             Assert.fail();
         }
@@ -146,8 +181,12 @@ public class CostFunctionServiceTest {
         Job job5 = new TaskJob(_nodes.get(5)._duration, _nodes.get(5)._name, _nodes.get(5));
 
 
-        this.targetProcessor = new Job[] {rootJob, job1, job2, job3, job4, job5};
-        this.currentState.getJobLists()[0] = this.targetProcessor;
+        this.targetProcessor.add(rootJob);
+        this.targetProcessor.add(job1);
+        this.targetProcessor.add(job2);
+        this.targetProcessor.add(job3);
+        this.targetProcessor.add(job4);
+        this.targetProcessor.add(job5);
 
         this.currentState.getJobListDuration()[0] += ((TaskJob) rootJob).getNode()._duration;
         this.currentState.getJobListDuration()[0] += ((TaskJob) job1).getNode()._duration;
@@ -160,7 +199,7 @@ public class CostFunctionServiceTest {
 
         // check that the Job scheduled is a TaskJob
         try{
-            TaskJob scheduledJob =(TaskJob) result.getJobLists()[0][5];
+            TaskJob scheduledJob =(TaskJob) result.getJobLists().get(0).get(5);
 
             // check that the scheduled TaskJob is the root node
             Assert.assertEquals(scheduledJob.getNode(), _nodes.get(5));
@@ -180,10 +219,9 @@ public class CostFunctionServiceTest {
         Job job1 = new TaskJob(_nodes.get(1)._duration, _nodes.get(1)._name, _nodes.get(1));
         Job job2 = new TaskJob(_nodes.get(2)._duration, _nodes.get(2)._name, _nodes.get(2));
 
-        this.targetProcessor = new Job[] {};
-        Job[] secondaryProcessor = new Job[] {rootJob, job1, job2};
-        this.currentState.getJobLists()[0] = this.targetProcessor;
-        this.currentState.getJobLists()[1] = secondaryProcessor;
+        this.secondaryProcessor.add(rootJob);
+        this.secondaryProcessor.add(job1);
+        this.secondaryProcessor.add(job2);
 
         this.currentState.getJobListDuration()[1] += ((TaskJob) rootJob).getNode()._duration;
         this.currentState.getJobListDuration()[1] += ((TaskJob) job1).getNode()._duration;
@@ -193,7 +231,7 @@ public class CostFunctionServiceTest {
 
         // check that the Job scheduled is a TaskJob
         try{
-            TaskJob scheduledJob =(TaskJob) result.getJobLists()[0][1];
+            TaskJob scheduledJob =(TaskJob) result.getJobLists().get(0).get(1);
 
             // check that the scheduled TaskJob is the root node
             Assert.assertEquals(scheduledJob.getNode(), _nodes.get(3));
@@ -201,7 +239,7 @@ public class CostFunctionServiceTest {
             Assert.assertEquals(result.getHeuristicValue(), this.SUM_OF_ALL_NODES - (_nodes.get(3)._duration + 1 + 2*(_nodes.get(0)._duration + _nodes.get(1)._duration) + _nodes.get(2)._duration));
 
             Assert.assertNotSame(result.getJobLists(), this.currentState.getJobLists());
-            Assert.assertNotSame(result.getJobLists()[0], this.currentState.getJobLists()[0]);
+            Assert.assertNotSame(result.getJobLists().get(0), this.currentState.getJobLists().get(0));
             Assert.assertNotSame(result.getJobListDuration(), this.currentState.getJobListDuration());
         } catch (ClassCastException cce) {
             Assert.fail();
