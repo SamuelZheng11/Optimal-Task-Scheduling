@@ -14,6 +14,7 @@ import java.util.Map;
 
 public class DependencyGraph {
 
+    private final String WEIGHT = "Weight";
     private Graph g = new DefaultGraph("g");
     private static DependencyGraph _dg;
     private Map<String,TaskDependencyNode> _nodes = new HashMap<String,TaskDependencyNode>();
@@ -49,16 +50,20 @@ public class DependencyGraph {
         fs.addSink(g);
         try {
             fs.readAll(filePath);
-            Iterator<Node> iter = g.getNodeIterator();
-            while(iter.hasNext()){
-                 Node test = iter.next();
-                 Iterator<Edge> iter2 = test.getEdgeIterator();
-                 while(iter2.hasNext()){
-                     Edge edge = iter2.next();
-                     edge.addAttribute("delay", new Integer(10));
-                     System.out.println(edge.getAttribute("delay") + "");
-                 }
-            }
+            convert();
+//            Iterator<Node> iter = g.getNodeIterator();
+//            while(iter.hasNext()){
+//                 Node test = iter.next();
+//                 Iterator<Edge> iter2 = test.getEdgeIterator();
+//                 while(iter2.hasNext()){
+//                     Edge edge = iter2.next();
+//                     for(String s : edge.getAttributeKeySet()){
+//                         System.out.println(s);
+//                     }
+//                     edge.addAttribute("delay", new Integer(10));
+//                     System.out.println(edge.getAttribute("delay") + "");
+//                 }
+//            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -66,6 +71,27 @@ public class DependencyGraph {
     }
 
     private void convert(){
+        try {
+            for (Node n : g.getNodeSet()) {
+                _nodes.put(n.getId(), new TaskDependencyNode(((Double) n.getAttribute(WEIGHT)).intValue(), n.getId()));
+            }
+            for (Node n : g.getNodeSet()) {
+                TaskDependencyNode node = _nodes.get(n.getId());
+                for (Edge e : n.getEdgeSet()) {
+                    if (e.getSourceNode().equals(n)) {
+                        node._children.add(new TaskDependencyEdge(_nodes.get(n.getId()), _nodes.get(e.getTargetNode().getId()), ((Double) e.getAttribute(WEIGHT)).intValue()));
+                    } else {
+                        node._parents.add(new TaskDependencyEdge(_nodes.get(e.getSourceNode().getId()), _nodes.get(n.getId()), ((Double) e.getAttribute(WEIGHT)).intValue()));
+                    }
+                }
+            }
+            for (Map.Entry<String, TaskDependencyNode> entry : _nodes.entrySet()) {
+                System.out.println(entry.getKey() + "/" + entry.getValue());
+            }
+        }catch(ClassCastException e){
+            e.printStackTrace();
+            System.out.println("Edwar your daring Double type force casting broke");
+        }
     }
 
 //    public void parse() {
