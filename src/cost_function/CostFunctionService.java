@@ -78,7 +78,7 @@ public class CostFunctionService {
 
         // find the parent's completion time on other processors
         List<Integer> buildingCostForProcessor = new ArrayList<>(Collections.nCopies(_state.getJobLists().length, 0));
-        List<Integer> currentBestForProcessor = new ArrayList<>(Collections.nCopies(_state.getJobLists().length, 0));
+        List<Integer> currentBestForProcessor = new ArrayList<>(Collections.nCopies(_state.getJobLists().length, Integer.MAX_VALUE));
         List<Boolean> parentFound = new ArrayList<>(Collections.nCopies(_state.getJobLists().length, Boolean.FALSE));
 
         for (int i = 0; i < _state.getJobLists().length; i++){
@@ -95,7 +95,10 @@ public class CostFunctionService {
                 if (_state.getJobLists()[i][j].getClass() == TaskJob.class) {
                     TaskJob potentialParentJob = (TaskJob) _state.getJobLists()[i][j];
 
+                    // check if the TaskJob's node is a parent of the node
                     if (parents.contains(potentialParentJob.getNode())) {
+                        // only update the current best cost for the processor if the cost of the processor up to the parent's node + the parents node's communication delay is
+                        // less than the current best
                         if (currentBestForProcessor.get(i) > buildingCostForProcessor.get(i) + commDealy.get(parents.indexOf(potentialParentJob.getNode()))) {
                             currentBestForProcessor.set(i, buildingCostForProcessor.get(i) + commDealy.get(parents.indexOf(potentialParentJob.getNode())));
                             parentFound.set(i, true);
@@ -119,7 +122,7 @@ public class CostFunctionService {
             }
         }
 
-        // calculate the current heuristic cost
+        // sum up heuristic cost for all foreign processors
         for(int i = 0; i < buildingCostForProcessor.size(); i++) {
             this.heuristicSum += buildingCostForProcessor.get(i);
         }
@@ -129,6 +132,8 @@ public class CostFunctionService {
 
     private boolean isParentOnProcessor(Job[] onProcessor, ArrayList<TaskDependencyNode> parentNodes) {
         boolean result = false;
+        // check if a parent of the node to be scheduled is on the current processor
+        // sum up the cost of tasks on the processor for the heuristic cost
         for (int i = 0; i < onProcessor.length; i++) {
             this.heuristicSum += onProcessor[i].getDuration();
             this.inputProcessorCompletionTime += onProcessor[i].getDuration();

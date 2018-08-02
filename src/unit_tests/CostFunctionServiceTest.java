@@ -190,7 +190,6 @@ public class CostFunctionServiceTest {
         this.currentState.getJobListDuration()[1] += ((TaskJob) job1).getNode()._duration;
         this.currentState.getJobListDuration()[1] += ((TaskJob) job2).getNode()._duration;
 
-        System.out.println("breaker");
         State result = new CostFunctionService().scheduleNode(_nodes.get(3), this.targetProcessor, this.currentState, this.SUM_OF_ALL_NODES);
 
         // check that the Job scheduled is a TaskJob
