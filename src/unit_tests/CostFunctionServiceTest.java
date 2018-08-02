@@ -149,7 +149,7 @@ public class CostFunctionServiceTest {
     @Test
     public void shouldScheduleDelayJob() {
 
-        Job rootJob = new TaskJob(1, _nodes.get(0)._name, _nodes.get(0));
+        Job rootJob = new TaskJob(_nodes.get(0)._duration, _nodes.get(0)._name, _nodes.get(0));
 
         this.secondaryProcessor.add(rootJob);
 
@@ -160,7 +160,9 @@ public class CostFunctionServiceTest {
         // check that the Job scheduled is a TaskJob
         try{
 
+            // check that the job scheduled is a delay job and has the correct length
             Assert.assertEquals(result.getJobLists().get(0).get(0).getClass(), DelayJob.class);
+            Assert.assertEquals(result.getJobLists().get(0).get(0).getDuration(), 2);
 
             Assert.assertNotSame(result.getJobLists(), this.currentState.getJobLists());
             Assert.assertNotSame(result.getJobLists().get(0), this.currentState.getJobLists().get(0));
