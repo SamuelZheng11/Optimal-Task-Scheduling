@@ -70,7 +70,18 @@ public class Main extends Application {
 
                     //add all children of the task to the freetask list and remove the task
                     for (int k = 0; k < currentNode._children.size(); k++) {
-                        freeTasks.add(currentNode._children.get(k)._child);
+                        TaskDependencyNode child = currentNode._children.get(k)._child;
+                        int numUnresolvedParents = child._parents.size();
+                        for (int l = 0; l <state.getJobLists().size(); l++) {
+                            for (int m = 0; m < child._parents.size(); m++) {
+                                if (state.getJobLists().get(l).contains(child._parents.get(m))){
+                                    numUnresolvedParents--;
+                                }
+                            }
+                        }
+                        if (numUnresolvedParents == 0) {
+                            freeTasks.add(currentNode._children.get(k)._child);
+                        }
                     }
                     freeTasks.remove(currentNode);
                     //create the new state with the task scheduled to evaluate pass to the recursion
