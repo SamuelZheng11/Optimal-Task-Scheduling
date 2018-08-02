@@ -3,22 +3,18 @@ package common;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
-import org.graphstream.graph.implementations.AbstractEdge;
 import org.graphstream.graph.implementations.DefaultGraph;
 import org.graphstream.stream.file.FileSource;
 import org.graphstream.stream.file.FileSourceDOT;
-import org.graphstream.stream.file.FileSourceFactory;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 public class DependencyGraph {
 
+    private Graph g = new DefaultGraph("g");
     private static DependencyGraph _dg;
     private Map<String,TaskDependencyNode> _nodes = new HashMap<String,TaskDependencyNode>();
 
@@ -41,7 +37,6 @@ public class DependencyGraph {
     }
 
 
-
     //    Parsing Assumptions
     //    A node occurs in the dot file prior to any of its edges either to or from
     //    A edge always contains the '-' character as a part of the arrow symbol
@@ -50,7 +45,6 @@ public class DependencyGraph {
 
     public void parse(){
         String filePath = "Input/example-input-graphs/Nodes_7_OutTree.dot";
-        Graph g = new DefaultGraph("g");
         FileSource fs = new FileSourceDOT();
         fs.addSink(g);
         try {
@@ -69,6 +63,9 @@ public class DependencyGraph {
             e.printStackTrace();
         }
 
+    }
+
+    private void convert(){
     }
 
 //    public void parse() {
