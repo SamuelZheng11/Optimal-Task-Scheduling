@@ -63,7 +63,7 @@ public class CostFunctionServiceTest {
         Job[][] jobList = new Job[][]{this.targetProcessor};
         this.currentState = new State(jobList, new int[]{0}, 0);
 
-        State result = new CostFunctionService().scheduleNode(_nodes.get(0), this.targetProcessor, this.currentState, this.SUM_OF_ALL_NODES);
+        State result = new CostFunctionService().scheduleNode(_nodes.get(0), 0, this.currentState, this.SUM_OF_ALL_NODES);
 
         // check that the Job scheduled is a TaskJob
         try{
@@ -90,7 +90,7 @@ public class CostFunctionServiceTest {
         this.currentState.getJobLists()[0][0] = rootNodeTask;
         this.currentState.getJobListDuration()[0] += rootNodeTask.getDuration();
 
-        State result = new CostFunctionService().scheduleNode(_nodes.get(1), this.targetProcessor, this.currentState, this.SUM_OF_ALL_NODES);
+        State result = new CostFunctionService().scheduleNode(_nodes.get(1), 0, this.currentState, this.SUM_OF_ALL_NODES);
 
         // check that the Job scheduled is a TaskJob
         try{
@@ -117,7 +117,7 @@ public class CostFunctionServiceTest {
 
         this.currentState.getJobListDuration()[1] += ((TaskJob) rootJob).getNode()._duration;
 
-        State result = new CostFunctionService().scheduleNode(_nodes.get(1), this.targetProcessor, this.currentState, this.SUM_OF_ALL_NODES);
+        State result = new CostFunctionService().scheduleNode(_nodes.get(1), 0, this.currentState, this.SUM_OF_ALL_NODES);
 
         // check that the Job scheduled is a TaskJob
         try{
@@ -156,7 +156,7 @@ public class CostFunctionServiceTest {
         this.currentState.getJobListDuration()[0] += ((TaskJob) job4).getNode()._duration;
 
 
-        State result = new CostFunctionService().scheduleNode(_nodes.get(5), this.targetProcessor, this.currentState, this.SUM_OF_ALL_NODES);
+        State result = new CostFunctionService().scheduleNode(_nodes.get(5), 0, this.currentState, this.SUM_OF_ALL_NODES);
 
         // check that the Job scheduled is a TaskJob
         try{
@@ -189,7 +189,7 @@ public class CostFunctionServiceTest {
         this.currentState.getJobListDuration()[1] += ((TaskJob) job1).getNode()._duration;
         this.currentState.getJobListDuration()[1] += ((TaskJob) job2).getNode()._duration;
 
-        State result = new CostFunctionService().scheduleNode(_nodes.get(3), this.targetProcessor, this.currentState, this.SUM_OF_ALL_NODES);
+        State result = new CostFunctionService().scheduleNode(_nodes.get(3), 0, this.currentState, this.SUM_OF_ALL_NODES);
 
         // check that the Job scheduled is a TaskJob
         try{

@@ -11,19 +11,14 @@ import java.util.List;
 
 public class CostFunctionService {
     private static final int FIRST_INDEX = 0;
-    private State _state;
+    private State state;
+    private ArrayList<Job> processor;
     private int inputProcessorCompletionTime = 0;
     private int heuristicSum = 0;
 
-    public State scheduleNode(TaskDependencyNode node, Job[] onProcessor, State withCurrentState, int costOfAllNodes) {
-        List<Job> processor = new ArrayList<>(Arrays.asList(onProcessor));
-        // identify what processor the caller has send us and create a deep copy of it
-        int processorNumber = 0;
-        if (onProcessor.length > 0) {
-            processorNumber = this.GenerateDeepCopyAndIdentifyProcessor(withCurrentState, onProcessor[FIRST_INDEX]);
-        } else {
-            processorNumber = this.GenerateDeepCopyAndIdentifyProcessor(withCurrentState, null);
-        }
+    public State scheduleNode(TaskDependencyNode node, int onProcessorNumber, State withCurrentState, int costOfAllNodes) {
+        // generate a deep copy of the input state
+        this.generateDeepCopy(withCurrentState, onProcessorNumber);
 
         ArrayList<TaskDependencyNode> parentNodes = new ArrayList<>();
         ArrayList<Integer> parentCommDelayEdges = new ArrayList<>();
@@ -33,21 +28,21 @@ public class CostFunctionService {
         }
 
         // check if the current processor contains any parent jobs
-        boolean parentOnProcessor = isParentOnProcessor(onProcessor, parentNodes);
+        boolean parentOnProcessor = isParentOnProcessor(this.processor.toArray(new Job[this.processor.size()]), parentNodes);
 
         // check if the node has any parents
         if (parentNodes.size() == 0) {
             // returns the state with the new task on the processor
-            processor.add(new TaskJob(node._duration, node._name, node));
-            _state.getJobLists()[processorNumber] = processor.toArray(new Job[processor.size()]);
-            _state.getJobListDuration()[processorNumber] += node._duration;
-            return new State(_state.getJobLists(), _state.getJobListDuration(), costOfAllNodes - heuristicSum - node._duration);
+            this.processor.add(new TaskJob(node._duration, node._name, node));
+            this.state.getJobLists()[onProcessorNumber] = processor.toArray(new Job[processor.size()]);
+            this.state.getJobListDuration()[onProcessorNumber] += node._duration;
+            return new State(this.state.getJobLists(), this.state.getJobListDuration(), costOfAllNodes - heuristicSum - node._duration);
         }
 
         // otherwise attempt to find the parent with the lowest communication time
         int lowestCostToSchedule;
         if(!parentOnProcessor) {
-            lowestCostToSchedule = this.calculateCostToSchedule(parentNodes, parentCommDelayEdges, processorNumber);
+            lowestCostToSchedule = this.calculateCostToSchedule(parentNodes, parentCommDelayEdges, onProcessorNumber);
         } else {
             lowestCostToSchedule = 0;
         }
@@ -60,24 +55,24 @@ public class CostFunctionService {
         // add to processor with communication delay
         if(!parentOnProcessor && lowestCostToSchedule > this.inputProcessorCompletionTime) {
             processor.add(new DelayJob(lowestCostToSchedule - this.inputProcessorCompletionTime));
-            _state.getJobListDuration()[processorNumber] += lowestCostToSchedule - this.inputProcessorCompletionTime;
+            this.state.getJobListDuration()[onProcessorNumber] += lowestCostToSchedule - this.inputProcessorCompletionTime;
             this.heuristicSum += (lowestCostToSchedule - this.inputProcessorCompletionTime);
         }
         processor.add(new TaskJob(lowestCostToSchedule, node._name, node));
-        _state.getJobLists()[processorNumber] = processor.toArray(new Job[processor.size()]);
-        _state.getJobListDuration()[processorNumber] += node._duration;
+        this.state.getJobLists()[onProcessorNumber] = processor.toArray(new Job[processor.size()]);
+        this.state.getJobListDuration()[onProcessorNumber] += node._duration;
 
-        return new State(_state.getJobLists(), _state.getJobListDuration(), costOfAllNodes - heuristicSum - node._duration);
+        return new State(this.state.getJobLists(), this.state.getJobListDuration(), costOfAllNodes - heuristicSum - node._duration);
     }
 
     private int calculateCostToSchedule(ArrayList<TaskDependencyNode> parents, ArrayList<Integer> commDealy, int skipProcessorNumber) {
 
         // find the parent's completion time on other processors
-        List<Integer> buildingCostForProcessor = new ArrayList<>(Collections.nCopies(_state.getJobLists().length, 0));
-        List<Integer> currentBestForProcessor = new ArrayList<>(Collections.nCopies(_state.getJobLists().length, Integer.MAX_VALUE));
-        List<Boolean> parentFound = new ArrayList<>(Collections.nCopies(_state.getJobLists().length, Boolean.FALSE));
+        List<Integer> buildingCostForProcessor = new ArrayList<>(Collections.nCopies(this.state.getJobLists().length, 0));
+        List<Integer> currentBestForProcessor = new ArrayList<>(Collections.nCopies(this.state.getJobLists().length, Integer.MAX_VALUE));
+        List<Boolean> parentFound = new ArrayList<>(Collections.nCopies(this.state.getJobLists().length, Boolean.FALSE));
 
-        for (int i = 0; i < _state.getJobLists().length; i++){
+        for (int i = 0; i < this.state.getJobLists().length; i++){
 
             // skip the row if it has already been check by the outer method
             if(skipProcessorNumber == i) {
@@ -86,11 +81,11 @@ public class CostFunctionService {
 
             currentBestForProcessor.set(i, Integer.MAX_VALUE);
 
-            for (int j = 0; j < _state.getJobLists()[i].length; j++){
-                buildingCostForProcessor.set(i, buildingCostForProcessor.get(i) + _state.getJobLists()[i][j].getDuration());
-                this.heuristicSum += _state.getJobLists()[i][j].getDuration();
-                if (_state.getJobLists()[i][j].getClass() == TaskJob.class) {
-                    TaskJob potentialParentJob = (TaskJob) _state.getJobLists()[i][j];
+            for (int j = 0; j < this.state.getJobLists()[i].length; j++){
+                buildingCostForProcessor.set(i, buildingCostForProcessor.get(i) + this.state.getJobLists()[i][j].getDuration());
+                this.heuristicSum += this.state.getJobLists()[i][j].getDuration();
+                if (this.state.getJobLists()[i][j].getClass() == TaskJob.class) {
+                    TaskJob potentialParentJob = (TaskJob) this.state.getJobLists()[i][j];
 
                     // check if the TaskJob's node is a parent of the node
                     if (parents.contains(potentialParentJob.getNode())) {
@@ -146,23 +141,16 @@ public class CostFunctionService {
         return result;
     }
 
-    private int GenerateDeepCopyAndIdentifyProcessor(State inputState, Job firstJobOnProcessor) {
+    private void generateDeepCopy(State inputState, int inputProcessorIndex) {
         Job[][] jobs = {{},{}};
-        boolean enableShortCircuit = (firstJobOnProcessor == null);
-        int processorNumber = -1;
 
         // create deep copy as java does not do deep copying :(
         for(int i = 0; i < inputState.getJobLists().length; i++){
             jobs[i] = Arrays.copyOf(inputState.getJobLists()[i], inputState.getJobLists()[i].length);
-            if (enableShortCircuit && processorNumber == -1 && inputState.getJobLists()[i].length == 0) {
-                // if the first index is null and we want to find a processor with no tasks on it then return the processor number
-                processorNumber = i;
-            } else if (processorNumber == -1 && inputState.getJobLists()[i][FIRST_INDEX] == firstJobOnProcessor) {
-                // otherwise try to identify the processor number
-                processorNumber = i;
+            if (inputProcessorIndex == i){
+                this.processor = new ArrayList<>(Arrays.asList(jobs[i]));
             }
         }
-        _state = new State( jobs , Arrays.copyOf(inputState.getJobListDuration(), inputState.getJobListDuration().length), 0);
-        return processorNumber;
+        this.state = new State( jobs, Arrays.copyOf(inputState.getJobListDuration(), inputState.getJobListDuration().length), 0);
     }
 }
