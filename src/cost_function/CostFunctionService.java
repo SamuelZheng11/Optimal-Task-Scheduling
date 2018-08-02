@@ -2,9 +2,7 @@ package cost_function;
 
 import common.*;
 import exception_classes.CostFunctionException;
-import javafx.concurrent.Task;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -18,15 +16,13 @@ public class CostFunctionService {
     private int heuristicSum = 0;
 
     public State scheduleNode(TaskDependencyNode node, Job[] onProcessor, State withCurrentState, int costOfAllNodes) {
-
-        _state = withCurrentState;
         List<Job> processor = new ArrayList<>(Arrays.asList(onProcessor));
-        // identify what processor the caller has send us
+        // identify what processor the caller has send us and create a deep copy of it
         int processorNumber = 0;
         if (onProcessor.length > 0) {
-            processorNumber = this.identifyProcessor(onProcessor[FIRST_INDEX]);
+            processorNumber = this.GenerateDeepCopyAndIdentifyProcessor(withCurrentState, onProcessor[FIRST_INDEX]);
         } else {
-            processorNumber = this.identifyProcessor(null);
+            processorNumber = this.GenerateDeepCopyAndIdentifyProcessor(withCurrentState, null);
         }
 
         ArrayList<TaskDependencyNode> parentNodes = new ArrayList<>();
@@ -92,6 +88,7 @@ public class CostFunctionService {
 
             for (int j = 0; j < _state.getJobLists()[i].length; j++){
                 buildingCostForProcessor.set(i, buildingCostForProcessor.get(i) + _state.getJobLists()[i][j].getDuration());
+                this.heuristicSum += _state.getJobLists()[i][j].getDuration();
                 if (_state.getJobLists()[i][j].getClass() == TaskJob.class) {
                     TaskJob potentialParentJob = (TaskJob) _state.getJobLists()[i][j];
 
@@ -123,9 +120,9 @@ public class CostFunctionService {
         }
 
         // sum up heuristic cost for all foreign processors
-        for(int i = 0; i < buildingCostForProcessor.size(); i++) {
-            this.heuristicSum += buildingCostForProcessor.get(i);
-        }
+//        for(int i = 0; i < buildingCostForProcessor.size(); i++) {
+//            this.heuristicSum += buildingCostForProcessor.get(i);
+//        }
 
         return lowestCost;
     }
@@ -149,19 +146,23 @@ public class CostFunctionService {
         return result;
     }
 
-    private int identifyProcessor(Job firstJobOnProcessor) {
-
+    private int GenerateDeepCopyAndIdentifyProcessor(State inputState, Job firstJobOnProcessor) {
+        Job[][] jobs = {{},{}};
         boolean enableShortCircuit = (firstJobOnProcessor == null);
-        for (int i = 0; i < _state.getJobLists().length; i++){
-            if (enableShortCircuit && _state.getJobLists()[i].length == 0) {
+        int processorNumber = -1;
+
+        // create deep copy as java does not do deep copying :(
+        for(int i = 0; i < inputState.getJobLists().length; i++){
+            jobs[i] = Arrays.copyOf(inputState.getJobLists()[i], inputState.getJobLists()[i].length);
+            if (enableShortCircuit && processorNumber == -1 && inputState.getJobLists()[i].length == 0) {
                 // if the first index is null and we want to find a processor with no tasks on it then return the processor number
-                return i;
-            } else if (_state.getJobLists()[FIRST_INDEX][i] == firstJobOnProcessor) {
+                processorNumber = i;
+            } else if (processorNumber == -1 && inputState.getJobLists()[i][FIRST_INDEX] == firstJobOnProcessor) {
                 // otherwise try to identify the processor number
-                return i;
+                processorNumber = i;
             }
         }
-
-        throw new CostFunctionException("Index of processor was not found");
+        _state = new State( jobs , Arrays.copyOf(inputState.getJobListDuration(), inputState.getJobListDuration().length), 0);
+        return processorNumber;
     }
 }

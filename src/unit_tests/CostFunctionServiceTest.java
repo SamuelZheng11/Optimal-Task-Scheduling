@@ -144,7 +144,6 @@ public class CostFunctionServiceTest {
         Job job3 = new TaskJob(_nodes.get(3)._duration, _nodes.get(3)._name, _nodes.get(3));
         Job job4 = new TaskJob(_nodes.get(4)._duration, _nodes.get(4)._name, _nodes.get(4));
         Job job5 = new TaskJob(_nodes.get(5)._duration, _nodes.get(5)._name, _nodes.get(5));
-        Job isolatedNode = new TaskJob(_nodes.get(6)._duration, _nodes.get(6)._name, _nodes.get(6));
 
 
         this.targetProcessor = new Job[] {rootJob, job1, job2, job3, job4, job5};
@@ -200,6 +199,10 @@ public class CostFunctionServiceTest {
             Assert.assertEquals(scheduledJob.getNode(), _nodes.get(3));
             Assert.assertEquals(result.getJobListDuration()[0], (_nodes.get(3)._duration + _nodes.get(0)._duration + _nodes.get(1)._duration + 1));
             Assert.assertEquals(result.getHeuristicValue(), this.SUM_OF_ALL_NODES - (_nodes.get(3)._duration + 1 + 2*(_nodes.get(0)._duration + _nodes.get(1)._duration) + _nodes.get(2)._duration));
+
+            Assert.assertNotSame(result.getJobLists(), this.currentState.getJobLists());
+            Assert.assertNotSame(result.getJobLists()[0], this.currentState.getJobLists()[0]);
+            Assert.assertNotSame(result.getJobListDuration(), this.currentState.getJobListDuration());
         } catch (ClassCastException cce) {
             Assert.fail();
         }
