@@ -31,13 +31,13 @@ public class CostFunctionServiceTest {
 
         this.currentState = new State(jobList, new int[]{0,0}, 0);
 
-        TaskDependencyNode rootNode = new TaskDependencyNode(1, new TaskDependencyEdge[]{}, new TaskDependencyEdge[]{}, "root node");
-        TaskDependencyNode node1 = new TaskDependencyNode(2, new TaskDependencyEdge[]{}, new TaskDependencyEdge[]{}, "Level 1 node");
-        TaskDependencyNode node2 = new TaskDependencyNode(3, new TaskDependencyEdge[]{}, new TaskDependencyEdge[]{}, "level 2 node 1");
-        TaskDependencyNode node3 = new TaskDependencyNode(4, new TaskDependencyEdge[]{}, new TaskDependencyEdge[]{}, "level 2 node 2");
-        TaskDependencyNode node4 = new TaskDependencyNode(5, new TaskDependencyEdge[]{}, new TaskDependencyEdge[]{}, "level 3 node");
-        TaskDependencyNode node5 = new TaskDependencyNode(6, new TaskDependencyEdge[]{}, new TaskDependencyEdge[]{}, "level 4 node");
-        TaskDependencyNode isolatedNode = new TaskDependencyNode(7, new TaskDependencyEdge[]{}, new TaskDependencyEdge[]{}, "level 3 node");
+        TaskDependencyNode rootNode = new TaskDependencyNode(1, new ArrayList<>(), new ArrayList<>(), "root node");
+        TaskDependencyNode node1 = new TaskDependencyNode(2, new ArrayList<>(), new ArrayList<>(), "Level 1 node");
+        TaskDependencyNode node2 = new TaskDependencyNode(3, new ArrayList<>(), new ArrayList<>(), "level 2 node 1");
+        TaskDependencyNode node3 = new TaskDependencyNode(4, new ArrayList<>(), new ArrayList<>(), "level 2 node 2");
+        TaskDependencyNode node4 = new TaskDependencyNode(5, new ArrayList<>(), new ArrayList<>(), "level 3 node");
+        TaskDependencyNode node5 = new TaskDependencyNode(6, new ArrayList<>(), new ArrayList<>(), "level 4 node");
+        TaskDependencyNode isolatedNode = new TaskDependencyNode(7, new ArrayList<>(), new ArrayList<>(), "level 3 node");
 
         _nodes.add(rootNode);
         _nodes.add(node1);
@@ -47,15 +47,18 @@ public class CostFunctionServiceTest {
         _nodes.add(node5);
         _nodes.add(isolatedNode);
 
-        rootNode._children = new TaskDependencyEdge[]{new TaskDependencyEdge(rootNode, node1, 1)};
-        node1._parents = new TaskDependencyEdge[]{new TaskDependencyEdge(rootNode, rootNode, 1)};
-        node1._children = new TaskDependencyEdge[]{new TaskDependencyEdge(node1, node2, 1), new TaskDependencyEdge(node1, node3, 1)};
-        node2._parents = new TaskDependencyEdge[]{new TaskDependencyEdge(node1, node2, 1)};
-        node2._children = new TaskDependencyEdge[]{new TaskDependencyEdge(node2, node3, 1), new TaskDependencyEdge(node2, node4, 1)};
-        node3._parents = new TaskDependencyEdge[]{new TaskDependencyEdge(node1, node3, 1),new TaskDependencyEdge(node2, node3, 1)};
-        node4._parents = new TaskDependencyEdge[]{new TaskDependencyEdge(node2, node4, 1)};
-        node4._children = new TaskDependencyEdge[]{new TaskDependencyEdge(node4, node5, 1)};
-        node5._parents = new TaskDependencyEdge[]{new TaskDependencyEdge(node4, node5, 1)};
+        rootNode._children.add(new TaskDependencyEdge(rootNode, node1, 1));
+        node1._parents.add(new TaskDependencyEdge(rootNode, rootNode, 1));
+        node1._children.add(new TaskDependencyEdge(node1, node2, 1));
+        node1._children.add(new TaskDependencyEdge(node1, node3, 1));
+        node2._parents.add(new TaskDependencyEdge(node1, node2, 1));
+        node2._children.add(new TaskDependencyEdge(node2, node3, 1));
+        node2._children.add(new TaskDependencyEdge(node2, node4, 1));
+        node3._parents.add(new TaskDependencyEdge(node1, node3, 1));
+        node3._parents.add(new TaskDependencyEdge(node2, node3, 1));
+        node4._parents.add(new TaskDependencyEdge(node2, node4, 1));
+        node4._children.add(new TaskDependencyEdge(node4, node5, 1));
+        node5._parents.add(new TaskDependencyEdge(node4, node5, 1));
     }
 
     @After

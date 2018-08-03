@@ -20,9 +20,9 @@ public class CostFunctionService {
 
         ArrayList<TaskDependencyNode> parentNodes = new ArrayList<>();
         ArrayList<Integer> parentCommDelayEdges = new ArrayList<>();
-        for(int i = 0; i < node._parents.length; i++){
-            parentNodes.add(node._parents[i]._parent);
-            parentCommDelayEdges.add(node._parents[i]._communicationDelay);
+        for(int i = 0; i < node._parents.size(); i++){
+            parentNodes.add(node._parents.get(i)._parent);
+            parentCommDelayEdges.add(node._parents.get(i)._communicationDelay);
         }
 
         // check if the current processor contains any parent jobs
