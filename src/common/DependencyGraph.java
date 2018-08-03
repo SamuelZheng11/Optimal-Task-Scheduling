@@ -18,6 +18,8 @@ public class DependencyGraph {
     private Graph g = new DefaultGraph("g");
     private static DependencyGraph _dg;
     private Map<String,TaskDependencyNode> _nodes = new HashMap<String,TaskDependencyNode>();
+    private List<TaskDependencyNode> _freeTasks = new ArrayList<TaskDependencyNode>();
+    private List<TaskDependencyNode> _scheduledNodes = new ArrayList<TaskDependencyNode>();
 
     private DependencyGraph(){
     }
@@ -33,12 +35,53 @@ public class DependencyGraph {
         return null;
     }
 
+    public Map<String,TaskDependencyNode> getNodes() {
+        return _nodes; // Needed for testing
+    }
+
     public void addNode(TaskDependencyNode node){
         _nodes.put(node._name, node);
     }
 
 
     /**
+     * Returns a list of TaskDependencyNodes which are 'free' i.e are independent
+     * or all its predecessors have already been scheduled.
+     * @param scheduledNode if null, will return root/independent nodes.
+     *                      else it will remove specified node from list and add it to list
+     *                      provided it is not already in and yet to be scheduled.
+     * @return TaskDependencyNode list of free nodes that can be scheduled.
+     */
+    public List<TaskDependencyNode> getFreeTasks(TaskDependencyNode scheduledNode) {
+        try {
+            if (scheduledNode == null) { // List will contain nodes without parents (roots)
+                for (Map.Entry<String, TaskDependencyNode> entry : _nodes.entrySet()) {
+                    if (entry.getValue()._parents.isEmpty()) {
+                        _freeTasks.add(entry.getValue()); // add root nodes (nodes without parents)
+                    }
+                }
+            } else {
+                _freeTasks.remove(scheduledNode);
+                _scheduledNodes.add(scheduledNode);
+                for (TaskDependencyEdge nextNodes : scheduledNode._children) {
+                    if(_freeTasks.contains(nextNodes._child)) {
+                        continue; //skip if list already contains node
+                    }
+                    else if (_scheduledNodes.contains(nextNodes._child)){
+                        continue; //skip if the node has already been scheduled.
+                    }
+                    else {
+                        _freeTasks.add(nextNodes._child);
+                    }
+                }
+            }
+        } catch (NoSuchElementException e) {
+                e.printStackTrace();
+            }
+
+        return _freeTasks;
+    }
+  
      * Using the graph stream library this method creates a graph stream graph and converts the .dot file into the internal graph structure
      */
     public void parse(){
