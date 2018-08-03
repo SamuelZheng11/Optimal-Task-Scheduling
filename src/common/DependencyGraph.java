@@ -145,9 +145,9 @@ public class DependencyGraph {
                     }
                 }
             }
-            for (Map.Entry<String, TaskDependencyNode> entry : _nodes.entrySet()) {
-                System.out.println(entry.getKey() + "/" + entry.getValue());
-            }
+//            for (Map.Entry<String, TaskDependencyNode> entry : _nodes.entrySet()) {
+//                System.out.println(entry.getKey() + "/" + entry.getValue());
+//            }
         }catch(ClassCastException e){
             e.printStackTrace();
             System.out.println("Edwar your daring Double type force casting broke");
