@@ -2,8 +2,9 @@ package test;
 
 import common.DependencyGraph;
 import common.TaskDependencyNode;
-import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +50,6 @@ public class DependencyGraphTest {
     public void getFreeTasks3() {
         _dg.parse();
         _nodes = _dg.getNodes();
-
         _freeTasks = _dg.getFreeTasks(_nodes.get("4"));
         List<TaskDependencyNode> correctTasks = new ArrayList<TaskDependencyNode>();
         correctTasks.add(_nodes.get("2"));

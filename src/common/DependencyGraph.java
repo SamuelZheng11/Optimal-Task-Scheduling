@@ -50,6 +50,7 @@ public class DependencyGraph {
      * @return TaskDependencyNode list of free nodes that can be scheduled.
      */
     public List<TaskDependencyNode> getFreeTasks(TaskDependencyNode scheduledNode) {
+
         try {
             if (scheduledNode == null) { // List will contain nodes without parents (roots)
                 for (Map.Entry<String, TaskDependencyNode> entry : _nodes.entrySet()) {
