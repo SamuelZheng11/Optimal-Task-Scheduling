@@ -12,7 +12,7 @@ import java.util.List;
 public class CostFunctionService {
     private State state;
     private int inputProcessorCompletionTime = 0;
-    private int heuristicSum = 0;
+    private double heuristicSum = 0;
 
     public State scheduleNode(TaskDependencyNode node, int onProcessorNumber, State withCurrentState, int costOfAllNodes) {
         // generate a deep copy of the input state
@@ -33,7 +33,7 @@ public class CostFunctionService {
             // returns the state with the new task on the processor
             this.state.getJobLists().get(onProcessorNumber).add(new TaskJob(node._duration, node._name, node));
             this.state.getJobListDuration()[onProcessorNumber] += node._duration;
-            return new State(this.state.getJobLists(), this.state.getJobListDuration(), costOfAllNodes - heuristicSum - node._duration);
+            return new State(this.state.getJobLists(), this.state.getJobListDuration(), (costOfAllNodes - heuristicSum - node._duration)/withCurrentState.getJobLists().size());
         }
 
         // otherwise attempt to find the parent with the lowest communication time
@@ -60,7 +60,7 @@ public class CostFunctionService {
         this.state.getJobLists().get(onProcessorNumber).add(new TaskJob(lowestCostToSchedule, node._name, node));
         this.state.getJobListDuration()[onProcessorNumber] += node._duration;
 
-        return new State(this.state.getJobLists(), this.state.getJobListDuration(), costOfAllNodes - heuristicSum - node._duration);
+        return new State(this.state.getJobLists(), this.state.getJobListDuration(), (costOfAllNodes - heuristicSum - node._duration)/withCurrentState.getJobLists().size());
     }
 
     private int calculateCostToSchedule(ArrayList<TaskDependencyNode> parents, ArrayList<Integer> commDealy, int skipProcessorNumber) {

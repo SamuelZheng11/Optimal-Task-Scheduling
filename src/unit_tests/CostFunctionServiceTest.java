@@ -67,7 +67,6 @@ public class CostFunctionServiceTest {
 
     @Test
     public void shouldScheduleFirstOrIsolatedJob() {
-
         State result = new CostFunctionService().scheduleNode(_nodes.get(0), 0, this.currentState, this.SUM_OF_ALL_NODES);
 
         // check that the Job scheduled is a TaskJob
@@ -77,7 +76,8 @@ public class CostFunctionServiceTest {
             // check that the scheduled TaskJob is the root node
             Assert.assertEquals(scheduledJob.getNode(), _nodes.get(0));
             Assert.assertEquals(result.getJobListDuration()[0], 1);
-            Assert.assertEquals(result.getHeuristicValue(), 27);
+            Assert.assertTrue(result.getHeuristicValue() == ((float)27)/2);
+
 
             Assert.assertNotSame(result.getJobLists(), this.currentState.getJobLists());
             Assert.assertNotSame(result.getJobLists().get(0), this.currentState.getJobLists().get(0));
@@ -105,7 +105,8 @@ public class CostFunctionServiceTest {
             // check that the scheduled TaskJob is the root node
             Assert.assertEquals(scheduledJob.getNode(), _nodes.get(1));
             Assert.assertEquals(result.getJobListDuration()[0], 3);
-            Assert.assertEquals(result.getHeuristicValue(), 25);
+            Assert.assertTrue((result.getHeuristicValue() == ((float)25)/2));
+
 
             Assert.assertNotSame(result.getJobLists(), this.currentState.getJobLists());
             Assert.assertNotSame(result.getJobLists().get(0), this.currentState.getJobLists().get(0));
@@ -136,7 +137,6 @@ public class CostFunctionServiceTest {
 
             Assert.assertEquals(result.getJobListDuration()[0], 4);
             Assert.assertEquals(result.getJobListDuration()[1], 1);
-            Assert.assertEquals(result.getHeuristicValue(), 23);
 
             Assert.assertNotSame(result.getJobLists(), this.currentState.getJobLists());
             Assert.assertNotSame(result.getJobLists().get(0), this.currentState.getJobLists().get(0));
@@ -163,6 +163,7 @@ public class CostFunctionServiceTest {
             // check that the job scheduled is a delay job and has the correct length
             Assert.assertEquals(result.getJobLists().get(0).get(0).getClass(), DelayJob.class);
             Assert.assertEquals(result.getJobLists().get(0).get(0).getDuration(), 2);
+            Assert.assertTrue((result.getHeuristicValue() == ((float)23)/2));
 
             Assert.assertNotSame(result.getJobLists(), this.currentState.getJobLists());
             Assert.assertNotSame(result.getJobLists().get(0), this.currentState.getJobLists().get(0));
@@ -238,7 +239,8 @@ public class CostFunctionServiceTest {
             // check that the scheduled TaskJob is the root node
             Assert.assertEquals(scheduledJob.getNode(), _nodes.get(3));
             Assert.assertEquals(result.getJobListDuration()[0], (_nodes.get(3)._duration + _nodes.get(0)._duration + _nodes.get(1)._duration + 1));
-            Assert.assertEquals(result.getHeuristicValue(), this.SUM_OF_ALL_NODES - (_nodes.get(3)._duration + 1 + 2*(_nodes.get(0)._duration + _nodes.get(1)._duration) + _nodes.get(2)._duration));
+            Assert.assertTrue((result.getHeuristicValue() == ((float)this.SUM_OF_ALL_NODES - (_nodes.get(3)._duration + 1 + 2*(_nodes.get(0)._duration + _nodes.get(1)._duration) + _nodes.get(2)._duration))/2));
+
 
             Assert.assertNotSame(result.getJobLists(), this.currentState.getJobLists());
             Assert.assertNotSame(result.getJobLists().get(0), this.currentState.getJobLists().get(0));
