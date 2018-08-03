@@ -1,12 +1,10 @@
 package common;
 
-import javafx.concurrent.Task;
-import org.jfree.data.gantt.TaskSeries;
-
-import java.io.*;
-import java.nio.charset.Charset;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.*;
@@ -174,6 +172,7 @@ public class DependencyGraph {
         for (List<Job> processors : optimalLists) {
             for (Job jobs : processors) {
 
+
                 if (jobs instanceof DelayJob ) {
                     continue;
                 }
@@ -192,8 +191,7 @@ public class DependencyGraph {
                     System.out.println("Parent is: " +parentName);
 
                     for (TaskDependencyEdge edges : node._children) {
-
-
+                        System.out.println(node._children);
                         childName = edges._child._name;
                         System.out.println("Child is: " +childName);
                         weight = edges._communicationDelay;

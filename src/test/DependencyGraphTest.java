@@ -2,12 +2,13 @@ package test;
 
 import common.*;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class DependencyGraphTest {
 
@@ -177,10 +178,10 @@ public class DependencyGraphTest {
         aChildren.add(edgeAC);
 
         List<TaskDependencyEdge> bChildren = new ArrayList<TaskDependencyEdge>();
-        aChildren.add(edgeBD);
+        bChildren.add(edgeBD);
 
         List<TaskDependencyEdge> cChildren = new ArrayList<TaskDependencyEdge>();
-        aChildren.add(edgeCD);
+        cChildren.add(edgeCD);
 
         List<TaskDependencyEdge> dChildren = new ArrayList<TaskDependencyEdge>();
 
