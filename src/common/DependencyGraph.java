@@ -246,7 +246,6 @@ public class DependencyGraph {
 //            e.printStackTrace();
 //        }
         try {
-
             Files.write(Paths.get("output.dot"), "}".getBytes(), StandardOpenOption.APPEND);
         }catch (IOException e) {
             e.printStackTrace();
