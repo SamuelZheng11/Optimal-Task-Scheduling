@@ -109,5 +109,8 @@ public class Main extends Application {
             }
             return bestFoundState;
         }
+
+        // this line will never be executed but we need to have this here due to compiler errors
+        return null;
     }
 }
