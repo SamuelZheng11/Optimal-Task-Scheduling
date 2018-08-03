@@ -124,4 +124,9 @@ public class Main extends Application {
         }
         return bestFoundState;
     }
+
+    private State scheduleNode(TaskDependencyNode a, int b, State c, int d){
+        //stub
+        return null;
+    }
 }
