@@ -157,26 +157,31 @@ public class DependencyGraph {
         }
     }
 
-
-    public void generateOutput(State optimalState) throws IOException {
+    /**
+     * This method will create a dot file to represent the optimal found state. The dot file is created in the current directory.
+     * @param optimalState State object which contains the optimal solution.
+     * @param inputFileName The file name (with extension .dot) of the original input file.
+     * @throws IOException
+     */
+    public void generateOutput(State optimalState, String inputFileName) throws IOException {
         int processorNumber = 0;
         List<List<Job>> optimalLists = optimalState.getJobLists();
 
-        String fileData = "digraph \"output\" {" + System.lineSeparator();
-        Files.write(Paths.get("output.dot"), fileData.getBytes());
+        String outputName = "output" + inputFileName; // File name (inc. extension) of output file.
 
-        for (List<Job> processors : optimalLists) {
+        String fileData = "digraph \"" + "output" + inputFileName + "\" {" + System.lineSeparator();
+        Files.write(Paths.get(outputName), fileData.getBytes()); //File creation
+
+        for (List<Job> processors : optimalLists) { //Iterate through each processor
             processorNumber++;
             int startTime = 0;
-            for (Job jobs : processors) {
-
+            for (Job jobs : processors) { //Iterate through each job in the processor
                 if (jobs instanceof DelayJob ) {
                     startTime += jobs.getDuration();
                     continue;
                 }
                 else if (jobs instanceof  TaskJob) {
                     TaskJob task = (TaskJob) jobs;
-
 //                    try(BufferedWriter writer = Files.newBufferedWriter(path, Charset.forName("UTF-8"))) {
 //                        writer.newLine();
 //                        String output = String.format(" %s   [Weight=%d,Start=%d,Processor=%d];", task.getName(), task.getDuration(), startTime, processorNumber);
@@ -184,14 +189,12 @@ public class DependencyGraph {
 //                    } catch(IOException e) {
 //                        e.printStackTrace();
 //                    }
-
                     try {
                         String output = String.format("\t%s\t [Weight=%d,Start=%d,Processor=%d];", task.getName(), task.getDuration(), startTime, processorNumber) + System.lineSeparator();
-                        Files.write(Paths.get("output.dot"), output.getBytes(), StandardOpenOption.APPEND);
+                        Files.write(Paths.get(outputName), output.getBytes(), StandardOpenOption.APPEND);
                     }catch (IOException e) {
                         e.printStackTrace();
                     }
-
                     startTime += task.getDuration();
                 }
             }
@@ -199,15 +202,11 @@ public class DependencyGraph {
 
         for (List<Job> processors : optimalLists) {
             for (Job jobs : processors) {
-
-
                 if (jobs instanceof DelayJob ) {
                     continue;
                 }
                 else if (jobs instanceof  TaskJob) {
-
                     TaskJob task = (TaskJob) jobs;
-
                     TaskDependencyNode node = task.getNode();
 
                     String parentName;
@@ -216,18 +215,12 @@ public class DependencyGraph {
 
                     parentName = node._name;
 
-                    System.out.println("Parent is: " +parentName);
-
                     for (TaskDependencyEdge edges : node._children) {
-                        System.out.println(node._children);
                         childName = edges._child._name;
-                        System.out.println("Child is: " +childName);
                         weight = edges._communicationDelay;
-
                         try {
-
                             String output = String.format("\t%s -> %s\t [Weight=%d];", parentName, childName, weight) + System.lineSeparator();
-                            Files.write(Paths.get("output.dot"), output.getBytes(), StandardOpenOption.APPEND);
+                            Files.write(Paths.get(outputName), output.getBytes(), StandardOpenOption.APPEND);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -272,10 +265,9 @@ public class DependencyGraph {
 //            e.printStackTrace();
 //        }
         try {
-            Files.write(Paths.get("output.dot"), "}".getBytes(), StandardOpenOption.APPEND);
+            Files.write(Paths.get(outputName), "}".getBytes(), StandardOpenOption.APPEND);
         }catch (IOException e) {
             e.printStackTrace();
         }
     }
-
 }

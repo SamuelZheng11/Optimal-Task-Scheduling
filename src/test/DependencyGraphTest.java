@@ -234,8 +234,9 @@ public class DependencyGraphTest {
 
         State state = new State(finalList, joblist, huristic);
 
+        String inputFileName = "test.dot";
 
-        _dg.generateOutput(state);
+        _dg.generateOutput(state, inputFileName);
 
 
     }
