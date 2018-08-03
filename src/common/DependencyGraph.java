@@ -12,7 +12,7 @@ import java.util.*;
 public class DependencyGraph {
 
     private final String WEIGHT = "Weight";
-    private String _filePath = "Input/example-input-graphs/Nodes_9_SeriesParallel.dot";
+    private String _filePath = "Input/example-input-graphs/Nodes_7_OutTree.dot";
     private Graph g = new DefaultGraph("g");
     private static DependencyGraph _dg;
     private Map<String,TaskDependencyNode> _nodes = new HashMap<String,TaskDependencyNode>();
