@@ -81,6 +81,20 @@ public class DependencyGraph {
     }
 
     /**
+     * The summation of all the remaining tasks processing costs (excluding communication cost)
+     * @return cost.
+     */
+    public int remainingCosts(){
+        int cost = 0;
+        for(Map.Entry<String, TaskDependencyNode> node : _nodes.entrySet()){
+            if(!_scheduledNodes.contains(node.getValue())){
+                cost += node.getValue()._duration;
+            }
+        }
+        return cost;
+    }
+
+    /**
      * Using the graph stream library this method creates a graph stream graph and converts the .dot file into the internal graph structure
      */
     public void parse(){
