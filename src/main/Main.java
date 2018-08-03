@@ -109,6 +109,5 @@ public class Main extends Application {
             }
             return bestFoundState;
         }
-        return null;
     }
 }
