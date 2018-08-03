@@ -7,9 +7,7 @@ import org.graphstream.graph.implementations.DefaultGraph;
 import org.graphstream.stream.file.FileSource;
 import org.graphstream.stream.file.FileSourceDOT;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class DependencyGraph {
 
@@ -80,7 +78,8 @@ public class DependencyGraph {
 
         return _freeTasks;
     }
-  
+
+    /**
      * Using the graph stream library this method creates a graph stream graph and converts the .dot file into the internal graph structure
      */
     public void parse(){
