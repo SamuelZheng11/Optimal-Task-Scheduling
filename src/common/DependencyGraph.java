@@ -12,6 +12,7 @@ import java.util.*;
 public class DependencyGraph {
 
     private final String WEIGHT = "Weight";
+    private String _filePath = "Input/example-input-graphs/Nodes_9_SeriesParallel.dot";
     private Graph g = new DefaultGraph("g");
     private static DependencyGraph _dg;
     private Map<String,TaskDependencyNode> _nodes = new HashMap<String,TaskDependencyNode>();
@@ -38,6 +39,10 @@ public class DependencyGraph {
 
     public void addNode(TaskDependencyNode node){
         _nodes.put(node._name, node);
+    }
+
+    public void setFilePath(String path){
+        _filePath = path;
     }
 
 
@@ -98,11 +103,10 @@ public class DependencyGraph {
      * Using the graph stream library this method creates a graph stream graph and converts the .dot file into the internal graph structure
      */
     public void parse(){
-        String filePath = "Input/example-input-graphs/Nodes_7_OutTree.dot";
         FileSource fs = new FileSourceDOT();
         fs.addSink(g);
         try {
-            fs.readAll(filePath);
+            fs.readAll(_filePath);
             convert();
 //            Iterator<Node> iter = g.getNodeIterator();
 //            while(iter.hasNext()){

@@ -2,6 +2,7 @@ package test;
 
 import common.DependencyGraph;
 import common.TaskDependencyNode;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -12,21 +13,26 @@ import java.util.Map;
 
 public class DependencyGraphTest {
 
-    private DependencyGraph _dg = DependencyGraph.getGraph();
+    //TESTED USING Nodes_9_SeriesParallel.dot
+    private static DependencyGraph _dg = DependencyGraph.getGraph();
     private Map<String, TaskDependencyNode> _nodes;
     private List<TaskDependencyNode> _freeTasks;
+    private final static String FILEPATH = "Input/example-input-graphs/Nodes_9_SeriesParallel.dot";
+
+    @BeforeClass
+    public static void setGraph(){
+        _dg.setFilePath(FILEPATH);
+    }
 
     // If input null, return only root nodes (no parents)
     @Test
     public void getFreeTasks1() {
-
         _dg.parse();
         _nodes = _dg.getNodes();
         _freeTasks = _dg.getFreeTasks(null);
         List<TaskDependencyNode> correctTasks = new ArrayList<TaskDependencyNode>();
         correctTasks.add(_nodes.get("0"));
         assertEquals(_freeTasks, correctTasks);
-
     }
 
     // Test for scheduled node that it removes it from list and adds children nodes (multiple children).
@@ -40,9 +46,7 @@ public class DependencyGraphTest {
         correctTasks.add(_nodes.get("2"));
         correctTasks.add(_nodes.get("3"));
         correctTasks.add(_nodes.get("4"));
-
-        assertEquals(_freeTasks, correctTasks);
-
+        assertEquals(correctTasks, _freeTasks);
     }
 
     // As above but single child.
