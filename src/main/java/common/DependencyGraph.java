@@ -104,6 +104,32 @@ public class DependencyGraph {
         return _freeTasks;
     }
 
+    public State initialState() {
+        int duration = 0;
+        List<TaskDependencyNode> nodeList = new ArrayList<TaskDependencyNode>();
+        List<Job> jobList = new ArrayList<Job>(); // create job list
+        List<TaskDependencyNode> freeTasks = getFreeTasks(null); // get set of initial nodes
+
+        while (freeTasks.size() > 0) {
+            nodeList.add(freeTasks.get(0));
+            TaskDependencyNode node = freeTasks.get(0);
+            TaskJob job = new TaskJob(node._duration, node._name, node); //create job based on a free task
+            freeTasks = getFreeTasks(node); // update the set of free tasks
+            duration += node._duration; // update the duration
+            jobList.add(job);
+        }
+
+        int[] durationArr = {duration};
+
+        List<List<Job>> processorList = new ArrayList<>();
+
+        processorList.add(jobList);
+
+        State initialState = new State(processorList, durationArr, 0);
+
+        return initialState;
+    }
+
     /**
      * The summation of all the remaining tasks processing costs (excluding communication cost)
      * @return cost.

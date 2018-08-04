@@ -234,8 +234,15 @@ public class DependencyGraphTest {
 
         String inputFileName = "test.dot";
 
+
         _dg.generateOutput(state, inputFileName);
 
 
     }
+
+    @Test
+    public void initialState1() {
+
+    }
+
 }

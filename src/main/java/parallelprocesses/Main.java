@@ -87,6 +87,7 @@ public class Main extends Application {
     }
 
 
+
     //The recursion to find the optimal schedule
     // Arguments in order are numProc: The number of processors, freeTasks: the initially free tasks of the
     // dependancy tree (all roots of the tree), depth(0 to start), state(null to start),
