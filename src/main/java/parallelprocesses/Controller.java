@@ -1,4 +1,4 @@
-package main;
+package parallelprocesses;
 
 public class Controller {
 }

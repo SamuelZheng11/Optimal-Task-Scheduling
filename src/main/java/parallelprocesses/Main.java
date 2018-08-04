@@ -1,4 +1,6 @@
-package main;
+package parallelprocesses;
+
+import common.*;
 
 import common.DependencyGraph;
 import common.Job;
