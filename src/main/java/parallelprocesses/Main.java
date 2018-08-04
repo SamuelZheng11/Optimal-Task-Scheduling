@@ -14,8 +14,6 @@ import org.apache.commons.cli.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static javafx.application.Application.launch;
-
 public class Main extends Application {
 
     public static void main(String[] args) {
@@ -44,7 +42,7 @@ public class Main extends Application {
     }
 
 
-    private static CommandLine getCommands() throws ParseException
+    private CommandLine getCommands() throws ParseException
     {
         Options options = new Options();
         options.addOption("p", true, "The number of processors for the algorithm to run on");
@@ -71,7 +69,7 @@ public class Main extends Application {
         dg.parse();
         List<TaskDependencyNode> freeTasks = dg.getFreeTasks(null);
         State PLACEHOLDERSTATE = null;
-        recursion(commands.getOptionValue('p'), freeTasks, 0, null, PLACEHOLDERSTATE, dg.getNodes().size(), LINEARSCHEDULEPLACEHOLDER);
+        //recursion(commands.getOptionValue('p'), freeTasks, 0, null, PLACEHOLDERSTATE, dg.getNodes().size(), LINEARSCHEDULEPLACEHOLDER);
 
         //todo call algorithm and pass the model
 
