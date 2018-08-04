@@ -83,6 +83,7 @@ fabric.properties
 
 # Log file
 *.log
+libs/*
 
 # BlueJ files
 *.ctxt
