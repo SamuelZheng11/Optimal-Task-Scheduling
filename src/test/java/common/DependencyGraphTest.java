@@ -1,6 +1,5 @@
-package test.resources.parallelprocesses;
+package common;
 
-import main.resources.parallelprocesses.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

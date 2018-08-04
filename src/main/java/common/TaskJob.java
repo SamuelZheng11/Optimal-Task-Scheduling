@@ -1,4 +1,4 @@
-package main.resources.parallelprocesses;
+package common;
 
 public final class TaskJob implements Job {
 

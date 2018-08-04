@@ -1,4 +1,4 @@
-package main.resources.parallelprocesses;
+package common;
 
 //Edge of the acyclic task dependency tree
 public class TaskDependencyEdge {

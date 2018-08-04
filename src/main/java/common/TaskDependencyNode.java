@@ -1,4 +1,4 @@
-package main.resources.parallelprocesses;
+package common;
 
 import java.util.ArrayList;
 import java.util.List;
