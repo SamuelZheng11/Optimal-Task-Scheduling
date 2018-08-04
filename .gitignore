@@ -50,6 +50,7 @@ cmake-build-*/
 # File-based project format
 *.iws
 
+
 #iml files
 *.iml
 
@@ -76,6 +77,7 @@ fabric.properties
 
 ### Intellij Patch ###
 # Comment Reason: https://github.com/joeblau/gitignore.io/issues/186#issuecomment-215987721
+
 
 # *.iml
 # modules.xml
@@ -106,6 +108,9 @@ fabric.properties
 *.zip
 *.tar.gz
 *.rar
+
+# the proejct iml
+306_Parallel_Processes.iml
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
