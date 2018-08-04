@@ -9,6 +9,7 @@ import gui.view.MainScreen;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.concurrent.Task;
+import org.apache.commons.cli.*;
 
 import java.util.List;
 
@@ -16,10 +17,12 @@ public class Main extends Application {
     private DependencyGraph dg = DependencyGraph.getGraph();
 
     @Override
+
     public void start(Stage primaryStage) throws Exception {
 
 
         StatisticsModel model = new StatisticsModel();
+        CommandLine commands = getCommands();
 
         Task task = new Task<Void>() {
             @Override
@@ -34,6 +37,19 @@ public class Main extends Application {
 
         MainScreen mainScreen = new MainScreen(primaryStage, model);
 
+
+    }
+
+    private CommandLine getCommands() throws ParseException
+    {
+        Options options = new Options();
+        options.addOption("p", true, "The number of processors for the algorithm to run on");
+        options.addOption("v", "Whether to visualise the search");
+        options.addOption("o", true,"The output file");
+        CommandLineParser parser = new DefaultParser();
+        String[] params = new String[getParameters().getRaw().size()];
+        params = getParameters().getRaw().toArray(params);
+        return parser.parse(options, params);
     }
 
 
@@ -43,8 +59,6 @@ public class Main extends Application {
   
     public void InitialiseScheduling(StatisticsModel model) {
 
-        //Gets command line arguments
-        Application.Parameters parameters = getParameters();
 
         //todo parsing of command line args to graph parsing function
         dg.parse();
@@ -109,5 +123,10 @@ public class Main extends Application {
             }
         }
         return bestFoundState;
+    }
+
+    private State scheduleNode(TaskDependencyNode a, int b, State c, int d){
+        //stub
+        return null;
     }
 }
