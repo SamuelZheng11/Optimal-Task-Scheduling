@@ -1,9 +1,14 @@
-package main;
+package parallelprocesses;
 
+import common.*;
+
+<<<<<<< HEAD:src/main/Main.java
 import common.DependencyGraph;
 import common.State;
 import common.TaskDependencyNode;
 import cost_function.CostFunctionService;
+=======
+>>>>>>> f17ab2941962feb795eeecdf34da904c3415fbe9:src/main/java/parallelprocesses/Main.java
 import gui.model.StatisticsModel;
 import gui.view.MainScreen;
 import javafx.application.Application;

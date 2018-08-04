@@ -1,5 +1,6 @@
 package gui.view;
 
+
 import gui.controller.MainController;
 import gui.model.StatisticsModel;
 import javafx.embed.swing.SwingNode;
