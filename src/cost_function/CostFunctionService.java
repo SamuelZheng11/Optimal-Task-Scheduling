@@ -8,7 +8,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-
+/**
+ * This class is a service class which can be called by the recursive algorithm to determine add a node onto a processor
+ */
 public class CostFunctionService {
     private State state;
     private int inputProcessorCompletionTime = 0;
@@ -16,6 +18,20 @@ public class CostFunctionService {
     private List<Boolean> parentsFound;
     private TaskDependencyNode targetNode;
 
+    /**
+     *  This function is called by the recursive algorithm to get a state with new node scheduled and an associated 'cost'
+     *  value of having that node scheduled on a given processor to compare against the current state to determine if
+     *  its better.
+     *
+     * @param node: the target node that you want to schedule
+     * @param onProcessorNumber: the target processor you want to schedule your target node on
+     * @param withCurrentState: the current state (before) the node has been scheduled, this is needed for the function
+     *                        determine when to schedule the node based on which other processors has the target node's
+     *                        parents
+     * @param costOfAllNodes: the cost of all the the node's durations summed together. This is used to calculate the
+     *                      heuristic of the state with the new node scheduled on the target processor
+     * @return: returns a state with the target node scheduled on the target processors with a new cost heuristic
+     */
     public State scheduleNode(TaskDependencyNode node, int onProcessorNumber, State withCurrentState, int costOfAllNodes) {
 
         // generate a deep copy of the input state
@@ -70,6 +86,15 @@ public class CostFunctionService {
         return new State(this.state.getJobLists(), this.state.getJobListDuration(), (costOfAllNodes - heuristicSum - node._duration)/withCurrentState.getJobLists().size());
     }
 
+    /**
+     *  This method is an internal method special to the CostFunctionService. It is used to determine the cost of
+     *  schedule a node given that not all of its parents are on target processor.
+     * @param parents: all the parent nodes of the target node supplied in the scheduleNode method signature.
+     * @param commDealy: all the communication delays associated with the parent nodes of the target node
+     * @param skipProcessorNumber: the processors that we know is guaranteed to NOT contain all of the parent processors
+     * @return: An integer representing the total amount of time waiting before the target node can be scheduled from
+     * very first node
+     */
     private int calculateCostToSchedule(ArrayList<TaskDependencyNode> parents, ArrayList<Integer> commDealy, int skipProcessorNumber) {
 
         // find the parent's completion time on other processors
@@ -123,6 +148,13 @@ public class CostFunctionService {
         return costOfSchedulingNode;
     }
 
+    /**
+     * This method is an internal method special to the CostFunctionService. It check the target processors (the one
+     * you want to schedule the node on) determining which parents the target node have already been scheduled on the
+     * target processor
+     * @param onProcessor: the target processors passed in on the schedule node processor
+     * @param parentNodes: all the parent nodes that are associated with the target node
+     */
     private void processTargetProcessor(List<Job> onProcessor, ArrayList<TaskDependencyNode> parentNodes) {
         // check if a parent of the node to be scheduled is on the current processor
         // sum up the cost of tasks on the processor for the heuristic cost
@@ -140,6 +172,12 @@ public class CostFunctionService {
         }
     }
 
+    /**
+     * This method is an internal method special to the CostFunctionService. because Java does not do deep copying, and
+     * the recursive algorithm can modify the state that was passed into the method signature, a separate state needs to
+     * be passed in.
+     * @param inputState: the input state that was passed into the method signature
+     */
     private void generateDeepCopy(State inputState) {
         List<List<Job>> jobs = new ArrayList<>(inputState.getJobLists().size());
 
