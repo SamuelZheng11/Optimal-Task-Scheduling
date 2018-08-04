@@ -1,16 +1,22 @@
-apply plugin: 'java'
-apply plugin: 'idea'
-apply plugin: 'application'
+buildscript {
+    repositories {
+        jcenter()
+    }
+}
 
-
-repositories {
-    jcenter()
-    mavenCentral()
+plugins {
+    id 'java'
+    id 'idea'
 }
 
 version '1.0'
 
 sourceCompatibility = 1.8
+libsDirName = '/bin'
+
+repositories {
+    mavenCentral()
+}
 
 dependencies {
     compile 'org.slf4j:slf4j-api:1.7.25'
@@ -36,5 +42,15 @@ sourceSets {
     }
 }
 
-mainClassName = 'Main'
+jar {
+    destinationDir = file(libsDirName)
+    manifest {
+        attributes 'Main-Class': 'parallelprocesses.Main'
+    }
+    from {
+        configurations.compile.collect {it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+
 
