@@ -1,15 +1,21 @@
 package parallelprocesses;
 
+
+import common.*;
+
 import common.DependencyGraph;
-import common.Job;
 import common.State;
 import common.TaskDependencyNode;
+import cost_function.CostFunctionService;
+
 import gui.model.StatisticsModel;
 import gui.view.MainScreen;
 import javafx.application.Application;
 import javafx.concurrent.Task;
+
 import javafx.stage.Stage;
 import org.apache.commons.cli.*;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +30,9 @@ public class Main extends Application {
 
 
         StatisticsModel model = new StatisticsModel();
+
+//        CommandLine commands = getCommands();
+
 
         Task task = new Task<Void>() {
             @Override
@@ -42,6 +51,7 @@ public class Main extends Application {
     }
 
 
+
     private CommandLine getCommands() throws ParseException
     {
         Options options = new Options();
@@ -53,6 +63,7 @@ public class Main extends Application {
         params = getParameters().getRaw().toArray(params);
         return parser.parse(options, params);
     }
+
 
 
     public void InitialiseScheduling(StatisticsModel model) {
@@ -121,7 +132,7 @@ public class Main extends Application {
                     }
                     freeTasks.remove(currentNode);
                     //create the new state with the task scheduled to evaluate pass to the recursion
-                    State newState = scheduleNode(currentNode, j, state, linearScheduleTime);
+                    State newState = new CostFunctionService().scheduleNode(currentNode, j, state, linearScheduleTime);
 
                     //if this state is complete and better than existing best, update.
                     if (newState.getHeuristicValue() <= bestFoundState.getHeuristicValue() && depth == numTasks) {

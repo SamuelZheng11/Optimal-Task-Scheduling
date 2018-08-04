@@ -9,9 +9,9 @@ public class State {
 //  JobListDuration is an array of length p, with each value corresponding to the time at which the final task of its
 //  corresponding processor(of the same index as in JobLists) will complete
     private final int[] _jobListDuration;
-    private final int _heuristicValue;
+    private final double _heuristicValue;
 
-    public State(List<List<Job>> jobLists, int[] jobListDuration, int heuristicValue){
+    public State(List<List<Job>> jobLists, int[] jobListDuration, double heuristicValue){
         _jobLists = jobLists;
         _jobListDuration = jobListDuration;
         _heuristicValue = heuristicValue;
@@ -29,7 +29,7 @@ public class State {
         return _jobListDuration;
     }
 
-    public int getHeuristicValue(){
+    public double getHeuristicValue(){
         return _heuristicValue;
     }
 }
