@@ -30,6 +30,7 @@ gradle
 gradlew.bat
 settings.gradle
 .gradle
+build/
 
 
 # Gradle and Maven with auto-import
