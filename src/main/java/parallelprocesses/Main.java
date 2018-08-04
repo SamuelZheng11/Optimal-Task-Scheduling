@@ -1,21 +1,27 @@
 package parallelprocesses;
 
-import common.*;
-
 import common.DependencyGraph;
 import common.Job;
 import common.State;
 import common.TaskDependencyNode;
 import gui.model.StatisticsModel;
 import gui.view.MainScreen;
+import javafx.application.Application;
 import javafx.concurrent.Task;
+import javafx.stage.Stage;
 import org.apache.commons.cli.*;
-import javafx.stage.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Main{
+import static javafx.application.Application.launch;
+
+public class Main extends Application {
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+
     public void start(Stage primaryStage) throws Exception {
 
 
@@ -53,7 +59,12 @@ public class Main{
 
     public void InitialiseScheduling(StatisticsModel model) {
 
-        CommandLine commands = getCommands();
+        CommandLine commands = null;
+        try {
+            commands = getCommands();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         DependencyGraph dg = DependencyGraph.getGraph();
         dg.setFilePath(commands.getArgs()[0]);
         //todo parsing of command line args to graph parsing function
