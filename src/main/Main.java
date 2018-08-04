@@ -3,6 +3,7 @@ package main;
 import common.DependencyGraph;
 import common.State;
 import common.TaskDependencyNode;
+import cost_function.CostFunctionService;
 import gui.model.StatisticsModel;
 import gui.view.MainScreen;
 import javafx.application.Application;
@@ -55,8 +56,7 @@ public class Main extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-
-
+  
     public void InitialiseScheduling(StatisticsModel model) {
 
 
@@ -99,7 +99,7 @@ public class Main extends Application {
                     }
                     freeTasks.remove(currentNode);
                     //create the new state with the task scheduled to evaluate pass to the recursion
-                    State newState = scheduleNode(currentNode, j, state, linearScheduleTime);
+                    State newState = new CostFunctionService().scheduleNode(currentNode, j, state, linearScheduleTime);
 
                     //if this state is complete and better than existing best, update.
                     if (newState.getHeuristicValue() <= bestFoundState.getHeuristicValue() && depth == numTasks) {
