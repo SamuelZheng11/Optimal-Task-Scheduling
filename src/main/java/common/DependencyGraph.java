@@ -59,6 +59,17 @@ public class DependencyGraph {
      */
     public List<TaskDependencyNode> getFreeTasks(TaskDependencyNode scheduledNode) {
 
+
+
+//        if(scheduledNode != null && scheduledNode._name.equals("1")) {
+//            System.out.println("The scheduled node is node 1");
+//            for (TaskDependencyEdge parentNodes:
+//                 scheduledNode._parents) {
+//                System.out.println("Parents are");
+//                System.out.println(parentNodes._parent._name);
+//            }
+//        }
+
         try {
             if (scheduledNode == null) { // List will contain nodes without parents (roots)
                 for (Map.Entry<String, TaskDependencyNode> entry : _nodes.entrySet()) {
@@ -69,7 +80,8 @@ public class DependencyGraph {
             } else {
                 _freeTasks.remove(scheduledNode);
                 _scheduledNodes.add(scheduledNode);
-                for (TaskDependencyEdge nextNodes : scheduledNode._children) {
+
+                for (TaskDependencyEdge nextNodes : scheduledNode._children) { //iterate through all children (nextnodes are child nodes to schedulednode)
                     if(_freeTasks.contains(nextNodes._child)) {
                         continue; //skip if list already contains node
                     }
@@ -80,8 +92,17 @@ public class DependencyGraph {
                         // Only add child if all parents are in scheduled nodes list.
                         boolean canBeScheduled = true;
                         //Iterate through all parents of the node to be added
+
+                        //iterate through all of its parents
+
                         for (TaskDependencyEdge parentNode:
                                 nextNodes._parent._parents) {
+
+                            System.out.println("Node to be evaluated " + nextNodes._child._name);
+                            if(scheduledNode != null && scheduledNode._name.equals("8")) {
+                                System.out.println(parentNode._parent._name + "Name of parent");
+                            }
+
                             if(_scheduledNodes.contains(parentNode)) {
                                 canBeScheduled = true;
                             }
@@ -90,10 +111,11 @@ public class DependencyGraph {
                                 break;
                             }
                         }
-                        if(canBeScheduled = true) {
+                        if(canBeScheduled == true) {
                             _freeTasks.add(nextNodes._child);
 
                         }
+                        _freeTasks.add(nextNodes._child);
                     }
                 }
             }
@@ -111,11 +133,12 @@ public class DependencyGraph {
         List<TaskDependencyNode> freeTasks = getFreeTasks(null); // get set of initial nodes
 
         while (freeTasks.size() > 0) {
-            nodeList.add(freeTasks.get(0));
-            TaskDependencyNode node = freeTasks.get(0);
-            TaskJob job = new TaskJob(node._duration, node._name, node); //create job based on a free task
-            freeTasks = getFreeTasks(node); // update the set of free tasks
-            duration += node._duration; // update the duration
+            TaskDependencyNode nodeToAdd = freeTasks.get(0);
+            nodeList.add(nodeToAdd);
+
+            TaskJob job = new TaskJob(nodeToAdd._duration, nodeToAdd._name, nodeToAdd); //create job based on a free task
+            freeTasks = getFreeTasks(nodeToAdd); // update the set of free tasks
+            duration += nodeToAdd._duration; // update the duration
             jobList.add(job);
         }
 

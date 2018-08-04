@@ -79,7 +79,7 @@ public class Main extends Application {
         //todo parsing of command line args to graph parsing function
         dg.parse();
         List<TaskDependencyNode> freeTasks = dg.getFreeTasks(null);
-        State PLACEHOLDERSTATE = null;
+        State PLACEHOLDERSTATE = dg.initialState();
         //recursion(commands.getOptionValue('p'), freeTasks, 0, null, PLACEHOLDERSTATE, dg.getNodes().size(), LINEARSCHEDULEPLACEHOLDER);
 
         //todo call algorithm and pass the model
