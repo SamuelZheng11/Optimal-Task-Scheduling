@@ -1,7 +1,7 @@
 package test;
 
-
 import common.*;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 
