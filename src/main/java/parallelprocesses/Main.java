@@ -1,8 +1,7 @@
-package main;
+package parallelprocesses;
 
-import common.DependencyGraph;
-import common.State;
-import common.TaskDependencyNode;
+import common.*;
+
 import gui.model.StatisticsModel;
 import gui.view.MainScreen;
 import javafx.application.Application;
