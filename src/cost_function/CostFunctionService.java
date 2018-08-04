@@ -17,10 +17,12 @@ public class CostFunctionService {
     private TaskDependencyNode targetNode;
 
     public State scheduleNode(TaskDependencyNode node, int onProcessorNumber, State withCurrentState, int costOfAllNodes) {
+
         // generate a deep copy of the input state
         this.generateDeepCopy(withCurrentState);
         this.parentsFound = new ArrayList<>(Collections.nCopies(node._parents.size(), Boolean.FALSE));
 
+        // generate the arrays that will be used to easily find a parent and its communication delay with the target node
         ArrayList<TaskDependencyNode> parentNodes = new ArrayList<>();
         ArrayList<Integer> parentCommDelayEdges = new ArrayList<>();
         for(int i = 0; i < node._parents.size(); i++){
@@ -29,7 +31,9 @@ public class CostFunctionService {
         }
 
         // check if the current processor contains any parent jobs
-        boolean allParentOnTargetProcessor = this.processTargetProcessor(this.state.getJobLists().get(onProcessorNumber), parentNodes);
+        this.processTargetProcessor(this.state.getJobLists().get(onProcessorNumber), parentNodes);
+        boolean allParentOnTargetProcessor = this.parentsFound.stream().allMatch(foundParent -> foundParent);
+
 
         // check if the node has any parents
         if (parentNodes.size() == 0) {
@@ -119,7 +123,7 @@ public class CostFunctionService {
         return costOfSchedulingNode;
     }
 
-    private boolean processTargetProcessor(List<Job> onProcessor, ArrayList<TaskDependencyNode> parentNodes) {
+    private void processTargetProcessor(List<Job> onProcessor, ArrayList<TaskDependencyNode> parentNodes) {
         // check if a parent of the node to be scheduled is on the current processor
         // sum up the cost of tasks on the processor for the heuristic cost
         for (int i = 0; i < onProcessor.size(); i++) {
@@ -134,25 +138,15 @@ public class CostFunctionService {
                 }
             }
         }
-
-        for(boolean parentFound: this.parentsFound){
-            if(!parentFound){
-                return false;
-            }
-        }
-        return true;
     }
 
     private void generateDeepCopy(State inputState) {
-        List<List<Job>> jobs = new ArrayList<>(Collections.nCopies(inputState.getJobLists().size(), new ArrayList<>()));
+        List<List<Job>> jobs = new ArrayList<>(inputState.getJobLists().size());
 
         // create deep copy as java does not do deep copying
         for(int i = 0; i < inputState.getJobLists().size(); i++){
-            ArrayList<Job> processorList = new ArrayList<>(Collections.nCopies(inputState.getJobLists().get(i).size(), new DelayJob(-1)));
-            for( int j = 0; j < inputState.getJobLists().get(i).size(); j++){
-                processorList.set(j, inputState.getJobLists().get(i).get(j));
-            }
-            jobs.set(i, processorList);
+            jobs.add(new ArrayList<>());
+            jobs.set(i, new ArrayList<>(inputState.getJobLists().get(i)));
         }
         this.state = new State( jobs, Arrays.copyOf(inputState.getJobListDuration(), inputState.getJobListDuration().length), 0);
     }
