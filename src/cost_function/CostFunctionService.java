@@ -14,10 +14,10 @@ import java.util.List;
 public class CostFunctionService {
     private State state;
     private int inputProcessorCompletionTime = 0;
-    private double heuristicSum = 0;
+    private int sumOfAlreadyScheduledTasks = 0;
+    private double sumOfAllScheduledJobs = 0;
     private List<Boolean> parentsFound;
-    private TaskDependencyNode targetNode;
-
+            
     /**
      *  This function is called by the recursive algorithm to get a state with new node scheduled and an associated 'cost'
      *  value of having that node scheduled on a given processor to compare against the current state to determine if
@@ -38,6 +38,10 @@ public class CostFunctionService {
         this.generateDeepCopy(withCurrentState);
         this.parentsFound = new ArrayList<>(Collections.nCopies(node._parents.size(), Boolean.FALSE));
 
+        // account for tasks that need to be scheduled regard less for easy tracking
+        this.sumOfAllScheduledJobs += node._duration;
+        this.sumOfAlreadyScheduledTasks += node._duration;
+
         // generate the arrays that will be used to easily find a parent and its communication delay with the target node
         ArrayList<TaskDependencyNode> parentNodes = new ArrayList<>();
         ArrayList<Integer> parentCommDelayEdges = new ArrayList<>();
@@ -50,13 +54,18 @@ public class CostFunctionService {
         this.processTargetProcessor(this.state.getJobLists().get(onProcessorNumber), parentNodes);
         boolean allParentOnTargetProcessor = this.parentsFound.stream().allMatch(foundParent -> foundParent);
 
-
         // check if the node has any parents
         if (parentNodes.size() == 0) {
             // returns the state with the new task on the processor
             this.state.getJobLists().get(onProcessorNumber).add(new TaskJob(node._duration, node._name, node));
             this.state.getJobListDuration()[onProcessorNumber] += node._duration;
-            return new State(this.state.getJobLists(), this.state.getJobListDuration(), (costOfAllNodes - heuristicSum - node._duration)/withCurrentState.getJobLists().size());
+
+            // return state early with node scheduled as it has not parents
+            return new State(
+                    this.state.getJobLists(),
+                    this.state.getJobListDuration(),
+                    this.sumOfAllScheduledJobs + ((double)costOfAllNodes - this.sumOfAlreadyScheduledTasks)/withCurrentState.getJobLists().size()
+            );
         }
 
         // otherwise attempt to find the parent with the lowest communication time
@@ -76,14 +85,19 @@ public class CostFunctionService {
         if(!allParentOnTargetProcessor && costOfSchedulingNode > this.inputProcessorCompletionTime) {
             this.state.getJobLists().get(onProcessorNumber).add(new DelayJob(costOfSchedulingNode - this.inputProcessorCompletionTime));
             this.state.getJobListDuration()[onProcessorNumber] += costOfSchedulingNode - this.inputProcessorCompletionTime;
-            this.heuristicSum += (costOfSchedulingNode - this.inputProcessorCompletionTime);
+            this.sumOfAllScheduledJobs += (costOfSchedulingNode - this.inputProcessorCompletionTime);
         }
 
         // schedule the node and update job lists for returning state
         this.state.getJobLists().get(onProcessorNumber).add(new TaskJob(costOfSchedulingNode, node._name, node));
         this.state.getJobListDuration()[onProcessorNumber] += node._duration;
 
-        return new State(this.state.getJobLists(), this.state.getJobListDuration(), (costOfAllNodes - heuristicSum - node._duration)/withCurrentState.getJobLists().size());
+        // return state with node scheduled
+        return new State(
+                this.state.getJobLists(),
+                this.state.getJobListDuration(),
+                this.sumOfAllScheduledJobs + ((double)costOfAllNodes - this.sumOfAlreadyScheduledTasks)/withCurrentState.getJobLists().size()
+        );
     }
 
     /**
@@ -113,15 +127,15 @@ public class CostFunctionService {
 
             for (int j = 0; j < this.state.getJobLists().get(i).size(); j++){
                 buildingCostForProcessor.set(i, buildingCostForProcessor.get(i) + this.state.getJobLists().get(i).get(j).getDuration());
-                this.heuristicSum += this.state.getJobLists().get(i).get(j).getDuration();
+                this.sumOfAllScheduledJobs += this.state.getJobLists().get(i).get(j).getDuration();
                 if (this.state.getJobLists().get(i).get(j).getClass() == TaskJob.class) {
                     TaskJob potentialParentJob = (TaskJob) this.state.getJobLists().get(i).get(j);
+                    this.sumOfAlreadyScheduledTasks += this.state.getJobLists().get(i).get(j).getDuration();
 
                     // check if the TaskJob's node is a parent of the node
                     if (parents.contains(potentialParentJob.getNode())) {
-                        // only update the current best cost for the processor if the cost of the processor up to the parent's node + the parents node's communication delay is
-                        // less than the current best
-
+                        // only update the current best cost for the processor if the cost of the processor up to the
+                        // parent's node + the parents node's communication delay is less than the current best
                         if (currentBestForProcessor.get(i) < buildingCostForProcessor.get(i) + commDealy.get(parents.indexOf(potentialParentJob.getNode()))) {
                             currentBestForProcessor.set(i, buildingCostForProcessor.get(i) + commDealy.get(parents.indexOf(potentialParentJob.getNode())));
                             parentFound.set(i, true);
@@ -159,11 +173,13 @@ public class CostFunctionService {
         // check if a parent of the node to be scheduled is on the current processor
         // sum up the cost of tasks on the processor for the heuristic cost
         for (int i = 0; i < onProcessor.size(); i++) {
-            this.heuristicSum += onProcessor.get(i).getDuration();
+            this.sumOfAllScheduledJobs += onProcessor.get(i).getDuration();
             this.inputProcessorCompletionTime += onProcessor.get(i).getDuration();
             for (TaskDependencyNode parentNode: parentNodes) {
                 if(onProcessor.get(i) instanceof TaskJob) {
                     TaskJob job = (TaskJob) onProcessor.get(i);
+                    this.sumOfAlreadyScheduledTasks += job.getDuration();
+
                     if (job.getNode() == parentNode) {
                         this.parentsFound.set(parentNodes.indexOf(parentNode), true);
                     }
