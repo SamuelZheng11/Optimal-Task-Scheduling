@@ -1,11 +1,11 @@
-package unit_tests;
+package common;
 
 import common.*;
+import cost_function.CostFunctionService;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import cost_function.CostFunctionService;
 
 import java.util.ArrayList;
 import java.util.List;

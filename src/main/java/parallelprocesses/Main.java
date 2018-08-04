@@ -2,19 +2,16 @@ package parallelprocesses;
 
 import common.*;
 
-<<<<<<< HEAD:src/main/Main.java
 import common.DependencyGraph;
 import common.State;
 import common.TaskDependencyNode;
 import cost_function.CostFunctionService;
-=======
->>>>>>> f17ab2941962feb795eeecdf34da904c3415fbe9:src/main/java/parallelprocesses/Main.java
 import gui.model.StatisticsModel;
 import gui.view.MainScreen;
 import javafx.application.Application;
 import javafx.stage.Stage;
 import javafx.concurrent.Task;
-import org.apache.commons.cli.*;
+//import org.apache.commons.cli.*;
 
 import java.util.List;
 
@@ -27,7 +24,7 @@ public class Main extends Application {
 
 
         StatisticsModel model = new StatisticsModel();
-        CommandLine commands = getCommands();
+//        CommandLine commands = getCommands();
 
         Task task = new Task<Void>() {
             @Override
@@ -45,17 +42,17 @@ public class Main extends Application {
 
     }
 
-    private CommandLine getCommands() throws ParseException
-    {
-        Options options = new Options();
-        options.addOption("p", true, "The number of processors for the algorithm to run on");
-        options.addOption("v", "Whether to visualise the search");
-        options.addOption("o", true,"The output file");
-        CommandLineParser parser = new DefaultParser();
-        String[] params = new String[getParameters().getRaw().size()];
-        params = getParameters().getRaw().toArray(params);
-        return parser.parse(options, params);
-    }
+//    private CommandLine getCommands() throws ParseException
+//    {
+//        Options options = new Options();
+//        options.addOption("p", true, "The number of processors for the algorithm to run on");
+//        options.addOption("v", "Whether to visualise the search");
+//        options.addOption("o", true,"The output file");
+//        CommandLineParser parser = new DefaultParser();
+//        String[] params = new String[getParameters().getRaw().size()];
+//        params = getParameters().getRaw().toArray(params);
+//        return parser.parse(options, params);
+//    }
 
 
     public static void main(String[] args) {
