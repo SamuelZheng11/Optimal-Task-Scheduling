@@ -77,7 +77,23 @@ public class DependencyGraph {
                         continue; //skip if the node has already been scheduled.
                     }
                     else {
-                        _freeTasks.add(nextNodes._child);
+                        // Only add child if all parents are in scheduled nodes list.
+                        boolean canBeScheduled = true;
+                        //Iterate through all parents of the node to be added
+                        for (TaskDependencyEdge parentNode:
+                                nextNodes._parent._parents) {
+                            if(_scheduledNodes.contains(parentNode)) {
+                                canBeScheduled = true;
+                            }
+                            else {
+                                canBeScheduled = false;
+                                break;
+                            }
+                        }
+                        if(canBeScheduled = true) {
+                            _freeTasks.add(nextNodes._child);
+
+                        }
                     }
                 }
             }
@@ -160,14 +176,14 @@ public class DependencyGraph {
     /**
      * This method will create a dot file to represent the optimal found state. The dot file is created in the current directory.
      * @param optimalState State object which contains the optimal solution.
-     * @param inputFileName The file name (with extension .dot) of the original input file.
+     * @param inputFileName The file name (WITHOUT extension .dot) of the original input file.
      * @throws IOException
      */
     public void generateOutput(State optimalState, String inputFileName) throws IOException {
         int processorNumber = 0;
         List<List<Job>> optimalLists = optimalState.getJobLists();
 
-        String outputName = "output" + inputFileName; // File name (inc. extension) of output file.
+        String outputName = "output" + inputFileName; // File name (WITHOUT extension) of output file.
 
         String fileData = "digraph \"" + "output" + inputFileName + "\" {" + System.lineSeparator();
         Files.write(Paths.get(outputName), fileData.getBytes()); //File creation

@@ -1,4 +1,4 @@
-package common;
+package cost_function;
 
 import common.*;
 import cost_function.CostFunctionService;
