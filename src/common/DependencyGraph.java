@@ -7,6 +7,9 @@ import org.graphstream.graph.implementations.DefaultGraph;
 import org.graphstream.stream.file.FileSource;
 import org.graphstream.stream.file.FileSourceDOT;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.*;
 
 public class DependencyGraph {
@@ -151,6 +154,120 @@ public class DependencyGraph {
         }catch(ClassCastException e){
             e.printStackTrace();
             System.out.println("Edwar your daring Double type force casting broke");
+        }
+    }
+
+    /**
+     * This method will create a dot file to represent the optimal found state. The dot file is created in the current directory.
+     * @param optimalState State object which contains the optimal solution.
+     * @param inputFileName The file name (with extension .dot) of the original input file.
+     * @throws IOException
+     */
+    public void generateOutput(State optimalState, String inputFileName) throws IOException {
+        int processorNumber = 0;
+        List<List<Job>> optimalLists = optimalState.getJobLists();
+
+        String outputName = "output" + inputFileName; // File name (inc. extension) of output file.
+
+        String fileData = "digraph \"" + "output" + inputFileName + "\" {" + System.lineSeparator();
+        Files.write(Paths.get(outputName), fileData.getBytes()); //File creation
+
+        for (List<Job> processors : optimalLists) { //Iterate through each processor
+            processorNumber++;
+            int startTime = 0;
+            for (Job jobs : processors) { //Iterate through each job in the processor
+                if (jobs instanceof DelayJob ) {
+                    startTime += jobs.getDuration();
+                    continue;
+                }
+                else if (jobs instanceof  TaskJob) {
+                    TaskJob task = (TaskJob) jobs;
+//                    try(BufferedWriter writer = Files.newBufferedWriter(path, Charset.forName("UTF-8"))) {
+//                        writer.newLine();
+//                        String output = String.format(" %s   [Weight=%d,Start=%d,Processor=%d];", task.getName(), task.getDuration(), startTime, processorNumber);
+//                        writer.write(output);
+//                    } catch(IOException e) {
+//                        e.printStackTrace();
+//                    }
+                    try {
+                        String output = String.format("\t%s\t [Weight=%d,Start=%d,Processor=%d];", task.getName(), task.getDuration(), startTime, processorNumber) + System.lineSeparator();
+                        Files.write(Paths.get(outputName), output.getBytes(), StandardOpenOption.APPEND);
+                    }catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    startTime += task.getDuration();
+                }
+            }
+        }
+
+        for (List<Job> processors : optimalLists) {
+            for (Job jobs : processors) {
+                if (jobs instanceof DelayJob ) {
+                    continue;
+                }
+                else if (jobs instanceof  TaskJob) {
+                    TaskJob task = (TaskJob) jobs;
+                    TaskDependencyNode node = task.getNode();
+
+                    String parentName;
+                    String childName;
+                    int weight;
+
+                    parentName = node._name;
+
+                    for (TaskDependencyEdge edges : node._children) {
+                        childName = edges._child._name;
+                        weight = edges._communicationDelay;
+                        try {
+                            String output = String.format("\t%s -> %s\t [Weight=%d];", parentName, childName, weight) + System.lineSeparator();
+                            Files.write(Paths.get(outputName), output.getBytes(), StandardOpenOption.APPEND);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            }
+        }
+
+//        for (Map.Entry<String, TaskDependencyNode> entry : _nodes.entrySet())
+//        {
+//            String parentName;
+//            String childName;
+//            int weight;
+//
+//            parentName = entry.getValue()._name;
+//            for (TaskDependencyEdge edges : entry.getValue()._children) {
+//
+//                childName = edges._child._name;
+//                weight = edges._communicationDelay;
+//
+////                try(BufferedWriter writer = Files.newBufferedWriter(path, Charset.forName("UTF-8"))) {
+////                    writer.newLine();
+////                    String output = String.format(" %s -> %s  [Weight=%d];", parentName, childName, weight);
+////                    writer.write(output);
+////                } catch(IOException e) {
+////                    e.printStackTrace();
+////                }
+//                try {
+//                    System.out.println("Hello");
+//                    String output = String.format("\t%s -> %s\t [Weight=%d];", parentName, childName, weight) + System.lineSeparator();
+//                    Files.write(Paths.get("output.dot"), output.getBytes(), StandardOpenOption.APPEND);
+//                }catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+//        Path path = Paths.get("output.dot");
+//        try(BufferedWriter writer = Files.newBufferedWriter(path, Charset.forName("UTF-8"))) {
+//            writer.newLine();
+//            writer.write("}");
+//        } catch(IOException e) {
+//            e.printStackTrace();
+//        }
+        try {
+            Files.write(Paths.get(outputName), "}".getBytes(), StandardOpenOption.APPEND);
+        }catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
