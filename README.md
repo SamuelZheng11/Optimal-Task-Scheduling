@@ -6,7 +6,7 @@ The 5 architects who worked on solving this problems are:
 
 **Samuel Zheng** : **GitHub Username**: samuelzheng11, **UID**: 634715579, **UPI**: szhe560
 
-**Edwar Zhang**
+**Edwar Zhang** : **GitHub Username**: Eddiwar, **UID**: 786468327, **UPI**: ezha219
 
 **Alex Morgan**
 
