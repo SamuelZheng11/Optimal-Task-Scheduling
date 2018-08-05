@@ -35,6 +35,8 @@ public class Main extends Application {
 
     private static final String OUTPUT_FILE_FORMAT = ".dot";
 
+    static int counter = 0;
+
     public void start(Stage primaryStage) throws Exception {
 
 
@@ -141,6 +143,10 @@ public class Main extends Application {
         }
         //If there are available tasks to schedule
         if (freeTasks.size() > 0) {
+            counter++;
+            if(counter == 4){
+                System.out.println("break");
+            }
             //For each available task, try scheduling it on a processor
             for (int i = 0; i < freeTasks.size(); i++) {
                 //if the current processor and the next processor are empty, skip the current one (all empty processors are equivalent)
@@ -155,11 +161,21 @@ public class Main extends Application {
                     for (int k = 0; k < currentNode._children.size(); k++) {
                         TaskDependencyNode child = currentNode._children.get(k)._child;
                         int numUnresolvedParents = child._parents.size();
+                        boolean hasConsideredCurrentNodeAsParent = false;
+
                         for (int l = 0; l <state.getJobLists().size(); l++) {
                             for (int m = 0; m < child._parents.size(); m++) {
-                                if (currentNode == child._parents.get(m)._parent || state.getJobLists().get(l).contains(child._parents.get(m)._parent)){
+                                if (!hasConsideredCurrentNodeAsParent && currentNode == child._parents.get(m)._parent){
                                     numUnresolvedParents--;
+                                    hasConsideredCurrentNodeAsParent = true;
                                 }
+                                for (int n = 0; n < state.getJobLists().get(l).size(); n++) {
+                                    if (state.getJobLists().get(l).get(n) instanceof TaskJob && ((TaskJob) state.getJobLists().get(l).get(n)).getNode() == child._parents.get(m)._parent){
+                                        numUnresolvedParents--;
+                                    }
+                                }
+
+
                                 if (numUnresolvedParents == 0 ){
                                     break;
                                 }
