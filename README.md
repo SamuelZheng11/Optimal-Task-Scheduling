@@ -4,7 +4,7 @@ This repository is used for project 1 of SoftEng 306 parallel scheduling problem
 ### Contributors
 The 5 architects who worked on solving this problems are:
 
-**Samuel Zheng**
+**Samuel Zheng** : Github Username: samuelzheng11, UID: 634715579, UPI: szhe560
 
 **Edwar Zhang**
 
