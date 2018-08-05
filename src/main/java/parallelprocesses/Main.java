@@ -46,9 +46,9 @@ public class Main extends Application {
 
         new Thread(task).start();
 
-
-        MainScreen mainScreen = new MainScreen(primaryStage, model);
-
+        if( getCommandLine().hasOption("v")){
+            MainScreen mainScreen = new MainScreen(primaryStage, model);
+        }
 
     }
 
@@ -163,6 +163,7 @@ public class Main extends Application {
 
     public static CommandLine getCommandLine(){
         return _commands;
+
     }
 
 }
