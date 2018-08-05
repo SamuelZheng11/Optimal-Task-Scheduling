@@ -1,5 +1,6 @@
 package common;
 
+import javafx.concurrent.Task;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
@@ -81,11 +82,11 @@ public class DependencyGraph {
                 _freeTasks.remove(scheduledNode);
                 _scheduledNodes.add(scheduledNode);
 
-                for (TaskDependencyEdge nextNodes : scheduledNode._children) { //iterate through all children (nextnodes are child nodes to schedulednode)
-                    if(_freeTasks.contains(nextNodes._child)) {
+                for (TaskDependencyEdge childOfScheduledNodeEdge : scheduledNode._children) { //iterate through all children (nextnodes are child nodes to schedulednode)
+                    if(_freeTasks.contains(childOfScheduledNodeEdge._child)) {
                         continue; //skip if list already contains node
                     }
-                    else if (_scheduledNodes.contains(nextNodes._child)){
+                    else if (_scheduledNodes.contains(childOfScheduledNodeEdge._child)){
                         continue; //skip if the node has already been scheduled.
                     }
                     else {
@@ -95,15 +96,10 @@ public class DependencyGraph {
 
                         //iterate through all of its parents
 
-                        for (TaskDependencyEdge parentNode:
-                                nextNodes._parent._parents) {
+                        for (TaskDependencyEdge scheduledNodeChildsParentEdge:
+                                childOfScheduledNodeEdge._child._parents) {
 
-                            System.out.println("Node to be evaluated " + nextNodes._child._name);
-                            if(scheduledNode != null && scheduledNode._name.equals("8")) {
-                                System.out.println(parentNode._parent._name + "Name of parent");
-                            }
-
-                            if(_scheduledNodes.contains(parentNode)) {
+                            if(_scheduledNodes.contains(scheduledNodeChildsParentEdge._parent)) {
                                 canBeScheduled = true;
                             }
                             else {
@@ -112,10 +108,8 @@ public class DependencyGraph {
                             }
                         }
                         if(canBeScheduled == true) {
-                            _freeTasks.add(nextNodes._child);
-
+                            _freeTasks.add(childOfScheduledNodeEdge._child);
                         }
-                        _freeTasks.add(nextNodes._child);
                     }
                 }
             }
@@ -135,7 +129,12 @@ public class DependencyGraph {
         while (freeTasks.size() > 0) {
             TaskDependencyNode nodeToAdd = freeTasks.get(0);
             nodeList.add(nodeToAdd);
+            System.out.println("");
 
+            System.out.println("breaker");
+            for(TaskDependencyNode item: freeTasks) {
+                System.out.println(item._name);
+            }
             TaskJob job = new TaskJob(nodeToAdd._duration, nodeToAdd._name, nodeToAdd); //create job based on a free task
             freeTasks = getFreeTasks(nodeToAdd); // update the set of free tasks
             duration += nodeToAdd._duration; // update the duration
