@@ -64,7 +64,8 @@ public class CostFunctionService {
             return new State(
                     this.state.getJobLists(),
                     this.state.getJobListDuration(),
-                    this.processorThatFinishesLast + ((double)costOfAllNodes - this.sumOfAlreadyScheduledTasks)/withCurrentState.getJobLists().size()
+                    this.state.getJobListDuration()[this.processorThatFinishesLast] +
+                            ((double)costOfAllNodes - this.sumOfAlreadyScheduledTasks)/withCurrentState.getJobLists().size()
             );
         }
 
@@ -96,7 +97,8 @@ public class CostFunctionService {
         return new State(
                 this.state.getJobLists(),
                 this.state.getJobListDuration(),
-                this.processorThatFinishesLast + ((double)costOfAllNodes - this.sumOfAlreadyScheduledTasks)/withCurrentState.getJobLists().size()
+                this.state.getJobListDuration()[this.processorThatFinishesLast] +
+                        ((double)costOfAllNodes - this.sumOfAlreadyScheduledTasks)/withCurrentState.getJobLists().size()
         );
     }
 
@@ -205,8 +207,8 @@ public class CostFunctionService {
 
     private void determineProcessorThatFinishesLast() {
         for (int i = 0; i < this.state.getJobLists().size(); i++) {
-            if(this.processorThatFinishesLast < this.state.getJobListDuration()[i]) {
-                this.processorThatFinishesLast = this.state.getJobListDuration()[i];
+            if(this.state.getJobListDuration()[this.processorThatFinishesLast] < this.state.getJobListDuration()[i]) {
+                this.processorThatFinishesLast = i;
             }
         }
     }

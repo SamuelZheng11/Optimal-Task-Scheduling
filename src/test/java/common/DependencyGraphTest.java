@@ -235,12 +235,4 @@ public class DependencyGraphTest {
 
 
     }
-
-    @Test
-    public void initialState1() throws IOException {
-        _dg.parse();
-        State initialstate = _dg.initialState();
-        _dg.generateOutput(initialstate, "TESTINITIALSTATE.dot");
-    }
-
 }

@@ -143,7 +143,7 @@ public class CostFunctionServiceTest {
 
             Assert.assertEquals(result.getJobListDuration()[0], 4);
             Assert.assertEquals(result.getJobListDuration()[1], 1);
-            Assert.assertTrue(result.getHeuristicValue() == 21.5);
+            Assert.assertTrue(result.getHeuristicValue() == 20.5);
 
             Assert.assertNotSame(result.getJobLists(), this.currentState.getJobLists());
             Assert.assertNotSame(result.getJobLists().get(0), this.currentState.getJobLists().get(0));
@@ -171,7 +171,7 @@ public class CostFunctionServiceTest {
             // check that the job scheduled is a delay job and has the correct length
             Assert.assertEquals(result.getJobLists().get(0).get(0).getClass(), DelayJob.class);
             Assert.assertEquals(result.getJobLists().get(0).get(0).getDuration(), 2);
-            Assert.assertTrue(result.getHeuristicValue() == 21.5);
+            Assert.assertTrue(result.getHeuristicValue() == 20.5);
 
             Assert.assertNotSame(result.getJobLists(), this.currentState.getJobLists());
             Assert.assertNotSame(result.getJobLists().get(0), this.currentState.getJobLists().get(0));
@@ -246,7 +246,7 @@ public class CostFunctionServiceTest {
             // check that the scheduled TaskJob is the root node
             Assert.assertEquals(scheduledJob.getNode(), _nodes.get(3));
             Assert.assertEquals(result.getJobListDuration()[0], (_nodes.get(3)._duration + _nodes.get(0)._duration + _nodes.get(1)._duration + 1 + _nodes.get(2)._duration));
-            Assert.assertTrue((result.getHeuristicValue() == 30));
+            Assert.assertTrue((result.getHeuristicValue() == 24.0));
 
             // check memory efficiency
             Assert.assertNotSame(result.getJobLists(), this.currentState.getJobLists());
@@ -281,7 +281,8 @@ public class CostFunctionServiceTest {
             // check that the scheduled TaskJob is the root node
             Assert.assertEquals(scheduledJob.getNode(), _nodes.get(7));
             Assert.assertEquals(result.getJobListDuration()[0], 13);
-            Assert.assertTrue(result.getHeuristicValue() == 30);
+            System.out.println(result.getHeuristicValue());
+            Assert.assertTrue(result.getHeuristicValue() == 24.0);
 
 
             Assert.assertNotSame(result.getJobLists(), this.currentState.getJobLists());
