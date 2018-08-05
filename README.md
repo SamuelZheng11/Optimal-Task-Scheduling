@@ -23,7 +23,7 @@ that is at least as difficult as the harded problems in its catagory of problems
 
 Our solution solves this by giving the least worst solution.
 
-## Running our application
+## Running the Application
 To run our application:
 1. Download jar file (or build a jar from the repository). 
 2. the open a terminal in the location where the jar is.
