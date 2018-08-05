@@ -81,8 +81,8 @@ public class Main extends Application {
         //todo parsing of command line args to graph parsing function
         dg.parse();
         List<TaskDependencyNode> freeTasks = dg.getFreeTasks(null);
-        State PLACEHOLDERSTATE = dg.initialState();
-        //recursion(commands.getOptionValue('p'), freeTasks, 0, null, PLACEHOLDERSTATE, dg.getNodes().size(), LINEARSCHEDULEPLACEHOLDER);
+        State bestFoundSoln = dg.initialState(Integer.valueOf(commands.getOptionValue('p')));
+        recursion(bestFoundSoln.getJobListDuration().length, freeTasks, 0, null, bestFoundSoln, dg.getNodes().size(), bestFoundSoln.getJobListDuration()[0]);
 
         //todo call algorithm and pass the model
 

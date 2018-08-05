@@ -120,7 +120,7 @@ public class DependencyGraph {
         return _freeTasks;
     }
 
-    public State initialState() {
+    public State initialState(int numProcessors) {
         int duration = 0;
         List<TaskDependencyNode> nodeList = new ArrayList<TaskDependencyNode>();
         List<Job> jobList = new ArrayList<Job>(); // create job list
@@ -129,23 +129,23 @@ public class DependencyGraph {
         while (freeTasks.size() > 0) {
             TaskDependencyNode nodeToAdd = freeTasks.get(0);
             nodeList.add(nodeToAdd);
-            System.out.println("");
 
-            System.out.println("breaker");
-            for(TaskDependencyNode item: freeTasks) {
-                System.out.println(item._name);
-            }
             TaskJob job = new TaskJob(nodeToAdd._duration, nodeToAdd._name, nodeToAdd); //create job based on a free task
             freeTasks = getFreeTasks(nodeToAdd); // update the set of free tasks
             duration += nodeToAdd._duration; // update the duration
             jobList.add(job);
         }
 
-        int[] durationArr = {duration};
+        int[] durationArr = new int[numProcessors];
+        java.util.Arrays.fill(durationArr, 0);
+        durationArr[0] = duration;
 
-        List<List<Job>> processorList = new ArrayList<>();
+        List<List<Job>> processorList = new ArrayList<>(numProcessors);
+        for (int i = 0; i < numProcessors; i++) {
+            processorList.set(i, new ArrayList<Job>());
+        }
 
-        processorList.add(jobList);
+        processorList.set(0, jobList);
 
         State initialState = new State(processorList, durationArr, 0);
 
