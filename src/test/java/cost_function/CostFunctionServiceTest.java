@@ -1,7 +1,6 @@
 package cost_function;
 
 import common.*;
-import cost_function.CostFunctionService;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

@@ -29,6 +29,12 @@ public class Main extends Application {
 
     private static CommandLine _commands;
 
+    private static final int DEFAULT_NUMBER_OF_PROCESSORS = 1;
+
+    private static final String DEFAULT_OUTPUT_ENDING_NAME = "-output";
+
+    private static final String OUTPUT_FILE_FORMAT = ".dot";
+
     public void start(Stage primaryStage) throws Exception {
 
 
@@ -80,19 +86,38 @@ public class Main extends Application {
         dg.setFilePath(commands.getArgs()[0]);
         //todo parsing of command line args to graph parsing function
         dg.parse();
+        System.out.println("Calculating schedule, Please wait ...");
         List<TaskDependencyNode> freeTasks = dg.getFreeTasks(null);
-        State bestFoundSoln = dg.initialState(Integer.valueOf(commands.getOptionValue('p')));
-        bestFoundSoln = recursion(bestFoundSoln.getJobListDuration().length, freeTasks, 0, null, bestFoundSoln, dg.getNodes().size(), bestFoundSoln.getJobListDuration()[0]);
-        String outputName = commands.getOptionValue('o');
-        if(outputName == null){
-            outputName = "default";
+
+        int numberOfProcessors;
+        if(commands.getOptionValue('p') != null){
+            numberOfProcessors = Integer.valueOf(commands.getOptionValue('p'));
+        } else {
+            numberOfProcessors = DEFAULT_NUMBER_OF_PROCESSORS;
         }
+
+        State bestFoundSoln = dg.initialState(numberOfProcessors);
+
+        bestFoundSoln = recursion(bestFoundSoln.getJobListDuration().length, freeTasks, 0, null, bestFoundSoln, dg.getNodes().size(), bestFoundSoln.getJobListDuration()[0]);
+
+        String outputName = commands.getOptionValue('o');
+
+        if(outputName == null){
+            String[] outputNameWithFileDirectory = dg.getFilePath().split(".dot")[0].split("/");
+            outputName = outputNameWithFileDirectory[outputNameWithFileDirectory.length-1] + DEFAULT_OUTPUT_ENDING_NAME + OUTPUT_FILE_FORMAT;
+        } else {
+            outputName += OUTPUT_FILE_FORMAT;
+        }
+
         try {
             dg.generateOutput(bestFoundSoln, outputName);
         }catch (IOException e){
             e.printStackTrace();
         }
+
+        System.out.println("Finished");
         //todo call algorithm and pass the model
+        System.exit(0);
 
     }
 
