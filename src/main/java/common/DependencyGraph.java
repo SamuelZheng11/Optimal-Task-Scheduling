@@ -231,7 +231,7 @@ public class DependencyGraph {
         int processorNumber = 0;
         List<List<Job>> optimalLists = optimalState.getJobLists();
 
-        String outputName = "output" + inputFileName; // File name (WITHOUT extension) of output file.
+        String outputName = inputFileName; // File name (WITHOUT extension) of output file.
 
         String fileData = "digraph \"" + "output" + inputFileName + "\" {" + System.lineSeparator();
         Files.write(Paths.get(outputName), fileData.getBytes()); //File creation
@@ -333,5 +333,9 @@ public class DependencyGraph {
         }catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public String getFilePath(){
+        return _filePath;
     }
 }
