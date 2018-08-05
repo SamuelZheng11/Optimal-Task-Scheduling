@@ -94,6 +94,7 @@ public class Main extends Application {
         }catch (IOException e){
             e.printStackTrace();
         }
+        System.out.println("Complete");
         //todo call algorithm and pass the model
 
     }
@@ -138,6 +139,12 @@ public class Main extends Application {
                                 if (currentNode == child._parents.get(m)._parent || state.getJobLists().get(l).contains(child._parents.get(m)._parent)){
                                     numUnresolvedParents--;
                                 }
+                                if (numUnresolvedParents == 0 ){
+                                    break;
+                                }
+                            }
+                            if (numUnresolvedParents == 0 ){
+                                break;
                             }
                         }
                         if (numUnresolvedParents == 0) {
