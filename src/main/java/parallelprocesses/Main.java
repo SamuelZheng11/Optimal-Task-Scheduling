@@ -70,7 +70,6 @@ public class Main extends Application {
 
 
     public void InitialiseScheduling(StatisticsModel model) {
-        System.out.println("Initialise scheduling called");
         CommandLine commands = null;
         try {
             commands = getCommands();
@@ -83,7 +82,6 @@ public class Main extends Application {
         dg.parse();
         List<TaskDependencyNode> freeTasks = dg.getFreeTasks(null);
         State bestFoundSoln = dg.initialState(Integer.valueOf(commands.getOptionValue('p')));
-        System.out.println("Begin Recur");
         bestFoundSoln = recursion(bestFoundSoln.getJobListDuration().length, freeTasks, 0, null, bestFoundSoln, dg.getNodes().size(), bestFoundSoln.getJobListDuration()[0]);
         String outputName = commands.getOptionValue('o');
         if(outputName == null){
@@ -94,7 +92,6 @@ public class Main extends Application {
         }catch (IOException e){
             e.printStackTrace();
         }
-        System.out.println("Complete");
         //todo call algorithm and pass the model
 
     }
@@ -108,7 +105,6 @@ public class Main extends Application {
     // numTasks: total number of tasks to be scheudled,
     // linearScheduleTime: The total time it would take if this was all on processor (no comms delays)
     public State recursion(int numProc, List<TaskDependencyNode> freeTasks, int depth, State state, State bestFoundState, int numTasks, int linearScheduleTime) {
-        System.out.println("Recurring");
         if(state == null) {
             ArrayList<List<Job>> jobList = new ArrayList<List<Job>>(numProc);
             for (int i = 0; i < numProc; i++) {
