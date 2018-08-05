@@ -46,9 +46,9 @@ public class Main extends Application {
 
         new Thread(task).start();
 
-
-        MainScreen mainScreen = new MainScreen(primaryStage, model);
-
+        if( getCommandLine().hasOption("v")){
+            MainScreen mainScreen = new MainScreen(primaryStage, model);
+        }
 
     }
 
@@ -81,8 +81,8 @@ public class Main extends Application {
         //todo parsing of command line args to graph parsing function
         dg.parse();
         List<TaskDependencyNode> freeTasks = dg.getFreeTasks(null);
-        State PLACEHOLDERSTATE = dg.initialState();
-        //recursion(commands.getOptionValue('p'), freeTasks, 0, null, PLACEHOLDERSTATE, dg.getNodes().size(), LINEARSCHEDULEPLACEHOLDER);
+        State bestFoundSoln = dg.initialState(Integer.valueOf(commands.getOptionValue('p')));
+        recursion(bestFoundSoln.getJobListDuration().length, freeTasks, 0, null, bestFoundSoln, dg.getNodes().size(), bestFoundSoln.getJobListDuration()[0]);
 
         //todo call algorithm and pass the model
 
@@ -163,6 +163,7 @@ public class Main extends Application {
 
     public static CommandLine getCommandLine(){
         return _commands;
+
     }
 
 }
