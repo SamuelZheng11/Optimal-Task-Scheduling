@@ -1,6 +1,6 @@
 # 306_Parallel_Processes
 
-This repository is used for project 1 of SoftEng 306 parallel scheduling problem.
+This repository is used for storing code artefacts related to the first project of SoftEng 306 2018, The Parallel Scheduling Problem.
 ### Contributors
 The 5 architects who worked on solving this problems are:
 
