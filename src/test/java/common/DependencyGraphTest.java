@@ -58,7 +58,6 @@ public class DependencyGraphTest {
         List<TaskDependencyNode> correctTasks = new ArrayList<TaskDependencyNode>();
         correctTasks.add(_nodes.get("2"));
         correctTasks.add(_nodes.get("3"));
-        correctTasks.add(_nodes.get("1"));
 
         assertEquals(_freeTasks, correctTasks);
 
@@ -73,7 +72,6 @@ public class DependencyGraphTest {
 
         List<TaskDependencyNode> correctTasks = new ArrayList<TaskDependencyNode>();
         correctTasks.add(_nodes.get("2"));
-        correctTasks.add(_nodes.get("1"));
 
         assertEquals(_freeTasks, correctTasks);
     }
@@ -86,7 +84,6 @@ public class DependencyGraphTest {
         _freeTasks = _dg.getFreeTasks(_nodes.get("2"));
 
         List<TaskDependencyNode> correctTasks = new ArrayList<TaskDependencyNode>();
-        correctTasks.add(_nodes.get("1"));
         correctTasks.add(_nodes.get("6"));
         correctTasks.add(_nodes.get("7"));
         correctTasks.add(_nodes.get("8"));
@@ -101,24 +98,25 @@ public class DependencyGraphTest {
         _freeTasks = _dg.getFreeTasks(_nodes.get("8"));
 
         List<TaskDependencyNode> correctTasks = new ArrayList<TaskDependencyNode>();
-        correctTasks.add(_nodes.get("1"));
         correctTasks.add(_nodes.get("6"));
         correctTasks.add(_nodes.get("7"));
-        correctTasks.add(_nodes.get("5"));
+
 
         assertEquals(_freeTasks, correctTasks);
     }
+
+
 
     @Test
     public void getFreeTasks7() {
         _dg.parse();
         _nodes = _dg.getNodes();
-        _freeTasks = _dg.getFreeTasks(_nodes.get("1"));
+        _freeTasks = _dg.getFreeTasks(_nodes.get("6"));
 
         List<TaskDependencyNode> correctTasks = new ArrayList<TaskDependencyNode>();
-        correctTasks.add(_nodes.get("6"));
+
         correctTasks.add(_nodes.get("7"));
-        correctTasks.add(_nodes.get("5"));
+
 
         assertEquals(_freeTasks, correctTasks);
     }
@@ -127,12 +125,12 @@ public class DependencyGraphTest {
     public void getFreeTasks8() {
         _dg.parse();
         _nodes = _dg.getNodes();
-        _freeTasks = _dg.getFreeTasks(_nodes.get("6"));
+        _freeTasks = _dg.getFreeTasks(_nodes.get("7"));
 
         List<TaskDependencyNode> correctTasks = new ArrayList<TaskDependencyNode>();
 
-        correctTasks.add(_nodes.get("7"));
         correctTasks.add(_nodes.get("5"));
+
 
         assertEquals(_freeTasks, correctTasks);
     }
@@ -144,8 +142,7 @@ public class DependencyGraphTest {
         _freeTasks = _dg.getFreeTasks(_nodes.get("5"));
 
         List<TaskDependencyNode> correctTasks = new ArrayList<TaskDependencyNode>();
-
-        correctTasks.add(_nodes.get("7"));
+        correctTasks.add(_nodes.get("1"));
 
 
         assertEquals(_freeTasks, correctTasks);
@@ -155,13 +152,12 @@ public class DependencyGraphTest {
     public void getFreeTasks10() {
         _dg.parse();
         _nodes = _dg.getNodes();
-        _freeTasks = _dg.getFreeTasks(_nodes.get("7"));
+        _freeTasks = _dg.getFreeTasks(_nodes.get("1"));
 
         List<TaskDependencyNode> correctTasks = new ArrayList<TaskDependencyNode>();
 
         assertEquals(_freeTasks, correctTasks);
     }
-
 
     @Test
     public void createFileTest() throws IOException {
