@@ -26,12 +26,14 @@ public class Main extends Application {
         launch(args);
     }
 
+    private static CommandLine _commands;
+
     public void start(Stage primaryStage) throws Exception {
 
 
         StatisticsModel model = new StatisticsModel();
 
-//        CommandLine commands = getCommands();
+        _commands = getCommands();
 
 
         Task task = new Task<Void>() {
@@ -159,8 +161,8 @@ public class Main extends Application {
         return bestFoundState;
     }
 
-    private State scheduleNode(TaskDependencyNode a, int b, State c, int d){
-        //stub
-        return null;
+    public static CommandLine getCommandLine(){
+        return _commands;
     }
+
 }
