@@ -12,7 +12,7 @@ plugins {
 version '1.0'
 
 sourceCompatibility = 1.8
-libsDirName = '/bin'
+libsDirName = 'gradle/out/artifacts/306_Parallel_Processes'
 
 repositories {
     mavenCentral()
@@ -50,7 +50,7 @@ sourceSets {
 jar {
     destinationDir = file(libsDirName)
     manifest {
-        attributes 'Main-Class': 'main.java.parallelprocesses.Main'
+        attributes 'Main-Class': 'parallelprocesses.Main'
     }
     from {
         configurations.compile.collect {it.isDirectory() ? it : zipTree(it) }
