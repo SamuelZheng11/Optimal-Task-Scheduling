@@ -117,7 +117,7 @@ public class DependencyGraph {
                 e.printStackTrace();
             }
 
-        return _freeTasks;
+        return new ArrayList<>(_freeTasks);
     }
 
     public State initialState(int numProcessors) {
@@ -140,14 +140,14 @@ public class DependencyGraph {
         java.util.Arrays.fill(durationArr, 0);
         durationArr[0] = duration;
 
-        List<List<Job>> processorList = new ArrayList<>(numProcessors);
+        List<List<Job>> processorList = new ArrayList(numProcessors);
         for (int i = 0; i < numProcessors; i++) {
-            processorList.set(i, new ArrayList<Job>());
+            processorList.add(i, new ArrayList<Job>());
         }
 
         processorList.set(0, jobList);
 
-        State initialState = new State(processorList, durationArr, 0);
+        State initialState = new State(processorList, durationArr, durationArr[0]);
 
         return initialState;
     }
@@ -212,9 +212,9 @@ public class DependencyGraph {
                     }
                 }
             }
-//            for (Map.Entry<String, TaskDependencyNode> entry : _nodes.entrySet()) {
-//                System.out.println(entry.getKey() + "/" + entry.getValue());
-//            }
+            for (Map.Entry<String, TaskDependencyNode> entry : _nodes.entrySet()) {
+                System.out.println(entry.getKey() + "/" + entry.getValue());
+            }
         }catch(ClassCastException e){
             e.printStackTrace();
             System.out.println("Edwar your daring Double type force casting broke");
