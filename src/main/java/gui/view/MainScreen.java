@@ -4,6 +4,7 @@ package gui.view;
 import gui.controller.MainController;
 import gui.model.StatisticsModel;
 import javafx.embed.swing.SwingNode;
+import javafx.fxml.FXML;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
@@ -16,16 +17,19 @@ import org.jfree.data.category.CategoryDataset;
 
 
 import javax.swing.*;
+import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+
+import static org.jfree.chart.ChartFactory.*;
+
 
 public class MainScreen {
 
     MainController _controller;
 
     public MainScreen(Stage primaryStage, StatisticsModel model) throws IOException {
-
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("mainScreen.fxml"));
-
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/mainScreen.fxml"));
         Pane pane = loader.load();
 
         _controller = new MainController(model);
@@ -47,7 +51,7 @@ public class MainScreen {
             public void run() {
 
                 CategoryDataset data = _controller.getData();
-                final JFreeChart chart = ChartFactory.createStackedBarChart(
+                final JFreeChart chart = createStackedBarChart(
                         "Current Optimal Schedule",  // chart title
                         "Processor",                  // domain axis label
                         "Time",                     // range axis label
