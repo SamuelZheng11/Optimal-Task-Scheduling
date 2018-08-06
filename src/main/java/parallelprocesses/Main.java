@@ -87,7 +87,7 @@ public class Main extends Application {
         //todo parsing of command line args to graph parsing function
         dg.parse();
         System.out.println("Calculating schedule, Please wait ...");
-        List<TaskDependencyNode> freeTasks = dg.getFreeTasks(null);
+
 
         int numberOfProcessors;
         if(commands.getOptionValue('p') != null){
@@ -97,6 +97,7 @@ public class Main extends Application {
         }
 
         State bestFoundSoln = dg.initialState(numberOfProcessors);
+        List<TaskDependencyNode> freeTasks = dg.getFreeTasks(null);
 
         bestFoundSoln = recursion(bestFoundSoln.getJobListDuration().length, freeTasks, 0, null, bestFoundSoln, dg.getNodes().size(), bestFoundSoln.getJobListDuration()[0]);
 
