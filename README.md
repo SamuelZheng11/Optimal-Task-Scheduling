@@ -6,13 +6,13 @@ The 5 architects who worked on solving this problems are:
 
 **Samuel Zheng** : **GitHub Username**: samuelzheng11, **UID**: 634715579, **UPI**: szhe560
 
-**Edwar Zhang**
+**Edwar Zhang** : **GitHub Username**: Eddiwar, **UID**: 78468327, **UPI**: ezha219
 
-**Alex Morgan**
+**Alex Morgan** : **GitHub Username**: X, **UID**: X, **UPI**: X
 
-**Cameron Scoular**
+**Cameron Scoular** : **GitHub Username**: X, **UID**: X, **UPI**: X
 
-**Andrew Fairweather**
+**Andrew Fairweather** : **GitHub Username**: X, **UID**: X, **UPI**: X
 
 ## The Scheduling Problem
 The problem description is given a certain number of processors and a number of tasks to scheduled on the processor, 
