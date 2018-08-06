@@ -17,6 +17,7 @@ import javafx.stage.Stage;
 import org.apache.commons.cli.*;
 
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +28,14 @@ public class Main extends Application {
     }
 
     private static CommandLine _commands;
+
+    private static final int DEFAULT_NUMBER_OF_PROCESSORS = 1;
+
+    private static final String DEFAULT_OUTPUT_ENDING_NAME = "-output";
+
+    private static final String OUTPUT_FILE_FORMAT = ".dot";
+
+    static int counter = 0;
 
     public void start(Stage primaryStage) throws Exception {
 
@@ -46,9 +55,9 @@ public class Main extends Application {
 
         new Thread(task).start();
 
-
-        MainScreen mainScreen = new MainScreen(primaryStage, model);
-
+        if( getCommandLine().hasOption("v")){
+            MainScreen mainScreen = new MainScreen(primaryStage, model);
+        }
 
     }
 
@@ -69,7 +78,6 @@ public class Main extends Application {
 
 
     public void InitialiseScheduling(StatisticsModel model) {
-
         CommandLine commands = null;
         try {
             commands = getCommands();
@@ -80,11 +88,39 @@ public class Main extends Application {
         dg.setFilePath(commands.getArgs()[0]);
         //todo parsing of command line args to graph parsing function
         dg.parse();
-        List<TaskDependencyNode> freeTasks = dg.getFreeTasks(null);
-        State PLACEHOLDERSTATE = dg.initialState();
-        //recursion(commands.getOptionValue('p'), freeTasks, 0, null, PLACEHOLDERSTATE, dg.getNodes().size(), LINEARSCHEDULEPLACEHOLDER);
+        System.out.println("Calculating schedule, Please wait ...");
 
+
+        int numberOfProcessors;
+        if(commands.getOptionValue('p') != null){
+            numberOfProcessors = Integer.valueOf(commands.getOptionValue('p'));
+        } else {
+            numberOfProcessors = DEFAULT_NUMBER_OF_PROCESSORS;
+        }
+
+        State bestFoundSoln = dg.initialState(numberOfProcessors);
+        List<TaskDependencyNode> freeTasks = dg.getFreeTasks(null);
+
+        bestFoundSoln = recursion(bestFoundSoln.getJobListDuration().length, freeTasks, 0, null, bestFoundSoln, dg.getNodes().size(), bestFoundSoln.getJobListDuration()[0]);
+
+        String outputName = commands.getOptionValue('o');
+
+        if(outputName == null){
+            String[] outputNameWithFileDirectory = dg.getFilePath().split(".dot")[0].split("/");
+            outputName = outputNameWithFileDirectory[outputNameWithFileDirectory.length-1] + DEFAULT_OUTPUT_ENDING_NAME + OUTPUT_FILE_FORMAT;
+        } else {
+            outputName += OUTPUT_FILE_FORMAT;
+        }
+
+        try {
+            dg.generateOutput(bestFoundSoln, outputName);
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+
+        System.out.println("Finished");
         //todo call algorithm and pass the model
+        System.exit(0);
 
     }
 
@@ -111,10 +147,10 @@ public class Main extends Application {
             //For each available task, try scheduling it on a processor
             for (int i = 0; i < freeTasks.size(); i++) {
                 //if the current processor and the next processor are empty, skip the current one (all empty processors are equivalent)
-                if (i < freeTasks.size() - 1 && state.getJobListDuration()[i] == 0 && state.getJobListDuration()[i + 1] == 0) {
-                    i++;
-                }
                 for (int j = 0; j < numProc; j++) {
+                    if (j < numProc-1 && state.getJobListDuration()[j] == 0 && state.getJobListDuration()[j + 1] == 0) {
+                        continue;
+                    }
                     depth++;
                     TaskDependencyNode currentNode = freeTasks.get(i);
 
@@ -122,11 +158,27 @@ public class Main extends Application {
                     for (int k = 0; k < currentNode._children.size(); k++) {
                         TaskDependencyNode child = currentNode._children.get(k)._child;
                         int numUnresolvedParents = child._parents.size();
+                        boolean hasConsideredCurrentNodeAsParent = false;
+
                         for (int l = 0; l <state.getJobLists().size(); l++) {
                             for (int m = 0; m < child._parents.size(); m++) {
-                                if (state.getJobLists().get(l).contains(child._parents.get(m))){
+                                if (!hasConsideredCurrentNodeAsParent && currentNode == child._parents.get(m)._parent){
                                     numUnresolvedParents--;
+                                    hasConsideredCurrentNodeAsParent = true;
                                 }
+                                for (int n = 0; n < state.getJobLists().get(l).size(); n++) {
+                                    if (state.getJobLists().get(l).get(n) instanceof TaskJob && ((TaskJob) state.getJobLists().get(l).get(n)).getNode() == child._parents.get(m)._parent){
+                                        numUnresolvedParents--;
+                                    }
+                                }
+
+
+                                if (numUnresolvedParents == 0 ){
+                                    break;
+                                }
+                            }
+                            if (numUnresolvedParents == 0 ){
+                                break;
                             }
                         }
                         if (numUnresolvedParents == 0) {
@@ -163,6 +215,7 @@ public class Main extends Application {
 
     public static CommandLine getCommandLine(){
         return _commands;
+
     }
 
 }

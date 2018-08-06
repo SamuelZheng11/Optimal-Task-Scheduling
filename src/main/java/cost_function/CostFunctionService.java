@@ -15,7 +15,7 @@ public class CostFunctionService {
     private State state;
     private int inputProcessorCompletionTime = 0;
     private int sumOfAlreadyScheduledTasks = 0;
-    private double sumOfAllScheduledJobs = 0;
+    private int processorThatFinishesLast = 0;
     private List<Boolean> parentsFound;
             
     /**
@@ -39,7 +39,6 @@ public class CostFunctionService {
         this.parentsFound = new ArrayList<>(Collections.nCopies(node._parents.size(), Boolean.FALSE));
 
         // account for tasks that need to be scheduled regard less for easy tracking
-        this.sumOfAllScheduledJobs += node._duration;
         this.sumOfAlreadyScheduledTasks += node._duration;
 
         // generate the arrays that will be used to easily find a parent and its communication delay with the target node
@@ -59,12 +58,14 @@ public class CostFunctionService {
             // returns the state with the new task on the processor
             this.state.getJobLists().get(onProcessorNumber).add(new TaskJob(node._duration, node._name, node));
             this.state.getJobListDuration()[onProcessorNumber] += node._duration;
+            this.determineProcessorThatFinishesLast();
 
             // return state early with node scheduled as it has not parents
             return new State(
                     this.state.getJobLists(),
                     this.state.getJobListDuration(),
-                    this.sumOfAllScheduledJobs + ((double)costOfAllNodes - this.sumOfAlreadyScheduledTasks)/withCurrentState.getJobLists().size()
+                    this.state.getJobListDuration()[this.processorThatFinishesLast] +
+                            ((double)costOfAllNodes - this.sumOfAlreadyScheduledTasks)/withCurrentState.getJobLists().size()
             );
         }
 
@@ -85,18 +86,19 @@ public class CostFunctionService {
         if(!allParentOnTargetProcessor && costOfSchedulingNode > this.inputProcessorCompletionTime) {
             this.state.getJobLists().get(onProcessorNumber).add(new DelayJob(costOfSchedulingNode - this.inputProcessorCompletionTime));
             this.state.getJobListDuration()[onProcessorNumber] += costOfSchedulingNode - this.inputProcessorCompletionTime;
-            this.sumOfAllScheduledJobs += (costOfSchedulingNode - this.inputProcessorCompletionTime);
         }
 
         // schedule the node and update job lists for returning state
-        this.state.getJobLists().get(onProcessorNumber).add(new TaskJob(costOfSchedulingNode, node._name, node));
+        this.state.getJobLists().get(onProcessorNumber).add(new TaskJob(node._duration, node._name, node));
         this.state.getJobListDuration()[onProcessorNumber] += node._duration;
+        this.determineProcessorThatFinishesLast();
 
         // return state with node scheduled
         return new State(
                 this.state.getJobLists(),
                 this.state.getJobListDuration(),
-                this.sumOfAllScheduledJobs + ((double)costOfAllNodes - this.sumOfAlreadyScheduledTasks)/withCurrentState.getJobLists().size()
+                this.state.getJobListDuration()[this.processorThatFinishesLast] +
+                        ((double)costOfAllNodes - this.sumOfAlreadyScheduledTasks)/withCurrentState.getJobLists().size()
         );
     }
 
@@ -127,7 +129,6 @@ public class CostFunctionService {
 
             for (int j = 0; j < this.state.getJobLists().get(i).size(); j++){
                 buildingCostForProcessor.set(i, buildingCostForProcessor.get(i) + this.state.getJobLists().get(i).get(j).getDuration());
-                this.sumOfAllScheduledJobs += this.state.getJobLists().get(i).get(j).getDuration();
                 if (this.state.getJobLists().get(i).get(j).getClass() == TaskJob.class) {
                     TaskJob potentialParentJob = (TaskJob) this.state.getJobLists().get(i).get(j);
                     this.sumOfAlreadyScheduledTasks += this.state.getJobLists().get(i).get(j).getDuration();
@@ -173,7 +174,6 @@ public class CostFunctionService {
         // check if a parent of the node to be scheduled is on the current processor
         // sum up the cost of tasks on the processor for the heuristic cost
         for (int i = 0; i < onProcessor.size(); i++) {
-            this.sumOfAllScheduledJobs += onProcessor.get(i).getDuration();
             this.inputProcessorCompletionTime += onProcessor.get(i).getDuration();
             for (TaskDependencyNode parentNode: parentNodes) {
                 if(onProcessor.get(i) instanceof TaskJob) {
@@ -203,5 +203,13 @@ public class CostFunctionService {
             jobs.set(i, new ArrayList<>(inputState.getJobLists().get(i)));
         }
         this.state = new State( jobs, Arrays.copyOf(inputState.getJobListDuration(), inputState.getJobListDuration().length), 0);
+    }
+
+    private void determineProcessorThatFinishesLast() {
+        for (int i = 0; i < this.state.getJobLists().size(); i++) {
+            if(this.state.getJobListDuration()[this.processorThatFinishesLast] < this.state.getJobListDuration()[i]) {
+                this.processorThatFinishesLast = i;
+            }
+        }
     }
 }
