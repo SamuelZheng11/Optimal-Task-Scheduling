@@ -10,7 +10,7 @@ The 5 architects who worked on solving this problems are:
 
 **Alex Morgan** : **GitHub Username**: AlexRMorgan, **UID**: 5577546, **UPI**: amor789
 
-**Cameron Scoular** : **GitHub Username**: X, **UID**: 139876164, **UPI**: csco768
+**Cameron Scoular** : **GitHub Username**: cameronscoular, **UID**: 139876164, **UPI**: csco768
 
 **Andrew Fairweather** : **GitHub Username**: theandrewfairweather, **UID**: 518641205, **UPI**: afai640
 
