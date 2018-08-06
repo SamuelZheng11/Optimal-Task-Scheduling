@@ -23,7 +23,7 @@ public class DependencyGraph {
     private List<TaskDependencyNode> _freeTasks = new ArrayList<TaskDependencyNode>();
     private List<TaskDependencyNode> _scheduledNodes = new ArrayList<TaskDependencyNode>();
 
-    private DependencyGraph(){
+    protected DependencyGraph(){
     }
 
     public static DependencyGraph getGraph(){
@@ -233,7 +233,7 @@ public class DependencyGraph {
 
         String outputName = inputFileName; // File name (WITHOUT extension) of output file.
 
-        String fileData = "digraph \"" + "output" + inputFileName + "\" {" + System.lineSeparator();
+        String fileData = "digraph \"" + inputFileName + "\" {" + System.lineSeparator();
         Files.write(Paths.get(outputName), fileData.getBytes()); //File creation
 
         for (List<Job> processors : optimalLists) { //Iterate through each processor
