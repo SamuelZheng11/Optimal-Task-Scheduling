@@ -8,7 +8,7 @@ The 5 architects who worked on solving this problems are:
 
 **Edwar Zhang** : **GitHub Username**: Eddiwar, **UID**: 78468327, **UPI**: ezha219
 
-**Alex Morgan** : **GitHub Username**: X, **UID**: X, **UPI**: X
+**Alex Morgan** : **GitHub Username**: AlexRMorgan, **UID**: 5577546, **UPI**: amor789
 
 **Cameron Scoular** : **GitHub Username**: X, **UID**: X, **UPI**: X
 
