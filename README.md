@@ -12,7 +12,7 @@ The 5 architects who worked on solving this problems are:
 
 **Cameron Scoular** : **GitHub Username**: X, **UID**: X, **UPI**: X
 
-**Andrew Fairweather** : **GitHub Username**: X, **UID**: X, **UPI**: X
+**Andrew Fairweather** : **GitHub Username**: theandrewfairweather, **UID**: 518641205, **UPI**: afai640
 
 ## The Scheduling Problem
 The problem description is given a certain number of processors and a number of tasks to scheduled on the processor, 
