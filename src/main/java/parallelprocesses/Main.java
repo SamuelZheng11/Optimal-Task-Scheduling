@@ -144,10 +144,6 @@ public class Main extends Application {
         }
         //If there are available tasks to schedule
         if (freeTasks.size() > 0) {
-            counter++;
-            if(counter == 4){
-                System.out.println("break");
-            }
             //For each available task, try scheduling it on a processor
             for (int i = 0; i < freeTasks.size(); i++) {
                 //if the current processor and the next processor are empty, skip the current one (all empty processors are equivalent)
