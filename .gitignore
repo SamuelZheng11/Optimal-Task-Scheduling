@@ -19,10 +19,19 @@
 .idea/**/dynamic.xml
 .idea/**/uiDesigner.xml
 .idea/**/dbnavigator.xml
+.idea/*
 
 # Gradle
 .idea/**/gradle.xml
 .idea/**/libraries
+build.gradle
+gradlew
+gradle
+gradlew.bat
+settings.gradle
+.gradle
+build/
+
 
 # Gradle and Maven with auto-import
 # When using Gradle or Maven with auto-import, you should exclude module files,
@@ -40,6 +49,10 @@ cmake-build-*/
 
 # File-based project format
 *.iws
+
+
+#iml files
+*.iml
 
 # IntelliJ
 out/
@@ -65,6 +78,7 @@ fabric.properties
 ### Intellij Patch ###
 # Comment Reason: https://github.com/joeblau/gitignore.io/issues/186#issuecomment-215987721
 
+
 # *.iml
 # modules.xml
 # .idea/misc.xml
@@ -79,6 +93,7 @@ fabric.properties
 
 # Log file
 *.log
+libs/*
 
 # BlueJ files
 *.ctxt
@@ -95,10 +110,15 @@ fabric.properties
 *.tar.gz
 *.rar
 
+# the proejct iml
+306_Parallel_Processes.iml
+
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
 
 # End of https://www.gitignore.io/api/java,intellij
+
+\.idea/
 
 \.idea/
