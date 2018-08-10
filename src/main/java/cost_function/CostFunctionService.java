@@ -33,7 +33,6 @@ public class CostFunctionService {
      * @return: returns a state with the target node scheduled on the target processors with a new cost heuristic
      */
     public State scheduleNode(TaskDependencyNode node, int onProcessorNumber, State withCurrentState, int costOfAllNodes) {
-
         // generate a deep copy of the input state
         this.generateDeepCopy(withCurrentState);
         this.parentsFound = new ArrayList<>(Collections.nCopies(node._parents.size(), Boolean.FALSE));
@@ -175,11 +174,12 @@ public class CostFunctionService {
         // sum up the cost of tasks on the processor for the heuristic cost
         for (int i = 0; i < onProcessor.size(); i++) {
             this.inputProcessorCompletionTime += onProcessor.get(i).getDuration();
+            if(onProcessor.get(i) instanceof TaskJob) {
+                this.sumOfAlreadyScheduledTasks += onProcessor.get(i).getDuration();
+            }
             for (TaskDependencyNode parentNode: parentNodes) {
                 if(onProcessor.get(i) instanceof TaskJob) {
                     TaskJob job = (TaskJob) onProcessor.get(i);
-                    this.sumOfAlreadyScheduledTasks += job.getDuration();
-
                     if (job.getNode() == parentNode) {
                         this.parentsFound.set(parentNodes.indexOf(parentNode), true);
                     }
