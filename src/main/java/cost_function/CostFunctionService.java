@@ -59,12 +59,24 @@ public class CostFunctionService {
             this.state.getJobListDuration()[onProcessorNumber] += node._duration;
             this.determineProcessorThatFinishesLast();
 
+            double fullTime = this.state.getJobListDuration()[this.processorThatFinishesLast];
+            double freeSpace = 0;
+            for (int i = 0; i < this.state.getJobListDuration().length; i++) {
+                if (i == this.processorThatFinishesLast){
+                    continue;
+                }
+                freeSpace += fullTime-this.state.getJobListDuration()[i];
+            }
+            double heuristicValue = fullTime;
+            double costOfNodesAfterGapsFilled = (double)costOfAllNodes - this.sumOfAlreadyScheduledTasks - freeSpace;
+            if (costOfNodesAfterGapsFilled > 0){
+                heuristicValue += costOfNodesAfterGapsFilled/withCurrentState.getJobLists().size();
+            }
             // return state early with node scheduled as it has not parents
             return new State(
                     this.state.getJobLists(),
                     this.state.getJobListDuration(),
-                    this.state.getJobListDuration()[this.processorThatFinishesLast] +
-                            ((double)costOfAllNodes - this.sumOfAlreadyScheduledTasks)/withCurrentState.getJobLists().size()
+                    heuristicValue
             );
         }
 
@@ -92,12 +104,24 @@ public class CostFunctionService {
         this.state.getJobListDuration()[onProcessorNumber] += node._duration;
         this.determineProcessorThatFinishesLast();
 
-        // return state with node scheduled
+        double fullTime = this.state.getJobListDuration()[this.processorThatFinishesLast];
+        double freeSpace = 0;
+        for (int i = 0; i < this.state.getJobListDuration().length; i++) {
+            if (i == this.processorThatFinishesLast){
+                continue;
+            }
+            freeSpace += fullTime-this.state.getJobListDuration()[i];
+        }
+        double heuristicValue = fullTime;
+        double costOfNodesAfterGapsFilled = (double)costOfAllNodes - this.sumOfAlreadyScheduledTasks - freeSpace;
+        if (costOfNodesAfterGapsFilled > 0){
+            heuristicValue += costOfNodesAfterGapsFilled/withCurrentState.getJobLists().size();
+        }
+        // return state early with node scheduled as it has not parents
         return new State(
                 this.state.getJobLists(),
                 this.state.getJobListDuration(),
-                this.state.getJobListDuration()[this.processorThatFinishesLast] +
-                        ((double)costOfAllNodes - this.sumOfAlreadyScheduledTasks)/withCurrentState.getJobLists().size()
+                heuristicValue
         );
     }
 
