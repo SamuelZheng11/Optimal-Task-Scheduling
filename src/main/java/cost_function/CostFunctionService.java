@@ -117,6 +117,7 @@ public class CostFunctionService {
         if (costOfNodesAfterGapsFilled > 0){
             heuristicValue += costOfNodesAfterGapsFilled/withCurrentState.getJobLists().size();
         }
+
         // return state early with node scheduled as it has not parents
         return new State(
                 this.state.getJobLists(),
@@ -138,7 +139,7 @@ public class CostFunctionService {
 
         // find the parent's completion time on other processors
         List<Integer> buildingCostForProcessor = new ArrayList<>(Collections.nCopies(this.state.getJobLists().size(), 0));
-        List<Integer> currentBestForProcessor = new ArrayList<>(Collections.nCopies(this.state.getJobLists().size(), 0));
+        List<Integer> longestReadyTime = new ArrayList<>(Collections.nCopies(this.state.getJobLists().size(), 0));
         List<Boolean> parentFound = new ArrayList<>(Collections.nCopies(this.state.getJobLists().size(), Boolean.FALSE));
 
         for (int i = 0; i < this.state.getJobLists().size(); i++){
@@ -148,7 +149,7 @@ public class CostFunctionService {
                 continue;
             }
 
-            currentBestForProcessor.set(i, 0);
+            longestReadyTime.set(i, 0);
 
             for (int j = 0; j < this.state.getJobLists().get(i).size(); j++){
                 buildingCostForProcessor.set(i, buildingCostForProcessor.get(i) + this.state.getJobLists().get(i).get(j).getDuration());
@@ -160,8 +161,8 @@ public class CostFunctionService {
                     if (parents.contains(potentialParentJob.getNode())) {
                         // only update the current best cost for the processor if the cost of the processor up to the
                         // parent's node + the parents node's communication delay is less than the current best
-                        if (currentBestForProcessor.get(i) < buildingCostForProcessor.get(i) + commDealy.get(parents.indexOf(potentialParentJob.getNode()))) {
-                            currentBestForProcessor.set(i, buildingCostForProcessor.get(i) + commDealy.get(parents.indexOf(potentialParentJob.getNode())));
+                        if (longestReadyTime.get(i) < buildingCostForProcessor.get(i) + commDealy.get(parents.indexOf(potentialParentJob.getNode()))) {
+                            longestReadyTime.set(i, buildingCostForProcessor.get(i) + commDealy.get(parents.indexOf(potentialParentJob.getNode())));
                             parentFound.set(i, true);
                         }
                     }
@@ -171,15 +172,15 @@ public class CostFunctionService {
 
         // calculate best cost to schedule with
         int costOfSchedulingNode = Integer.MAX_VALUE;
-        for(int i = 0; i < currentBestForProcessor.size(); i++){
+        for(int i = 0; i < longestReadyTime.size(); i++){
             // skip the row if it has already been check by the outer method
             if(skipProcessorNumber == i) {
                 continue;
             }
 
             // get the lowest cost out of all the processors
-            if(parentFound.get(i) && currentBestForProcessor.get(i) < costOfSchedulingNode){
-                costOfSchedulingNode = currentBestForProcessor.get(i);
+            if(parentFound.get(i) && longestReadyTime.get(i) < costOfSchedulingNode){
+                costOfSchedulingNode = longestReadyTime.get(i);
             }
         }
 
