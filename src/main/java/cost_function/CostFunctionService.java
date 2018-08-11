@@ -89,8 +89,8 @@ public class CostFunctionService {
         }
 
         // check that the lowest communication time is not infinity
-        if (costOfSchedulingNode == Integer.MAX_VALUE){
-            throw new CostFunctionException("Lowest Communication Time have value infinity");
+        if (costOfSchedulingNode == -1){
+            throw new CostFunctionException("Not all parents have been scheduled yet");
         }
 
         // add to processor with communication delay
@@ -171,7 +171,7 @@ public class CostFunctionService {
         }
 
         // calculate best cost to schedule with
-        int costOfSchedulingNode = Integer.MAX_VALUE;
+        int costOfSchedulingNode = -1;
         for(int i = 0; i < longestReadyTime.size(); i++){
             // skip the row if it has already been check by the outer method
             if(skipProcessorNumber == i) {
@@ -179,7 +179,7 @@ public class CostFunctionService {
             }
 
             // get the lowest cost out of all the processors
-            if(parentFound.get(i) && longestReadyTime.get(i) < costOfSchedulingNode){
+            if(parentFound.get(i) && longestReadyTime.get(i) > costOfSchedulingNode){
                 costOfSchedulingNode = longestReadyTime.get(i);
             }
         }
