@@ -1,3 +1,0 @@
-digraph "output.dot" {
-	5	 [Weight=7,Start=15,Processor=1];
-	2	 [Weight=5,Start=16,Processor=2];
