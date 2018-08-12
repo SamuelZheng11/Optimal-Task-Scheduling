@@ -153,6 +153,7 @@ public class Main extends Application {
                     }
                     depth++;
                     TaskDependencyNode currentNode = freeTasks.get(i);
+                    List<TaskDependencyNode> prospectiveFreeTasks = new ArrayList<>(freeTasks);
 
                     //add all children of the task to the freetask list and remove the task
                     for (int k = 0; k < currentNode._children.size(); k++) {
@@ -172,20 +173,16 @@ public class Main extends Application {
                                     }
                                 }
 
-
-                                if (numUnresolvedParents == 0 ){
-                                    break;
-                                }
                             }
                             if (numUnresolvedParents == 0 ){
                                 break;
                             }
                         }
                         if (numUnresolvedParents == 0) {
-                            freeTasks.add(currentNode._children.get(k)._child);
+                            prospectiveFreeTasks.add(currentNode._children.get(k)._child);
                         }
                     }
-                    freeTasks.remove(currentNode);
+                    prospectiveFreeTasks.remove(currentNode);
                     //create the new state with the task scheduled to evaluate pass to the recursion
                     State newState = new CostFunctionService().scheduleNode(currentNode, j, state, linearScheduleTime);
 
@@ -195,17 +192,12 @@ public class Main extends Application {
                     }
                     //if possibly better and not complete, recurse.
                     else if (newState.getHeuristicValue() <= bestFoundState.getHeuristicValue() && depth < numTasks) {
-                        State foundState = recursion(numProc, freeTasks, depth, newState, bestFoundState, numTasks, linearScheduleTime);
+                        State foundState = recursion(numProc, prospectiveFreeTasks, depth, newState, bestFoundState, numTasks, linearScheduleTime);
                         //Recursion will always return a complete state. If this is better, update.
                         if (foundState.getHeuristicValue() <= bestFoundState.getHeuristicValue()) {
                             bestFoundState = foundState;
                         }
                     }
-                    //undo changes to freetasks for next iteration
-                    for (int k = 0; k < currentNode._children.size(); k++) {
-                        freeTasks.remove(currentNode._children.get(k)._child);
-                    }
-                    freeTasks.add(currentNode);
                     depth--;
                 }
             }
