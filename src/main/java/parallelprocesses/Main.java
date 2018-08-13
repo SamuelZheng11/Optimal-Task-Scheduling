@@ -62,7 +62,7 @@ public class Main extends Application {
         State bestFoundSoln = dg.initialState(_argumentsParser.getProcessorNo());
         List<TaskDependencyNode> freeTasks = dg.getFreeTasks(null);
 
-        bestFoundSoln = recursion(bestFoundSoln.getJobListDuration().length, freeTasks, 0, null, bestFoundSoln, dg.getNodes().size(), bestFoundSoln.getJobListDuration()[0]);
+        bestFoundSoln = recursion(_argumentsParser.getProcessorNo(), freeTasks, 0, null, bestFoundSoln, dg.getNodes().size(), bestFoundSoln.getJobListDuration()[0]);
 
         String outputName = _argumentsParser.getOutputFileName();
 
