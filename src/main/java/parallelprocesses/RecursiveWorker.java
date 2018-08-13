@@ -5,29 +5,16 @@ import common.State;
 import common.TaskDependencyNode;
 import common.TaskJob;
 import cost_function.CostFunctionService;
-import pt.runtime.TaskID;
-import pt.runtime.TaskIDGroup;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
-public class ParallelController {
-    private static ParallelController parallelController;
-    private static State _bestFoundState;
+public class RecursiveWorker implements Runnable {
+    private RecursionStore recursionStore;
 
-    private ParallelController() {
-    }
-
-    public static ParallelController getParallelController(){
-        if(parallelController == null) {
-            parallelController = new ParallelController();
-        }
-        return parallelController;
-    }
-
-    public State findOptimalSchedule(int numProc, List<TaskDependencyNode> freeTasks, int depth, State state, State bestFoundState, int numTasks, int linearScheduleTime){
-        return recursion(numProc, freeTasks, depth, state, bestFoundState, numTasks, linearScheduleTime);
+    public void start(){
+        Thread thread = new Thread(this);
+        thread.start();
     }
 
     //The recursion to find the optimal schedule
@@ -36,7 +23,7 @@ public class ParallelController {
     // bestFoundState: representation of the greedy algo best found soln,
     // numTasks: total number of tasks to be scheudled,
     // linearScheduleTime: The total time it would take if this was all on processor (no comms delays)
-    private State recursion(int numProc, List<TaskDependencyNode> freeTasks, int depth, State state, State bestFoundState, int numTasks, int linearScheduleTime) {
+    private void recurse(int numProc, List<TaskDependencyNode> freeTasks, int depth, State state, State bestFoundState, int numTasks, int linearScheduleTime) {
         if(state == null) {
             ArrayList<List<Job>> jobList = new ArrayList<List<Job>>(numProc);
             for (int i = 0; i < numProc; i++) {
@@ -59,7 +46,6 @@ public class ParallelController {
                     TaskDependencyNode currentNode = freeTasks.get(i);
                     List<TaskDependencyNode> prospectiveFreeTasks = new ArrayList<>(freeTasks);
 
-                    TaskIDGroup childrenTasks = new TaskIDGroup(currentNode._children.size());
                     //add all children of the task to the freetask list and remove the task
                     for (int k = 0; k < currentNode._children.size(); k++) {
                         TaskDependencyNode child = currentNode._children.get(k)._child;
@@ -85,7 +71,6 @@ public class ParallelController {
                         }
                         if (numUnresolvedParents == 0) {
                             prospectiveFreeTasks.add(currentNode._children.get(k)._child);
-                            childrenTasks.add();
                         }
                     }
                     prospectiveFreeTasks.remove(currentNode);
@@ -98,16 +83,10 @@ public class ParallelController {
                     }
                     //if possibly better and not complete, recurse.
                     else if (newState.getHeuristicValue() <= bestFoundState.getHeuristicValue() && depth < numTasks) {
-                        try{
-                            childrenTasks.waitTillFinished();
-                        }catch (ExecutionException ee) {
-                            ee.printStackTrace();
-                        }catch (InterruptedException ie){
-                            ie.printStackTrace();
-                        }
+                        State foundState = recurse(numProc, prospectiveFreeTasks, depth, newState, bestFoundState, numTasks, linearScheduleTime);
                         //Recursion will always return a complete state. If this is better, update.
                         if (foundState.getHeuristicValue() <= bestFoundState.getHeuristicValue()) {
-                            this.updateBestFoundState(foundState);
+                            updateBestFoundState(foundState);
                         }
                     }
                     depth--;
@@ -117,14 +96,13 @@ public class ParallelController {
         return bestFoundState;
     }
 
-    private TaskID<Void> doRecursion(TaskDependencyNode targetNode, State withState, int withDepth){
-        State foundState = recursion(numProc, prospectiveFreeTasks, withDepth, withState, bestFoundState, numTasks, linearScheduleTime);
-
-        return
-    }
-
     private void updateBestFoundState(State bestFoundState){
         //TODO: call the gui display method inside this method
         _bestFoundState = bestFoundState;
+    }
+
+    @Override
+    public void run() {
+        this.recurse();
     }
 }
