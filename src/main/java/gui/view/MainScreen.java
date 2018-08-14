@@ -2,27 +2,16 @@ package gui.view;
 
 
 import gui.controller.MainController;
+import gui.model.ChartModel;
 import gui.model.StatisticsModel;
-import javafx.embed.swing.SwingNode;
-import javafx.fxml.FXML;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.data.category.CategoryDataset;
-
-
-import javax.swing.*;
-import java.io.File;
 import java.io.IOException;
-import java.net.URI;
-
-import static org.jfree.chart.ChartFactory.*;
-
 
 public class MainScreen {
 
@@ -37,36 +26,18 @@ public class MainScreen {
 
         primaryStage.setTitle("Parallel Task Scheduler");
 
-        SwingNode swingNode = new SwingNode();
-        createGanttChart(swingNode);
-        pane.getChildren().add(swingNode);
+        Canvas canvas = new Canvas(1600, 900);
+        ChartScreen chart = new ChartScreen(canvas.getGraphicsContext2D());
+
+        // For mocking change to null and update with new method
+        chart.drawChart(new ChartModel());
+
+        pane.getChildren().add(canvas);
 
         primaryStage.setScene(new Scene(pane, 1600, 900));
         primaryStage.show();
     }
 
-    public void createGanttChart(SwingNode swingNode){
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
 
-                CategoryDataset data = _controller.getData();
-                final JFreeChart chart = createStackedBarChart(
-                        "Current Optimal Schedule",  // chart title
-                        "Processor",                  // domain axis label
-                        "Time",                     // range axis label
-                        data,                     // data
-                        PlotOrientation.HORIZONTAL,    // the plot orientation
-                        false,                        // legend
-                        true,                        // tooltips
-                        false                        // urls
-                );
-
-
-                swingNode.setContent(new ChartPanel(chart));
-
-            }
-        });
-    }
 
 }

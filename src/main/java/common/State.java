@@ -17,9 +17,6 @@ public class State {
         _heuristicValue = heuristicValue;
     }
 
-    public State add(TaskDependencyNode node, int i){
-        return null;
-    }
 
     public List<List<Job>> getJobLists(){
         return _jobLists;
