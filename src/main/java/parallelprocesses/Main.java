@@ -99,9 +99,11 @@ public class Main extends Application {
         }
 
         State bestFoundSoln = dg.initialState(numberOfProcessors);
+        RecursionStore.processPotentialBestState(bestFoundSoln);
         List<TaskDependencyNode> freeTasks = dg.getFreeTasks(null);
 
-        bestFoundSoln = recursion(bestFoundSoln.getJobListDuration().length, freeTasks, 0, null, bestFoundSoln, dg.getNodes().size(), bestFoundSoln.getJobListDuration()[0]);
+        recursion(bestFoundSoln.getJobListDuration().length, freeTasks, 0, null, dg.getNodes().size(), bestFoundSoln.getJobListDuration()[0]);
+        bestFoundSoln = RecursionStore.getBestFoundState();
 
         String outputName = commands.getOptionValue('o');
 
@@ -132,7 +134,9 @@ public class Main extends Application {
     // bestFoundState: representation of the greedy algo best found soln,
     // numTasks: total number of tasks to be scheudled,
     // linearScheduleTime: The total time it would take if this was all on processor (no comms delays)
-    public State recursion(int numProc, List<TaskDependencyNode> freeTasks, int depth, State state, State bestFoundState, int numTasks, int linearScheduleTime) {
+    public void recursion(int numProc, List<TaskDependencyNode> freeTasks, int depth, State state, int numTasks, int linearScheduleTime) {
+        Double bestFoundHeuristic = RecursionStore.getBestStateHeuristic();
+
         if(state == null) {
             ArrayList<List<Job>> jobList = new ArrayList<List<Job>>(numProc);
             for (int i = 0; i < numProc; i++) {
@@ -187,22 +191,17 @@ public class Main extends Application {
                     State newState = new CostFunctionService().scheduleNode(currentNode, j, state, linearScheduleTime);
 
                     //if this state is complete and better than existing best, update.
-                    if (newState.getHeuristicValue() <= bestFoundState.getHeuristicValue() && depth == numTasks) {
-                        bestFoundState = newState;
+                    if (newState.getHeuristicValue() <= bestFoundHeuristic && depth == numTasks) {
+                        RecursionStore.processPotentialBestState(newState);
                     }
                     //if possibly better and not complete, recurse.
-                    else if (newState.getHeuristicValue() <= bestFoundState.getHeuristicValue() && depth < numTasks) {
-                        State foundState = recursion(numProc, prospectiveFreeTasks, depth, newState, bestFoundState, numTasks, linearScheduleTime);
-                        //Recursion will always return a complete state. If this is better, update.
-                        if (foundState.getHeuristicValue() <= bestFoundState.getHeuristicValue()) {
-                            bestFoundState = foundState;
-                        }
+                    else if (newState.getHeuristicValue() <= bestFoundHeuristic && depth < numTasks) {
+                        recursion(numProc, prospectiveFreeTasks, depth, newState, numTasks, linearScheduleTime);
                     }
                     depth--;
                 }
             }
         }
-        return bestFoundState;
     }
 
     public static CommandLine getCommandLine(){
