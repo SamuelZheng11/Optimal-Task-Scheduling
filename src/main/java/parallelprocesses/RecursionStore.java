@@ -5,9 +5,9 @@ import exception_classes.RecursionManagerException;
 
 public class RecursionStore {
     private RecursionStore recursionStore;
-    private State bestState;
-    private Integer numberOfProcessors;
-    private Integer linearScheduleTime;
+    private static State bestState;
+    private static Integer numberOfProcessors;
+    private static Integer linearScheduleTime;
 
     private RecursionStore(int noOfProc, int linearScheduleTime){
         this.linearScheduleTime = linearScheduleTime;
@@ -21,17 +21,10 @@ public class RecursionStore {
         return this.recursionStore;
     }
 
-    public void processPotentialBestState(State potentialBestState){
-        if(potentialBestState.getHeuristicValue() < this.bestState.getHeuristicValue() || this.bestState == null){
-            this.bestState = potentialBestState;
-        }
-    }
-
-    public void setNumberOfProcessors(int noOfProc){
-        if(this.numberOfProcessors != null) {
-            throw new RecursionManagerException("Attempted to set the number of processors when it has already been set");
-        } else {
-            this.numberOfProcessors = noOfProc;
+    public static void processPotentialBestState(State potentialBestState){
+        if(potentialBestState.getHeuristicValue() < bestState.getHeuristicValue() || bestState == null){
+            bestState = potentialBestState;
+            updateBestFoundState();
         }
     }
 
@@ -43,7 +36,15 @@ public class RecursionStore {
         return this.numberOfProcessors;
     }
 
-    public double getBestStateHeuristic(){
-        return this.bestState.getHeuristicValue();
+    public static double getBestStateHeuristic(){
+        return bestState.getHeuristicValue();
+    }
+
+    private static void updateBestFoundState(){
+        //TODO: call the gui display method inside this method
+    }
+
+    public static State getBestState(){
+        return bestState;
     }
 }

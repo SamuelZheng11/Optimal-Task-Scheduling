@@ -5,42 +5,20 @@ import common.State;
 import common.TaskDependencyNode;
 import common.TaskJob;
 import cost_function.CostFunctionService;
-import javafx.concurrent.Task;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class RecursiveWorker implements Runnable {
-    protected static RecursionStore recursionStore;
-    protected static int linearScheduleTime;
-    protected static int numProc;
-    protected State state;
-    protected List<TaskDependencyNode> freeTasks;
-    protected int numTasks;
-    protected int depth;
-
-    public RecursiveWorker(RecursionStore recursionStore, List<TaskDependencyNode> withFreeTasks, int atDepth, State withState, int withNumTasks) {
-        this.recursionStore = recursionStore;
-        this.freeTasks = withFreeTasks;
-        this.depth = atDepth;
-        this.state = withState;
-        this.numTasks = withNumTasks;
+public class PilotRecursiveWorker extends RecursiveWorker {
+    private int maxNumberOfScheduledNodes;
+    private int nodesScheduled;
+    
+    public PilotRecursiveWorker(RecursionStore recursionStore, List<TaskDependencyNode> withFreeTasks, int atDepth, State withState, int withNumTasks, int maxNumberOfScheduledNodes) {
+        super(recursionStore, withFreeTasks, atDepth, withState, withNumTasks);
+        this.maxNumberOfScheduledNodes = maxNumberOfScheduledNodes;
     }
 
-    public void start(){
-        Thread thread = new Thread(this);
-        thread.start();
-    }
-
-    //The recursion to find the optimal schedule
-    // Arguments in order are, freeTasks: the initially free tasks of the
-    // dependency tree (all roots of the tree), depth(0 to start), state(null to start),
-    // bestFoundState: representation of the greedy algo best found soln,
-    // numTasks: total number of tasks to be scheduled,
-    // in addition fields used are numProc: The number of processors,
-    // linearScheduleTime: The total time it would take if this was all on processor (no comms delays),
-    // recursionStore used to house the constant information
-    public void recurse(List<TaskDependencyNode> freeTasks, int depth, State state, int numTasks) {
+    public void pilotRecurse(List<TaskDependencyNode> freeTasks, State state, int numTasks) {
         if(state == null) {
             ArrayList<List<Job>> jobList = new ArrayList<List<Job>>(this.numProc);
             for (int i = 0; i < this.numProc; i++) {
@@ -59,7 +37,7 @@ public class RecursiveWorker implements Runnable {
                     if (j < this.numProc-1 && state.getJobListDuration()[j] == 0 && state.getJobListDuration()[j + 1] == 0) {
                         continue;
                     }
-                    depth++;
+                    this.nodesScheduled++;
                     TaskDependencyNode currentNode = freeTasks.get(i);
                     List<TaskDependencyNode> prospectiveFreeTasks = new ArrayList<>(freeTasks);
 
@@ -95,23 +73,16 @@ public class RecursiveWorker implements Runnable {
                     State newState = new CostFunctionService().scheduleNode(currentNode, j, state, this.linearScheduleTime);
 
                     //if this state is complete and better than existing best, update.
-                    if (newState.getHeuristicValue() <= recursionStore.getBestStateHeuristic() && depth == numTasks) {
+                    if (newState.getHeuristicValue() <= recursionStore.getBestStateHeuristic() && this.nodesScheduled == this.maxNumberOfScheduledNodes) {
                         RecursionStore.processPotentialBestState(newState);
                     }
                     //if possibly better and not complete, recurse.
-                    else if (newState.getHeuristicValue() <= recursionStore.getBestStateHeuristic() && depth < numTasks) {
-                        recurse(prospectiveFreeTasks, depth, newState, numTasks);
+                    else if (newState.getHeuristicValue() <= recursionStore.getBestStateHeuristic() && this.nodesScheduled < this.maxNumberOfScheduledNodes) {
+                        pilotRecurse(prospectiveFreeTasks, newState, numTasks);
                     }
-                    depth--;
                 }
             }
         }
     }
 
-    @Override
-    public void run() {
-        this.numProc = recursionStore.getNumberOfProcessors();
-        this.linearScheduleTime = recursionStore.getLinearScheduleTime();
-        this.recurse(this.freeTasks, this.depth, this.state, this.numTasks);
-    }
 }

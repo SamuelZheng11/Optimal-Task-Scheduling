@@ -69,6 +69,7 @@ public class Main extends Application {
         options.addOption("p", true, "The number of processors for the algorithm to run on");
         options.addOption("v", "Whether to visualise the search");
         options.addOption("o", true,"The output file");
+        options.addOption("t", true,"The maximum number of threads the program is allowed to use");
         CommandLineParser parser = new DefaultParser();
         String[] params = new String[getParameters().getRaw().size()];
         params = getParameters().getRaw().toArray(params);
@@ -103,7 +104,7 @@ public class Main extends Application {
         List<TaskDependencyNode> freeTasks = dg.getFreeTasks(null);
 
         recursion(bestFoundSoln.getJobListDuration().length, freeTasks, 0, null, dg.getNodes().size(), bestFoundSoln.getJobListDuration()[0]);
-        bestFoundSoln = RecursionStore.getBestFoundState();
+        bestFoundSoln = RecursionStore.getBestState();
 
         String outputName = commands.getOptionValue('o');
 
