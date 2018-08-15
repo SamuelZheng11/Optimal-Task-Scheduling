@@ -59,6 +59,7 @@ public class Main extends Application {
 
         if( _argumentsParser.displayVisuals()){
             MainScreen mainScreen = new MainScreen(primaryStage, sModel, cModel);
+            cModel.addListener(mainScreen);
         }
 
     }

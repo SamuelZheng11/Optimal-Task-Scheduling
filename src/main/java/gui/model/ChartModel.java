@@ -3,6 +3,7 @@ package gui.model;
 import com.sun.jdi.connect.Connector;
 import common.*;
 import gui.listeners.AlgorithmListener;
+import gui.listeners.ModelChangeListener;
 import parser.ArgumentParser;
 
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ public class ChartModel implements AlgorithmListener {
     private int _processorNum;
     private State _state;
     private int _maxTime;
+    private List<ModelChangeListener> _listeners = new ArrayList<>();
 
     public ChartModel(int ProcessorNum, int maxTime){
         _processorNum = ProcessorNum;
@@ -44,6 +46,13 @@ public class ChartModel implements AlgorithmListener {
     @Override
     public void update(State state){
         _state = state;
+        for(ModelChangeListener l : _listeners){
+            l.update();
+        }
+    }
+
+    public void addListener(ModelChangeListener listener){
+        _listeners.add(listener);
     }
 
 }
