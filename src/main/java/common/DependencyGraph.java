@@ -23,7 +23,7 @@ public class DependencyGraph {
     private List<TaskDependencyNode> _freeTasks = new ArrayList<TaskDependencyNode>();
     private List<TaskDependencyNode> _scheduledNodes = new ArrayList<TaskDependencyNode>();
 
-    protected DependencyGraph(){
+    private DependencyGraph(){
     }
 
     public static DependencyGraph getGraph(){

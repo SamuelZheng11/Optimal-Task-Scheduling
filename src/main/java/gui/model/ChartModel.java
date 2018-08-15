@@ -1,15 +1,18 @@
 package gui.model;
 
-import common.DelayJob;
-import common.Job;
-import common.TaskJob;
+import common.*;
+import gui.listeners.AlgorithmListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChartModel {
+public class ChartModel implements AlgorithmListener {
 
+    private int _processorNum;
 
+    public ChartModel(){
+
+    }
 
     public int getProcessorNumber(){
         return 2;
@@ -37,6 +40,11 @@ public class ChartModel {
 
 
         return list;
+    }
+
+    @Override
+    public void update(State state){
+
     }
 
 }
