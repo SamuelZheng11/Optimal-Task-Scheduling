@@ -1,6 +1,5 @@
 package common;
 
-import javafx.concurrent.Task;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
@@ -8,7 +7,6 @@ import org.graphstream.graph.implementations.DefaultGraph;
 import org.graphstream.stream.file.FileSource;
 import org.graphstream.stream.file.FileSourceDOT;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -24,6 +22,7 @@ public class DependencyGraph {
     private Map<String,TaskDependencyNode> _nodes = new HashMap<String,TaskDependencyNode>();
     private List<TaskDependencyNode> _freeTasks = new ArrayList<TaskDependencyNode>();
     private List<TaskDependencyNode> _scheduledNodes = new ArrayList<TaskDependencyNode>();
+    private int _linearScheduleDuration;
 
     private DependencyGraph(){
     }
@@ -123,7 +122,6 @@ public class DependencyGraph {
     }
 
     public State initialState(int numProcessors) {
-        int duration = 0;
         List<TaskDependencyNode> nodeList = new ArrayList<TaskDependencyNode>();
         List<Job> jobList = new ArrayList<Job>(); // create job list
         List<TaskDependencyNode> freeTasks = getFreeTasks(null); // get set of initial nodes
@@ -134,13 +132,13 @@ public class DependencyGraph {
 
             TaskJob job = new TaskJob(nodeToAdd._duration, nodeToAdd._name, nodeToAdd); //create job based on a free task
             freeTasks = getFreeTasks(nodeToAdd); // update the set of free tasks
-            duration += nodeToAdd._duration; // update the duration
+            _linearScheduleDuration += nodeToAdd._duration; // update the duration
             jobList.add(job);
         }
 
         int[] durationArr = new int[numProcessors];
         java.util.Arrays.fill(durationArr, 0);
-        durationArr[0] = duration;
+        durationArr[0] = _linearScheduleDuration;
 
         List<List<Job>> processorList = new ArrayList(numProcessors);
         for (int i = 0; i < numProcessors; i++) {
@@ -296,42 +294,6 @@ public class DependencyGraph {
                 }
             }
         }
-
-//        for (Map.Entry<String, TaskDependencyNode> entry : _nodes.entrySet())
-//        {
-//            String parentName;
-//            String childName;
-//            int weight;
-//
-//            parentName = entry.getValue()._name;
-//            for (TaskDependencyEdge edges : entry.getValue()._children) {
-//
-//                childName = edges._child._name;
-//                weight = edges._communicationDelay;
-//
-////                try(BufferedWriter writer = Files.newBufferedWriter(path, Charset.forName("UTF-8"))) {
-////                    writer.newLine();
-////                    String output = String.format(" %s -> %s  [Weight=%d];", parentName, childName, weight);
-////                    writer.write(output);
-////                } catch(IOException e) {
-////                    e.printStackTrace();
-////                }
-//                try {
-//                    System.out.println("Hello");
-//                    String output = String.format("\t%s -> %s\t [Weight=%d];", parentName, childName, weight) + System.lineSeparator();
-//                    Files.write(Paths.get("output.dot"), output.getBytes(), StandardOpenOption.APPEND);
-//                }catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }
-//        Path path = Paths.get("output.dot");
-//        try(BufferedWriter writer = Files.newBufferedWriter(path, Charset.forName("UTF-8"))) {
-//            writer.newLine();
-//            writer.write("}");
-//        } catch(IOException e) {
-//            e.printStackTrace();
-//        }
         try {
             Files.write(Paths.get(outputName), "}".getBytes(), StandardOpenOption.APPEND);
         }catch (IOException e) {
@@ -341,5 +303,9 @@ public class DependencyGraph {
 
     public String getFilePath(){
         return _filePath;
+    }
+
+    public int getLinearScheduleDuration(){
+        return _linearScheduleDuration;
     }
 }

@@ -31,13 +31,18 @@ public class Main extends Application {
     static int counter = 0;
 
     public void start(Stage primaryStage) throws Exception {
+        DependencyGraph dg = DependencyGraph.getGraph();
+
+        //Validate out arguments and make sure they are correct
         _argumentsParser = new KernelParser(this);
-
-        StatisticsModel sModel = new StatisticsModel();
-        ChartModel cModel = new ChartModel(_argumentsParser.getProcessorNo());
-
         validateArguments();
 
+        //Parse the graph so that our data is ready for use in any point post this line.
+        dg.setFilePath(_argumentsParser.getFilePath());
+        dg.parse();
+
+        StatisticsModel sModel = new StatisticsModel();
+        ChartModel cModel = new ChartModel(_argumentsParser.getProcessorNo(), DependencyGraph.getGraph().getLinearScheduleDuration());
 
         Task task = new Task<Void>() {
             @Override
@@ -49,6 +54,8 @@ public class Main extends Application {
 
         new Thread(task).start();
 
+
+
         if( _argumentsParser.displayVisuals()){
             MainScreen mainScreen = new MainScreen(primaryStage, sModel, cModel);
         }
@@ -58,11 +65,7 @@ public class Main extends Application {
 
     public void InitialiseScheduling(StatisticsModel model) {
         DependencyGraph dg = DependencyGraph.getGraph();
-        dg.setFilePath(_argumentsParser.getFilePath());
-        //todo parsing of command line args to graph parsing function
-        dg.parse();
         System.out.println("Calculating schedule, Please wait ...");
-
         State bestFoundSoln = dg.initialState(_argumentsParser.getProcessorNo());
         List<TaskDependencyNode> freeTasks = dg.getFreeTasks(null);
 
