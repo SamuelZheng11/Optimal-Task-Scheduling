@@ -42,7 +42,10 @@ public class Main extends Application {
 
         StatisticsModel model = new StatisticsModel();
 
+
+
         _commands = getCommands();
+
 
 
         Task task = new Task<Void>() {
@@ -120,7 +123,7 @@ public class Main extends Application {
 
         System.out.println("Finished");
         //todo call algorithm and pass the model
-        System.exit(0);
+//        System.exit(0);
 
     }
 
