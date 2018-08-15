@@ -52,17 +52,18 @@ public class RecursiveWorker implements Callable<Integer> {
                     for (int k = 0; k < currentNode._children.size(); k++) {
                         TaskDependencyNode child = currentNode._children.get(k)._child;
                         int numUnresolvedParents = child._parents.size();
-                        boolean hasConsideredCurrentNodeAsParent = false;
 
                         for (int l = 0; l <state.getJobLists().size(); l++) {
                             for (int m = 0; m < child._parents.size(); m++) {
-                                if (!hasConsideredCurrentNodeAsParent && currentNode == child._parents.get(m)._parent){
+                                if (currentNode == child._parents.get(m)._parent){
                                     numUnresolvedParents--;
-                                    hasConsideredCurrentNodeAsParent = true;
-                                }
-                                for (int n = 0; n < state.getJobLists().get(l).size(); n++) {
-                                    if (state.getJobLists().get(l).get(n) instanceof TaskJob && ((TaskJob) state.getJobLists().get(l).get(n)).getNode() == child._parents.get(m)._parent && ((TaskJob) state.getJobLists().get(l).get(n)).getNode() != currentNode){
-                                        numUnresolvedParents--;
+                                    continue;
+                                } else {
+                                    for (int n = 0; n < state.getJobLists().get(l).size(); n++) {
+                                        if (state.getJobLists().get(l).get(n) instanceof TaskJob &&
+                                                ((TaskJob) state.getJobLists().get(l).get(n)).getNode() == child._parents.get(m)._parent){
+                                            numUnresolvedParents--;
+                                        }
                                     }
                                 }
 
@@ -81,11 +82,11 @@ public class RecursiveWorker implements Callable<Integer> {
                     tasksScheduled++;
 
                     //if this state is complete and better than existing best, update.
-                    if (newState.getHeuristicValue() <= RecursionStore.getBestStateHeuristic() && tasksScheduled == RecursionStore.getNumberOfTasksTotal()) {
+                    if (newState.getHeuristicValue() < RecursionStore.getBestStateHeuristic() && tasksScheduled == RecursionStore.getNumberOfTasksTotal()) {
                         RecursionStore.processPotentialBestState(newState);
                     }
                     //if possibly better and not complete, recurse.
-                    else if (newState.getHeuristicValue() <= RecursionStore.getBestStateHeuristic() && tasksScheduled < RecursionStore.getNumberOfTasksTotal()) {
+                    else if (newState.getHeuristicValue() < RecursionStore.getBestStateHeuristic() && tasksScheduled < RecursionStore.getNumberOfTasksTotal()) {
                         recurse(prospectiveFreeTasks, newState, tasksScheduled);
                     }
                     tasksScheduled--;
