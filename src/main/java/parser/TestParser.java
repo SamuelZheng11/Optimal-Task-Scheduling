@@ -3,7 +3,6 @@ package parser;
 import parallelprocesses.Defaults;
 
 public class TestParser implements ArgumentParser {
-    private int processors = Integer.valueOf(Defaults.PROCESSOR.toString());
 
     @Override
     public int getProcessorNo() {
@@ -33,6 +32,11 @@ public class TestParser implements ArgumentParser {
     @Override
     public boolean displayVisuals() {
         return false;
+    }
+
+    @Override
+    public int getMaxThreads() {
+        return 1;
     }
 
     public void setProcessorNo(int processors){

@@ -4,11 +4,12 @@ import parallelprocesses.Defaults;
 
 
 public abstract class AbstractParser implements ArgumentParser {
-    protected int _processor = Integer.valueOf(Defaults.PROCESSOR.toString());
+    protected int _processor;
     protected String _format = Defaults.FORMAT.toString();
     protected String _suffix = Defaults.SUFFIX.toString();
     protected String _output;
     protected String _filePath;
+    protected int _maxThreads = Integer.valueOf(Defaults.MAXTHREADS.toString());
 
     @Override
     public int getProcessorNo() {
@@ -34,4 +35,9 @@ public abstract class AbstractParser implements ArgumentParser {
 
     @Override
     public abstract boolean displayVisuals();
+
+    @Override
+    public int getMaxThreads(){
+        return _maxThreads;
+    };
 }

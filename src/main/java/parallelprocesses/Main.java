@@ -26,6 +26,7 @@ public class Main extends Application {
     }
 
     private ArgumentParser _argumentsParser;
+    private int _maxThreads;
 
     static int counter = 0;
 
@@ -35,6 +36,7 @@ public class Main extends Application {
         StatisticsModel sModel = new StatisticsModel();
         ChartModel cModel = new ChartModel(_argumentsParser.getProcessorNo());
 
+        validateArguments();
 
 
         Task task = new Task<Void>() {
@@ -158,6 +160,11 @@ public class Main extends Application {
             }
         }
         return bestFoundState;
+    }
+
+    private void validateArguments(){
+        _argumentsParser.getFilePath();
+        _argumentsParser.getProcessorNo();
     }
 
 }
