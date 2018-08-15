@@ -77,6 +77,7 @@ public class PilotRecursiveWorker {
                     } else if (newState.getHeuristicValue() <= RecursionStore.getBestStateHeuristic() && tasksScheduled < RecursionStore.getNumberOfTasksTotal()) {
                         RecursionStore.pushStateTreeQueue(new StateTreeBranch(newState, prospectiveFreeTasks, tasksScheduled));
                     }
+                    tasksScheduled--;
                 }
             }
         this.recurse();

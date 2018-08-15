@@ -233,20 +233,27 @@ public class Main extends Application implements PilotDoneListener, RecursiveDon
         Set<RecursiveWorker> callables = new HashSet<>();
         this.totalNumberOfStateTreeBranches = RecursionStore.getTaskQueueSize();
         while ( RecursionStore.getTaskQueueSize() > 0) {
-            callables.add(new RecursiveWorker(RecursionStore.pollStateTreeQueue(), this));
+//          callables.add(new RecursiveWorker(RecursionStore.pollStateTreeQueue(), this));
+            RecursiveWorker worker = new RecursiveWorker(RecursionStore.pollStateTreeQueue(), this);
+            try {
+                worker.call();
+            } catch (Exception e) {
+                System.out.println(RecursionStore.getTaskQueueSize());
+                e.printStackTrace();
+            }
         }
 
-        if(callables.size() == 0){
-            throw new RecursiveWorkerException("No tasks are assigned to the thread call-ables");
-        }
-
-        try{
-            _pool.invokeAll(callables);
-        }catch (InterruptedException ie){
-            ie.printStackTrace();
-        }
-
-        _pool.shutdown();
+//        if(callables.size() == 0){
+//            throw new RecursiveWorkerException("No tasks are assigned to the thread call-ables");
+//        }
+//
+//        try{
+//            _pool.invokeAll(callables);
+//        }catch (InterruptedException ie){
+//            ie.printStackTrace();
+//        }
+//
+//        _pool.shutdown();
     }
 
     @Override

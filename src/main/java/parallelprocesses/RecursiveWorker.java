@@ -48,25 +48,23 @@ public class RecursiveWorker implements Callable<Integer> {
                     TaskDependencyNode currentNode = freeTasks.get(i);
                     List<TaskDependencyNode> prospectiveFreeTasks = new ArrayList<>(freeTasks);
 
-                    //add all children of the task to the freetask list and remove the task
+                    //add all children of the task to the free task list and remove the task
                     for (int k = 0; k < currentNode._children.size(); k++) {
                         TaskDependencyNode child = currentNode._children.get(k)._child;
                         int numUnresolvedParents = child._parents.size();
 
-                        for (int l = 0; l <state.getJobLists().size(); l++) {
-                            for (int m = 0; m < child._parents.size(); m++) {
-                                if (currentNode == child._parents.get(m)._parent){
-                                    numUnresolvedParents--;
-                                    continue;
-                                } else {
-                                    for (int n = 0; n < state.getJobLists().get(l).size(); n++) {
-                                        if (state.getJobLists().get(l).get(n) instanceof TaskJob &&
-                                                ((TaskJob) state.getJobLists().get(l).get(n)).getNode() == child._parents.get(m)._parent){
-                                            numUnresolvedParents--;
-                                        }
+                        for (int l = 0; l <child._parents.size(); l++) {
+                            if (currentNode == child._parents.get(l)._parent){
+                                numUnresolvedParents--;
+                                continue;
+                            }
+                            for (int m = 0; m < state.getJobLists().size(); m++) {
+                                for (int n = 0; n < state.getJobLists().get(m).size(); n++) {
+                                    if (state.getJobLists().get(m).get(n) instanceof TaskJob &&
+                                            ((TaskJob) state.getJobLists().get(m).get(n)).getNode() == child._parents.get(l)._parent){
+                                        numUnresolvedParents--;
                                     }
                                 }
-
                             }
                             if (numUnresolvedParents == 0 ){
                                 break;
@@ -97,12 +95,11 @@ public class RecursiveWorker implements Callable<Integer> {
 
     @Override
     public Integer call() throws Exception {
-        try {
-            this.recurse(new ArrayList<>(this.freeTasks), new State(this.state.getJobLists(), this.state.getJobListDuration(), this.state.getHeuristicValue()), new Integer(this.tasksScheduled));
-        } catch( Exception e){
-            throw new RecursiveWorkerException("uncaught exception thrown in a recursive worker");
-        }
 
+        this.recurse(
+                new ArrayList<>(this.freeTasks),
+                new State(this.state.getJobLists(), this.state.getJobListDuration(), this.state.getHeuristicValue()),
+                new Integer(this.tasksScheduled));
         done();
         return 0;
     }
