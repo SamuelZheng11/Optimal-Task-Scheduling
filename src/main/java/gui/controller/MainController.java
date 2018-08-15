@@ -8,7 +8,8 @@ public class MainController {
 
     StatisticsModel _model;
 
-    public MainController(StatisticsModel model){
+
+    public void setModel(StatisticsModel model){
         _model = model;
     }
 
