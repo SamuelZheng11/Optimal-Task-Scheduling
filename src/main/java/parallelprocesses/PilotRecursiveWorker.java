@@ -1,6 +1,5 @@
 package parallelprocesses;
 
-import common.Job;
 import common.State;
 import common.TaskDependencyNode;
 import common.TaskJob;
@@ -9,58 +8,59 @@ import cost_function.CostFunctionService;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PilotRecursiveWorker extends RecursiveWorker {
-    private int maxNumberOfScheduledNodes;
-    private int nodesScheduled;
-    
-    public PilotRecursiveWorker(RecursionStore recursionStore, List<TaskDependencyNode> withFreeTasks, int atDepth, State withState, int withNumTasks, int maxNumberOfScheduledNodes) {
-        super(recursionStore, withFreeTasks, atDepth, withState, withNumTasks);
-        this.maxNumberOfScheduledNodes = maxNumberOfScheduledNodes;
+public class PilotRecursiveWorker {
+    private int recursiveDepth = 0;
+
+    private Integer depth = 0;
+    private int stateTreeStopValue;
+    private PilotDoneListener listener;
+
+    public PilotRecursiveWorker(int processorMultiplierWeight, PilotDoneListener listener) {
+        this.stateTreeStopValue = processorMultiplierWeight * RecursionStore.getNumberOfCores();
+        this.listener = listener;
     }
 
-    public void pilotRecurse(List<TaskDependencyNode> freeTasks, State state, int numTasks) {
-        if(state == null) {
-            ArrayList<List<Job>> jobList = new ArrayList<List<Job>>(this.numProc);
-            for (int i = 0; i < this.numProc; i++) {
-                jobList.add(new ArrayList<Job>());
-            }
-            int[] procDur = new int[this.numProc];
-            java.util.Arrays.fill(procDur, 0);
-            state = new State(jobList, procDur, Math.floorDiv(this.linearScheduleTime, this.numProc));
-        }
-        //If there are available tasks to schedule
-        if (freeTasks.size() > 0) {
+    public void recurse() {
+        this.recursiveDepth++;
+        // pop next state-tree branch for expansion
+        StateTreeBranch stb = RecursionStore.pollStateTreeQueue();
+        List<TaskDependencyNode> freeTasks = stb.getFreeNodes();
+
+        // check if the stopping condition has been met
+        if (RecursionStore.getTaskQueueSize() < this.stateTreeStopValue) {
             //For each available task, try scheduling it on a processor
             for (int i = 0; i < freeTasks.size(); i++) {
                 //if the current processor and the next processor are empty, skip the current one (all empty processors are equivalent)
-                for (int j = 0; j < this.numProc; j++) {
-                    if (j < this.numProc-1 && state.getJobListDuration()[j] == 0 && state.getJobListDuration()[j + 1] == 0) {
+                TaskDependencyNode currentNode = freeTasks.get(i);
+                List<TaskDependencyNode> prospectiveFreeTasks = new ArrayList<>(freeTasks);
+                prospectiveFreeTasks.remove(currentNode);
+                State state = stb.getStateSnapshot();
+
+                for (int j = 0; j < RecursionStore.getNumberOfProcessors(); j++) {
+                    if (j < RecursionStore.getNumberOfProcessors() - 1 && state.getJobListDuration()[j] == 0 && state.getJobListDuration()[j + 1] == 0) {
                         continue;
                     }
-                    this.nodesScheduled++;
-                    TaskDependencyNode currentNode = freeTasks.get(i);
-                    List<TaskDependencyNode> prospectiveFreeTasks = new ArrayList<>(freeTasks);
 
-                    //add all children of the task to the freetask list and remove the task
+                    int tasksScheduled = stb.getNumTaskScheduled() + 1;
                     for (int k = 0; k < currentNode._children.size(); k++) {
                         TaskDependencyNode child = currentNode._children.get(k)._child;
                         int numUnresolvedParents = child._parents.size();
                         boolean hasConsideredCurrentNodeAsParent = false;
 
-                        for (int l = 0; l <state.getJobLists().size(); l++) {
+                        for (int l = 0; l < state.getJobLists().size(); l++) {
                             for (int m = 0; m < child._parents.size(); m++) {
-                                if (!hasConsideredCurrentNodeAsParent && currentNode == child._parents.get(m)._parent){
+                                if (!hasConsideredCurrentNodeAsParent && currentNode == child._parents.get(m)._parent) {
                                     numUnresolvedParents--;
                                     hasConsideredCurrentNodeAsParent = true;
                                 }
                                 for (int n = 0; n < state.getJobLists().get(l).size(); n++) {
-                                    if (state.getJobLists().get(l).get(n) instanceof TaskJob && ((TaskJob) state.getJobLists().get(l).get(n)).getNode() == child._parents.get(m)._parent){
+                                    if (state.getJobLists().get(l).get(n) instanceof TaskJob && ((TaskJob) state.getJobLists().get(l).get(n)).getNode() == child._parents.get(m)._parent) {
                                         numUnresolvedParents--;
                                     }
                                 }
 
                             }
-                            if (numUnresolvedParents == 0 ){
+                            if (numUnresolvedParents == 0) {
                                 break;
                             }
                         }
@@ -68,21 +68,26 @@ public class PilotRecursiveWorker extends RecursiveWorker {
                             prospectiveFreeTasks.add(currentNode._children.get(k)._child);
                         }
                     }
-                    prospectiveFreeTasks.remove(currentNode);
-                    //create the new state with the task scheduled to evaluate pass to the recursion
-                    State newState = new CostFunctionService().scheduleNode(currentNode, j, state, this.linearScheduleTime);
 
-                    //if this state is complete and better than existing best, update.
-                    if (newState.getHeuristicValue() <= recursionStore.getBestStateHeuristic() && this.nodesScheduled == this.maxNumberOfScheduledNodes) {
+                    //create the new state with the task scheduled to evaluate pass to the recursion
+                    State newState = new CostFunctionService().scheduleNode(currentNode, j, state, RecursionStore.getLinearScheduleTime());
+                    //if this state is complete and better than existing best, update
+                    if (newState.getHeuristicValue() <= RecursionStore.getBestStateHeuristic() && tasksScheduled == RecursionStore.getNumberOfTasksTotal()) {
                         RecursionStore.processPotentialBestState(newState);
-                    }
-                    //if possibly better and not complete, recurse.
-                    else if (newState.getHeuristicValue() <= recursionStore.getBestStateHeuristic() && this.nodesScheduled < this.maxNumberOfScheduledNodes) {
-                        pilotRecurse(prospectiveFreeTasks, newState, numTasks);
+                    } else if (newState.getHeuristicValue() <= RecursionStore.getBestStateHeuristic() && tasksScheduled < RecursionStore.getNumberOfTasksTotal()) {
+                        RecursionStore.pushStateTreeQueue(new StateTreeBranch(newState, prospectiveFreeTasks, tasksScheduled));
                     }
                 }
             }
+        this.recurse();
+        }
+        this.recursiveDepth--;
+        if(this.recursiveDepth == 0){
+            done();
         }
     }
 
+    private void done(){
+        this.listener.handlePilotRunHasCompleted();
+    }
 }
