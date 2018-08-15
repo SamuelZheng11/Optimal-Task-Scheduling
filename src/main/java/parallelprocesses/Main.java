@@ -1,11 +1,6 @@
 package parallelprocesses;
 
-
 import common.*;
-
-import common.DependencyGraph;
-import common.State;
-import common.TaskDependencyNode;
 import cost_function.CostFunctionService;
 
 import gui.model.StatisticsModel;
@@ -15,6 +10,8 @@ import javafx.concurrent.Task;
 
 import javafx.stage.Stage;
 import org.apache.commons.cli.*;
+import parser.ArgumentParser;
+import parser.KernelParser;
 
 
 import java.io.IOException;
@@ -27,13 +24,7 @@ public class Main extends Application {
         launch(args);
     }
 
-    private static CommandLine _commands;
-
-    private static final int DEFAULT_NUMBER_OF_PROCESSORS = 1;
-
-    private static final String DEFAULT_OUTPUT_ENDING_NAME = "-output";
-
-    private static final String OUTPUT_FILE_FORMAT = ".dot";
+    private ArgumentParser _argumentsParser;
 
     static int counter = 0;
 
@@ -41,8 +32,7 @@ public class Main extends Application {
 
 
         StatisticsModel model = new StatisticsModel();
-
-        _commands = getCommands();
+        _argumentsParser = new KernelParser(this);
 
 
         Task task = new Task<Void>() {
@@ -55,62 +45,26 @@ public class Main extends Application {
 
         new Thread(task).start();
 
-        if( getCommandLine().hasOption("v")){
+        if( _argumentsParser.displayVisuals()){
             MainScreen mainScreen = new MainScreen(primaryStage, model);
         }
 
     }
 
 
-
-    private CommandLine getCommands() throws ParseException
-    {
-        Options options = new Options();
-        options.addOption("p", true, "The number of processors for the algorithm to run on");
-        options.addOption("v", "Whether to visualise the search");
-        options.addOption("o", true,"The output file");
-        CommandLineParser parser = new DefaultParser();
-        String[] params = new String[getParameters().getRaw().size()];
-        params = getParameters().getRaw().toArray(params);
-        return parser.parse(options, params);
-    }
-
-
-
     public void InitialiseScheduling(StatisticsModel model) {
-        CommandLine commands = null;
-        try {
-            commands = getCommands();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
         DependencyGraph dg = DependencyGraph.getGraph();
-        dg.setFilePath(commands.getArgs()[0]);
+        dg.setFilePath(_argumentsParser.getFilePath());
         //todo parsing of command line args to graph parsing function
         dg.parse();
         System.out.println("Calculating schedule, Please wait ...");
 
-
-        int numberOfProcessors;
-        if(commands.getOptionValue('p') != null){
-            numberOfProcessors = Integer.valueOf(commands.getOptionValue('p'));
-        } else {
-            numberOfProcessors = DEFAULT_NUMBER_OF_PROCESSORS;
-        }
-
-        State bestFoundSoln = dg.initialState(numberOfProcessors);
+        State bestFoundSoln = dg.initialState(_argumentsParser.getProcessorNo());
         List<TaskDependencyNode> freeTasks = dg.getFreeTasks(null);
 
-        bestFoundSoln = recursion(bestFoundSoln.getJobListDuration().length, freeTasks, 0, null, bestFoundSoln, dg.getNodes().size(), bestFoundSoln.getJobListDuration()[0]);
+        bestFoundSoln = recursion(_argumentsParser.getProcessorNo(), freeTasks, 0, null, bestFoundSoln, dg.getNodes().size(), bestFoundSoln.getJobListDuration()[0]);
 
-        String outputName = commands.getOptionValue('o');
-
-        if(outputName == null){
-            String[] outputNameWithFileDirectory = dg.getFilePath().split(".dot")[0].split("/");
-            outputName = outputNameWithFileDirectory[outputNameWithFileDirectory.length-1] + DEFAULT_OUTPUT_ENDING_NAME + OUTPUT_FILE_FORMAT;
-        } else {
-            outputName += OUTPUT_FILE_FORMAT;
-        }
+        String outputName = _argumentsParser.getOutputFileName();
 
         try {
             dg.generateOutput(bestFoundSoln, outputName);
@@ -211,11 +165,6 @@ public class Main extends Application {
             }
         }
         return bestFoundState;
-    }
-
-    public static CommandLine getCommandLine(){
-        return _commands;
-
     }
 
 }

@@ -7,6 +7,7 @@ import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.DefaultGraph;
 import org.graphstream.stream.file.FileSource;
 import org.graphstream.stream.file.FileSourceDOT;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -15,7 +16,7 @@ import java.util.*;
 
 public class DependencyGraph {
 
-    private final String WEIGHT = "Weight";
+    private final String WEIGHT = AttributeConstants.WEIGHT.toString();
     private String _filePath = "Input/example-input-graphs/Nodes_7_OutTree.dot";
     private Graph g = new DefaultGraph("g");
     private static DependencyGraph _dg;
