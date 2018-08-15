@@ -5,6 +5,7 @@ import common.TaskJob;
 import gui.model.ChartModel;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 
 import java.util.ArrayList;
@@ -35,8 +36,12 @@ public class ChartScreen {
         double YBarBufferSize = YAxisSize/model.getProcessorNumber()*0.1;
 
         _gc.clearRect(0, 0, _canvasWidth, _canvasHeight);
+
+        // grey background
         _gc.setFill(Color.color(0.2, 0.2, 0.2, 0.4));
         _gc.fillRect(0, 0 ,_canvasWidth, _canvasHeight);
+
+        _gc.setFont(new Font("Arial", 18));
         _gc.setStroke(Color.BLACK);
 
         List<List<Job>> jobList = model.getJobList();
@@ -82,15 +87,22 @@ public class ChartScreen {
         double xTickSize = tickTime/model.getMaximumTime() * XAxisSize;
         double yTickSize = YAxisSize/model.getProcessorNumber();
 
+        _gc.setFont(new Font("Arial", 14));
+
         for(int i = 1; i <= model.getMaximumTime()/tickTime; i++){
             _gc.strokeLine(_canvasBuffer + i*xTickSize, _canvasHeight - _canvasBuffer + 8, _canvasBuffer + i*xTickSize, _canvasHeight -_canvasBuffer - 8);
-            _gc.fillText(Integer.toString(tickTime*i), _canvasBuffer + i*xTickSize, _canvasHeight - _canvasBuffer + 8 + 15);
+            _gc.fillText(Integer.toString(tickTime*i), _canvasBuffer + i*xTickSize, _canvasHeight - _canvasBuffer + 8 + 20);
         }
 
         for(int i = 0; i < model.getProcessorNumber(); i++){
             _gc.strokeLine(_canvasBuffer - 8, _canvasBuffer + (i+0.5)*yTickSize, _canvasBuffer + 8, _canvasBuffer + (i+0.5)*yTickSize);
             _gc.fillText("Processor " + (i + 1), _canvasBuffer - 8 - 40, _canvasBuffer + (i+0.5)*yTickSize + 4);
         }
+
+        //draw title
+        _gc.setFont(new Font("Arial", 24));
+        _gc.fillText("Best Found Schedule", _canvasWidth/2, _canvasBuffer - _canvasBuffer/2);
+
 
     }
 
