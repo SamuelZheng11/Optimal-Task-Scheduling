@@ -76,7 +76,6 @@ public class Main extends Application {
 
         System.out.println("Finished");
         //todo call algorithm and pass the model
-        System.exit(0);
 
     }
 
