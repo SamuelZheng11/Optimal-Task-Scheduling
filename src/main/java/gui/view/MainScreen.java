@@ -18,7 +18,7 @@ public class MainScreen {
 
     MainController _controller;
 
-    public MainScreen(Stage primaryStage, StatisticsModel model) throws IOException {
+    public MainScreen(Stage primaryStage, StatisticsModel statModel, ChartModel chartModel) throws IOException {
 
         _controller = new MainController();
 
@@ -38,7 +38,7 @@ public class MainScreen {
         _controller.startPieChart(pieChartScreen);
 
         // For mocking change to null and update with new method
-        chart.drawChart(new ChartModel());
+        chart.drawChart(chartModel);
 
         primaryStage.setScene(new Scene(pane, 1280, 720));
         primaryStage.show();

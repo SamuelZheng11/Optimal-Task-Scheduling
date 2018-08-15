@@ -1,7 +1,9 @@
 package gui.model;
 
+import com.sun.jdi.connect.Connector;
 import common.*;
 import gui.listeners.AlgorithmListener;
+import parser.ArgumentParser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,8 +11,9 @@ import java.util.List;
 public class ChartModel implements AlgorithmListener {
 
     private int _processorNum;
+    private State _state;
 
-    public ChartModel(){
+    public ChartModel(int ProcessorNum){
 
     }
 

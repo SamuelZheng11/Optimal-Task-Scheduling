@@ -3,6 +3,7 @@ package parallelprocesses;
 import common.*;
 import cost_function.CostFunctionService;
 
+import gui.model.ChartModel;
 import gui.model.StatisticsModel;
 import gui.view.MainScreen;
 import javafx.application.Application;
@@ -29,16 +30,17 @@ public class Main extends Application {
     static int counter = 0;
 
     public void start(Stage primaryStage) throws Exception {
-
-
-        StatisticsModel model = new StatisticsModel();
         _argumentsParser = new KernelParser(this);
+
+        StatisticsModel sModel = new StatisticsModel();
+        ChartModel cModel = new ChartModel(_argumentsParser.getProcessorNo());
+
 
 
         Task task = new Task<Void>() {
             @Override
             public Void call() {
-                InitialiseScheduling(model);
+                InitialiseScheduling(sModel);
                 return null;
             }
         };
@@ -46,7 +48,7 @@ public class Main extends Application {
         new Thread(task).start();
 
         if( _argumentsParser.displayVisuals()){
-            MainScreen mainScreen = new MainScreen(primaryStage, model);
+            MainScreen mainScreen = new MainScreen(primaryStage, sModel, cModel);
         }
 
     }
@@ -74,7 +76,6 @@ public class Main extends Application {
 
         System.out.println("Finished");
         //todo call algorithm and pass the model
-        //System.exit(0);
 
     }
 
