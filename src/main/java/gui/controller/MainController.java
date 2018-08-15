@@ -1,8 +1,8 @@
 package gui.controller;
 
 import gui.model.StatisticsModel;
-import org.jfree.data.category.CategoryDataset;
-import org.jfree.data.general.DatasetUtilities;
+import gui.view.PieChartScreen;
+import javafx.concurrent.Task;
 
 public class MainController {
 
@@ -11,6 +11,23 @@ public class MainController {
 
     public void setModel(StatisticsModel model){
         _model = model;
+    }
+
+    public void startPieChart(PieChartScreen pieChartScreen){
+
+        Task task = new Task<Void>() {
+            @Override
+            public Void call() {
+                while(true){
+                    pieChartScreen.UpdatePieChart();
+                }
+            }
+        };
+
+        new Thread(task).start();
+
+
+
     }
 
 

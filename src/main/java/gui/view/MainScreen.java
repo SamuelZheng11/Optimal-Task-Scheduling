@@ -7,6 +7,7 @@ import gui.model.StatisticsModel;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.chart.PieChart;
 import javafx.scene.control.SplitPane;
 import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
@@ -31,6 +32,10 @@ public class MainScreen {
         Canvas canvas = ((Canvas)loader.getNamespace().get("chartCanvas"));
         GraphicsContext gc = canvas.getGraphicsContext2D();
         ChartScreen chart = new ChartScreen(gc);
+
+        PieChart pieChart = ((PieChart)loader.getNamespace().get("pieChart"));
+        PieChartScreen pieChartScreen = new PieChartScreen(pieChart);
+        _controller.startPieChart(pieChartScreen);
 
         // For mocking change to null and update with new method
         chart.drawChart(new ChartModel());
