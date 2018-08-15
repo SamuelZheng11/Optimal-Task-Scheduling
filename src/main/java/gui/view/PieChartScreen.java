@@ -19,7 +19,7 @@ public class PieChartScreen {
         _pieChart.setData(_data);
     }
 
-    public void UpdatePieChart(){
+    public void updatePieChart(){
 
         int mb = 1024*1024;
 

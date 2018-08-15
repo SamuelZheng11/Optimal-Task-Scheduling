@@ -9,6 +9,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.chart.PieChart;
 import javafx.scene.control.SplitPane;
+import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -35,7 +36,11 @@ public class MainScreen {
 
         PieChart pieChart = ((PieChart)loader.getNamespace().get("pieChart"));
         PieChartScreen pieChartScreen = new PieChartScreen(pieChart);
-        _controller.startPieChart(pieChartScreen);
+
+
+        TextArea textArea = ((TextArea)loader.getNamespace().get("statisticsTextArea"));
+        StatisticsScreen statisticsScreen = new StatisticsScreen(textArea);
+        _controller.startStatistics(pieChartScreen, statisticsScreen);
 
         // For mocking change to null and update with new method
         chart.drawChart(new ChartModel());

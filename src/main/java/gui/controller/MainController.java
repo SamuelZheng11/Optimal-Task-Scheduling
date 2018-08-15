@@ -2,6 +2,7 @@ package gui.controller;
 
 import gui.model.StatisticsModel;
 import gui.view.PieChartScreen;
+import gui.view.StatisticsScreen;
 import javafx.concurrent.Task;
 
 public class MainController {
@@ -13,21 +14,19 @@ public class MainController {
         _model = model;
     }
 
-    public void startPieChart(PieChartScreen pieChartScreen){
+    public void startStatistics(PieChartScreen pieChartScreen, StatisticsScreen statisticsScreen){
 
         Task task = new Task<Void>() {
             @Override
             public Void call() {
                 while(true){
-                    pieChartScreen.UpdatePieChart();
+                    statisticsScreen.updateStatisticsScreen();
+                    pieChartScreen.updatePieChart();
                 }
             }
         };
 
         new Thread(task).start();
-
-
-
     }
 
 
