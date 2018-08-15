@@ -2,9 +2,9 @@ package gui.view;
 
 
 import gui.controller.MainController;
+import gui.listeners.ModelChangeListener;
 import gui.model.ChartModel;
 import gui.model.StatisticsModel;
-import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.chart.PieChart;
@@ -14,13 +14,16 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import java.io.IOException;
 
-public class MainScreen {
+public class MainScreen implements ModelChangeListener {
 
     MainController _controller;
+    private ChartScreen _chart;
+    private ChartModel _chartModel;
 
     public MainScreen(Stage primaryStage, StatisticsModel statModel, ChartModel chartModel) throws IOException {
 
         _controller = new MainController();
+        _chartModel = chartModel;
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/mainScreen.fxml"));
         loader.setController(_controller);
@@ -31,19 +34,22 @@ public class MainScreen {
 
         Canvas canvas = ((Canvas)loader.getNamespace().get("chartCanvas"));
         GraphicsContext gc = canvas.getGraphicsContext2D();
-        ChartScreen chart = new ChartScreen(gc);
+        _chart = new ChartScreen(gc);
 
         PieChart pieChart = ((PieChart)loader.getNamespace().get("pieChart"));
         PieChartScreen pieChartScreen = new PieChartScreen(pieChart);
         _controller.startPieChart(pieChartScreen);
 
         // For mocking change to null and update with new method
-        chart.drawChart(chartModel);
+        _chart.drawChart(chartModel);
 
         primaryStage.setScene(new Scene(pane, 1280, 720));
         primaryStage.show();
     }
 
+    public void update(){
+        _chart.drawChart(_chartModel);
+    }
 
 
 }

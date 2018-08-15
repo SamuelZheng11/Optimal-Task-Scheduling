@@ -36,6 +36,7 @@ public class Main extends Application {
         //Validate out arguments and make sure they are correct
         _argumentsParser = new KernelParser(this);
         validateArguments();
+        _maxThreads = _argumentsParser.getMaxThreads();
 
         //Parse the graph so that our data is ready for use in any point post this line.
         dg.setFilePath(_argumentsParser.getFilePath());
