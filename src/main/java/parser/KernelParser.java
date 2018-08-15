@@ -72,11 +72,31 @@ public class KernelParser extends AbstractParser {
 
     @Override
     public String getFilePath() {
+        try {
+            return _commands.getArgs()[0];
+            //Catching exception e is god awful practice but this is the exception thrown by apache cli
+        }catch (Exception e){
+            System.out.println("Please specify the input filepath.");
+            System.out.println("Usage: java -jar JARNAME InputFilePath Processors [-v] [-p]");
+            System.exit(1);
+        }
         return _commands.getArgs()[0];
     }
 
     @Override
     public int getProcessorNo(){
+        try{
+            return Integer.valueOf(_commands.getArgs()[1]);
+        }catch(NumberFormatException e){
+            System.out.println("Please specify the number of processors the tasks are to be scheduled on after the input filepath.");
+            System.out.println("Usage: java -jar JARNAME InputFilePath Processors [-v] [-p]");
+            System.exit(1);
+        }
+        catch (Exception e){
+            System.out.println("Please specify the number of processors the tasks are to be scheduled on after the input filepath.");
+            System.out.println("Usage: java -jar JARNAME InputFilePath Processors [-v] [-p]");
+            System.exit(1);
+        }
         return Integer.valueOf(_commands.getArgs()[1]);
     }
 }

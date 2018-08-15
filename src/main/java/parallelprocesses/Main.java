@@ -34,7 +34,7 @@ public class Main extends Application {
 
         StatisticsModel model = new StatisticsModel();
         _argumentsParser = new KernelParser(this);
-        _maxThreads = _argumentsParser.getMaxThreads();
+        validateArguments();
 
 
         Task task = new Task<Void>() {
@@ -158,6 +158,11 @@ public class Main extends Application {
             }
         }
         return bestFoundState;
+    }
+
+    private void validateArguments(){
+        _argumentsParser.getFilePath();
+        _argumentsParser.getProcessorNo();
     }
 
 }
