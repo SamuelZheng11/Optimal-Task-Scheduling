@@ -1,13 +1,9 @@
 package parallelprocesses;
 
-
 import common.*;
-
-import common.DependencyGraph;
-import common.State;
-import common.TaskDependencyNode;
 import cost_function.CostFunctionService;
 
+import gui.model.ChartModel;
 import gui.model.StatisticsModel;
 import gui.view.MainScreen;
 import javafx.application.Application;
@@ -15,6 +11,8 @@ import javafx.concurrent.Task;
 
 import javafx.stage.Stage;
 import org.apache.commons.cli.*;
+import parser.ArgumentParser;
+import parser.KernelParser;
 
 
 import java.io.IOException;
@@ -27,90 +25,55 @@ public class Main extends Application {
         launch(args);
     }
 
-    private static CommandLine _commands;
-
-    private static final int DEFAULT_NUMBER_OF_PROCESSORS = 1;
-
-    private static final String DEFAULT_OUTPUT_ENDING_NAME = "-output";
-
-    private static final String OUTPUT_FILE_FORMAT = ".dot";
+    private ArgumentParser _argumentsParser;
+    private int _maxThreads;
 
     static int counter = 0;
 
     public void start(Stage primaryStage) throws Exception {
+        DependencyGraph dg = DependencyGraph.getGraph();
 
+        //Validate out arguments and make sure they are correct
+        _argumentsParser = new KernelParser(this);
+        validateArguments();
+        _maxThreads = _argumentsParser.getMaxThreads();
 
-        StatisticsModel model = new StatisticsModel();
+        //Parse the graph so that our data is ready for use in any point post this line.
+        dg.setFilePath(_argumentsParser.getFilePath());
+        dg.parse();
 
-        _commands = getCommands();
-
+        StatisticsModel sModel = new StatisticsModel();
+        ChartModel cModel = new ChartModel(_argumentsParser.getProcessorNo(), DependencyGraph.getGraph().getLinearScheduleDuration());
 
         Task task = new Task<Void>() {
             @Override
             public Void call() {
-                InitialiseScheduling(model);
+                InitialiseScheduling(sModel);
                 return null;
             }
         };
 
         new Thread(task).start();
 
-        if( getCommandLine().hasOption("v")){
-            MainScreen mainScreen = new MainScreen(primaryStage, model);
+
+
+        if( _argumentsParser.displayVisuals()){
+            MainScreen mainScreen = new MainScreen(primaryStage, sModel, cModel);
+            cModel.addListener(mainScreen);
         }
 
     }
-
-
-
-    private CommandLine getCommands() throws ParseException
-    {
-        Options options = new Options();
-        options.addOption("p", true, "The number of processors for the algorithm to run on");
-        options.addOption("v", "Whether to visualise the search");
-        options.addOption("o", true,"The output file");
-        CommandLineParser parser = new DefaultParser();
-        String[] params = new String[getParameters().getRaw().size()];
-        params = getParameters().getRaw().toArray(params);
-        return parser.parse(options, params);
-    }
-
 
 
     public void InitialiseScheduling(StatisticsModel model) {
-        CommandLine commands = null;
-        try {
-            commands = getCommands();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
         DependencyGraph dg = DependencyGraph.getGraph();
-        dg.setFilePath(commands.getArgs()[0]);
-        //todo parsing of command line args to graph parsing function
-        dg.parse();
         System.out.println("Calculating schedule, Please wait ...");
-
-
-        int numberOfProcessors;
-        if(commands.getOptionValue('p') != null){
-            numberOfProcessors = Integer.valueOf(commands.getOptionValue('p'));
-        } else {
-            numberOfProcessors = DEFAULT_NUMBER_OF_PROCESSORS;
-        }
-
-        State bestFoundSoln = dg.initialState(numberOfProcessors);
+        State bestFoundSoln = dg.initialState(_argumentsParser.getProcessorNo());
         List<TaskDependencyNode> freeTasks = dg.getFreeTasks(null);
 
-        bestFoundSoln = recursion(bestFoundSoln.getJobListDuration().length, freeTasks, 0, null, bestFoundSoln, dg.getNodes().size(), bestFoundSoln.getJobListDuration()[0]);
+        bestFoundSoln = recursion(_argumentsParser.getProcessorNo(), freeTasks, 0, null, bestFoundSoln, dg.getNodes().size(), bestFoundSoln.getJobListDuration()[0]);
 
-        String outputName = commands.getOptionValue('o');
-
-        if(outputName == null){
-            String[] outputNameWithFileDirectory = dg.getFilePath().split(".dot")[0].split("/");
-            outputName = outputNameWithFileDirectory[outputNameWithFileDirectory.length-1] + DEFAULT_OUTPUT_ENDING_NAME + OUTPUT_FILE_FORMAT;
-        } else {
-            outputName += OUTPUT_FILE_FORMAT;
-        }
+        String outputName = _argumentsParser.getOutputFileName();
 
         try {
             dg.generateOutput(bestFoundSoln, outputName);
@@ -120,7 +83,6 @@ public class Main extends Application {
 
         System.out.println("Finished");
         //todo call algorithm and pass the model
-        //System.exit(0);
 
     }
 
@@ -153,6 +115,7 @@ public class Main extends Application {
                     }
                     depth++;
                     TaskDependencyNode currentNode = freeTasks.get(i);
+                    List<TaskDependencyNode> prospectiveFreeTasks = new ArrayList<>(freeTasks);
 
                     //add all children of the task to the freetask list and remove the task
                     for (int k = 0; k < currentNode._children.size(); k++) {
@@ -172,20 +135,16 @@ public class Main extends Application {
                                     }
                                 }
 
-
-                                if (numUnresolvedParents == 0 ){
-                                    break;
-                                }
                             }
                             if (numUnresolvedParents == 0 ){
                                 break;
                             }
                         }
                         if (numUnresolvedParents == 0) {
-                            freeTasks.add(currentNode._children.get(k)._child);
+                            prospectiveFreeTasks.add(currentNode._children.get(k)._child);
                         }
                     }
-                    freeTasks.remove(currentNode);
+                    prospectiveFreeTasks.remove(currentNode);
                     //create the new state with the task scheduled to evaluate pass to the recursion
                     State newState = new CostFunctionService().scheduleNode(currentNode, j, state, linearScheduleTime);
 
@@ -195,17 +154,12 @@ public class Main extends Application {
                     }
                     //if possibly better and not complete, recurse.
                     else if (newState.getHeuristicValue() <= bestFoundState.getHeuristicValue() && depth < numTasks) {
-                        State foundState = recursion(numProc, freeTasks, depth, newState, bestFoundState, numTasks, linearScheduleTime);
+                        State foundState = recursion(numProc, prospectiveFreeTasks, depth, newState, bestFoundState, numTasks, linearScheduleTime);
                         //Recursion will always return a complete state. If this is better, update.
                         if (foundState.getHeuristicValue() <= bestFoundState.getHeuristicValue()) {
                             bestFoundState = foundState;
                         }
                     }
-                    //undo changes to freetasks for next iteration
-                    for (int k = 0; k < currentNode._children.size(); k++) {
-                        freeTasks.remove(currentNode._children.get(k)._child);
-                    }
-                    freeTasks.add(currentNode);
                     depth--;
                 }
             }
@@ -213,9 +167,9 @@ public class Main extends Application {
         return bestFoundState;
     }
 
-    public static CommandLine getCommandLine(){
-        return _commands;
-
+    private void validateArguments(){
+        _argumentsParser.getFilePath();
+        _argumentsParser.getProcessorNo();
     }
 
 }
