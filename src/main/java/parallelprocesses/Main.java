@@ -25,6 +25,7 @@ public class Main extends Application {
     }
 
     private ArgumentParser _argumentsParser;
+    private int _maxThreads;
 
     static int counter = 0;
 
@@ -33,6 +34,7 @@ public class Main extends Application {
 
         StatisticsModel model = new StatisticsModel();
         _argumentsParser = new KernelParser(this);
+        _maxThreads = _argumentsParser.getMaxThreads();
 
 
         Task task = new Task<Void>() {

@@ -12,4 +12,6 @@ public interface ArgumentParser {
     public String getFilePath();
 
     public boolean displayVisuals();
+
+    public int getMaxThreads();
 }

@@ -27,11 +27,11 @@ public class KernelParser extends AbstractParser {
     }
 
     @Override
-    public int getProcessorNo() {
+    public int getMaxThreads() {
         if(_commands.getOptionValue('p') != null){
-            _processor = Integer.valueOf(_commands.getOptionValue('p'));
+            _maxThreads = Integer.valueOf(_commands.getOptionValue('p'));
         }
-        return _processor;
+        return _maxThreads;
     }
 
     @Override
@@ -73,5 +73,10 @@ public class KernelParser extends AbstractParser {
     @Override
     public String getFilePath() {
         return _commands.getArgs()[0];
+    }
+
+    @Override
+    public int getProcessorNo(){
+        return Integer.valueOf(_commands.getArgs()[1]);
     }
 }
