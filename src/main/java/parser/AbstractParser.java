@@ -10,6 +10,7 @@ public abstract class AbstractParser implements ArgumentParser {
     protected String _output;
     protected String _filePath;
     protected int _maxThreads = Integer.valueOf(Defaults.MAXTHREADS.toString());
+    protected int _boostMultiplier = Integer.valueOf(Defaults.BOOSTMULTIPLIER.toString());
 
     @Override
     public int getProcessorNo() {
