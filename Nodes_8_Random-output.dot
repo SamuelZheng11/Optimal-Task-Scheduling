@@ -10,13 +10,3 @@ digraph "Nodes_8_Random-output.dot" {
 	1 -> 4	 [Weight=10];
 	1 -> 7	 [Weight=6];
 	3 -> 5	 [Weight=5];
-	3 -> 6	 [Weight=8];
-	5 -> 7	 [Weight=4];
-	6 -> 7	 [Weight=8];
-	0 -> 1	 [Weight=3];
-	0 -> 2	 [Weight=9];
-	0 -> 3	 [Weight=7];
-	0 -> 4	 [Weight=5];
-	0 -> 6	 [Weight=4];
-	0 -> 7	 [Weight=9];
-	2 -> 4	 [Weight=8];

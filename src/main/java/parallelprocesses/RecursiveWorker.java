@@ -16,6 +16,8 @@ public class RecursiveWorker implements Callable<Integer> {
     private State state;
     private int tasksScheduled;
     private RecursiveDoneListener listener;
+    private static int counter = 0;
+
 
     public RecursiveWorker(StateTreeBranch branch, RecursiveDoneListener listener) {
         if(branch.getStateSnapshot() == null){
@@ -36,6 +38,7 @@ public class RecursiveWorker implements Callable<Integer> {
     // linearScheduleTime: The total time it would take if this was all on processor (no comms delays),
     // recursionStore used to house the constant information
     public void recurse(List<TaskDependencyNode> freeTasks, State state, int tasksScheduled) {
+
         //If there are available tasks to schedule
         if (freeTasks.size() > 0) {
             //For each available task, try scheduling it on a processor
@@ -48,13 +51,26 @@ public class RecursiveWorker implements Callable<Integer> {
                     tasksScheduled++;
                     TaskDependencyNode currentNode = freeTasks.get(i);
                     List<TaskDependencyNode> prospectiveFreeTasks = new ArrayList<>(freeTasks);
+                    prospectiveFreeTasks.remove(currentNode);
 
                     //add all children of the task to the free task list and remove the task
                     for (int k = 0; k < currentNode._children.size(); k++) {
+
+                        this.counter++;
+                        System.out.println(counter);
+
+                        if(counter == 646){
+                            System.out.println(counter);
+                        }
+
+
                         TaskDependencyNode child = currentNode._children.get(k)._child;
                         int numUnresolvedParents = child._parents.size();
 
                         for (int l = 0; l <child._parents.size(); l++) {
+                            if(prospectiveFreeTasks.contains(child)){
+                                System.out.println("breaker");
+                            }
                             if (currentNode == child._parents.get(l)._parent){
                                 numUnresolvedParents--;
                                 continue;
@@ -65,7 +81,6 @@ public class RecursiveWorker implements Callable<Integer> {
                                 for (int n = 0; n < state.getJobLists().get(m).size(); n++) {
                                     if (state.getJobLists().get(m).get(n) instanceof TaskJob &&
                                             ((TaskJob) state.getJobLists().get(m).get(n)).getNode() == child._parents.get(l)._parent){
-                                        System.out.println(child._parents.get(l)._parent);
                                         numUnresolvedParents--;
                                         break nestedLoop;
                                     }
@@ -76,13 +91,9 @@ public class RecursiveWorker implements Callable<Integer> {
                             }
                         }
                         if (numUnresolvedParents == 0) {
-                            if(prospectiveFreeTasks.contains(currentNode._children.get(k)._child)){
-                                System.out.println("breaker");
-                            }
                             prospectiveFreeTasks.add(currentNode._children.get(k)._child);
                         }
                     }
-                    prospectiveFreeTasks.remove(currentNode);
 
                     //create the new state with the task scheduled to evaluate pass to the recursion
                     State newState = new CostFunctionService().scheduleNode(currentNode, j, state, RecursionStore.getLinearScheduleTime());
