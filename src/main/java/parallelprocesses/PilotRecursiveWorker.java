@@ -51,20 +51,24 @@ public class PilotRecursiveWorker {
                                 numUnresolvedParents--;
                                 continue;
                             }
+                            boolean parentFound = false;
                             for (int m = 0; m < state.getJobLists().size(); m++) {
                                 for (int n = 0; n < state.getJobLists().get(m).size(); n++) {
                                     if (state.getJobLists().get(m).get(n) instanceof TaskJob &&
                                             ((TaskJob) state.getJobLists().get(m).get(n)).getNode() == child._parents.get(l)._parent){
                                         numUnresolvedParents--;
+                                        parentFound = true;
                                     }
                                 }
                             }
-                            if (numUnresolvedParents == 0) {
+                            if (!parentFound){
                                 break;
                             }
                         }
                         if (numUnresolvedParents == 0) {
-                            prospectiveFreeTasks.add(currentNode._children.get(k)._child);
+                            if (!prospectiveFreeTasks.contains(currentNode._children.get(k)._child)) {
+                                prospectiveFreeTasks.add(currentNode._children.get(k)._child);
+                            }
                         }
                     }
 

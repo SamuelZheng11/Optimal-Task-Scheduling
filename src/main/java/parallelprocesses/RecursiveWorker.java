@@ -16,7 +16,6 @@ public class RecursiveWorker implements Callable<Integer> {
     private State state;
     private int tasksScheduled;
     private RecursiveDoneListener listener;
-    private static int counter = 0;
 
 
     public RecursiveWorker(StateTreeBranch branch, RecursiveDoneListener listener) {
@@ -56,31 +55,20 @@ public class RecursiveWorker implements Callable<Integer> {
                     //add all children of the task to the free task list and remove the task
                     for (int k = 0; k < currentNode._children.size(); k++) {
 
-                        this.counter++;
-                        System.out.println(counter);
-
-                        if(counter == 646){
-                            System.out.println(counter);
-                        }
-
-
                         TaskDependencyNode child = currentNode._children.get(k)._child;
                         int numUnresolvedParents = child._parents.size();
 
-                        for (int l = 0; l <child._parents.size(); l++) {
-                            if(prospectiveFreeTasks.contains(child)){
-                                System.out.println("breaker");
-                            }
-                            if (currentNode == child._parents.get(l)._parent){
+                        for (int parentIndex = 0; parentIndex <child._parents.size(); parentIndex++) {
+                            if (currentNode == child._parents.get(parentIndex)._parent){
                                 numUnresolvedParents--;
                                 continue;
                             }
                             // if at any point a parent has been found break out of job list search and look at next parent
                             nestedLoop:
-                            for (int m = 0; m < state.getJobLists().size(); m++) {
-                                for (int n = 0; n < state.getJobLists().get(m).size(); n++) {
-                                    if (state.getJobLists().get(m).get(n) instanceof TaskJob &&
-                                            ((TaskJob) state.getJobLists().get(m).get(n)).getNode() == child._parents.get(l)._parent){
+                            for (int processorIndex = 0; processorIndex < state.getJobLists().size(); processorIndex++) {
+                                for (int taskIndex = 0; taskIndex < state.getJobLists().get(processorIndex).size(); taskIndex++) {
+                                    if (state.getJobLists().get(processorIndex).get(taskIndex) instanceof TaskJob &&
+                                            ((TaskJob) state.getJobLists().get(processorIndex).get(taskIndex)).getNode() == child._parents.get(parentIndex)._parent){
                                         numUnresolvedParents--;
                                         break nestedLoop;
                                     }
