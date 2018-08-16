@@ -45,20 +45,19 @@ public class PilotRecursiveWorker {
                     for (int k = 0; k < currentNode._children.size(); k++) {
                         TaskDependencyNode child = currentNode._children.get(k)._child;
                         int numUnresolvedParents = child._parents.size();
-                        boolean hasConsideredCurrentNodeAsParent = false;
 
-                        for (int l = 0; l < state.getJobLists().size(); l++) {
-                            for (int m = 0; m < child._parents.size(); m++) {
-                                if (!hasConsideredCurrentNodeAsParent && currentNode == child._parents.get(m)._parent) {
-                                    numUnresolvedParents--;
-                                    hasConsideredCurrentNodeAsParent = true;
-                                }
-                                for (int n = 0; n < state.getJobLists().get(l).size(); n++) {
-                                    if (state.getJobLists().get(l).get(n) instanceof TaskJob && ((TaskJob) state.getJobLists().get(l).get(n)).getNode() == child._parents.get(m)._parent) {
+                        for (int l = 0; l <child._parents.size(); l++) {
+                            if (currentNode == child._parents.get(l)._parent){
+                                numUnresolvedParents--;
+                                continue;
+                            }
+                            for (int m = 0; m < state.getJobLists().size(); m++) {
+                                for (int n = 0; n < state.getJobLists().get(m).size(); n++) {
+                                    if (state.getJobLists().get(m).get(n) instanceof TaskJob &&
+                                            ((TaskJob) state.getJobLists().get(m).get(n)).getNode() == child._parents.get(l)._parent){
                                         numUnresolvedParents--;
                                     }
                                 }
-
                             }
                             if (numUnresolvedParents == 0) {
                                 break;

@@ -45,6 +45,7 @@ public class RecursiveWorker implements Callable<Integer> {
                     if (j < RecursionStore.getNumberOfProcessors()-1 && state.getJobListDuration()[j] == 0 && state.getJobListDuration()[j + 1] == 0) {
                         continue;
                     }
+                    tasksScheduled++;
                     TaskDependencyNode currentNode = freeTasks.get(i);
                     List<TaskDependencyNode> prospectiveFreeTasks = new ArrayList<>(freeTasks);
 
@@ -58,11 +59,15 @@ public class RecursiveWorker implements Callable<Integer> {
                                 numUnresolvedParents--;
                                 continue;
                             }
+                            // if at any point a parent has been found break out of job list search and look at next parent
+                            nestedLoop:
                             for (int m = 0; m < state.getJobLists().size(); m++) {
                                 for (int n = 0; n < state.getJobLists().get(m).size(); n++) {
                                     if (state.getJobLists().get(m).get(n) instanceof TaskJob &&
                                             ((TaskJob) state.getJobLists().get(m).get(n)).getNode() == child._parents.get(l)._parent){
+                                        System.out.println(child._parents.get(l)._parent);
                                         numUnresolvedParents--;
+                                        break nestedLoop;
                                     }
                                 }
                             }
@@ -71,13 +76,16 @@ public class RecursiveWorker implements Callable<Integer> {
                             }
                         }
                         if (numUnresolvedParents == 0) {
+                            if(prospectiveFreeTasks.contains(currentNode._children.get(k)._child)){
+                                System.out.println("breaker");
+                            }
                             prospectiveFreeTasks.add(currentNode._children.get(k)._child);
                         }
                     }
                     prospectiveFreeTasks.remove(currentNode);
+
                     //create the new state with the task scheduled to evaluate pass to the recursion
                     State newState = new CostFunctionService().scheduleNode(currentNode, j, state, RecursionStore.getLinearScheduleTime());
-                    tasksScheduled++;
 
                     //if this state is complete and better than existing best, update.
                     if (newState.getHeuristicValue() < RecursionStore.getBestStateHeuristic() && tasksScheduled == RecursionStore.getNumberOfTasksTotal()) {

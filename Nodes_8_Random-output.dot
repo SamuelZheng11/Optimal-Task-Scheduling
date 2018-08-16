@@ -2,16 +2,17 @@ digraph "Nodes_8_Random-output.dot" {
 	1	 [Weight=88,Start=38,Processor=1];
 	3	 [Weight=159,Start=126,Processor=1];
 	5	 [Weight=141,Start=285,Processor=1];
+	6	 [Weight=141,Start=426,Processor=1];
 	0	 [Weight=35,Start=0,Processor=2];
 	2	 [Weight=176,Start=35,Processor=2];
 	4	 [Weight=176,Start=211,Processor=2];
-	6	 [Weight=141,Start=387,Processor=2];
-	7	 [Weight=53,Start=528,Processor=2];
+	4	 [Weight=176,Start=387,Processor=2];
 	1 -> 4	 [Weight=10];
 	1 -> 7	 [Weight=6];
 	3 -> 5	 [Weight=5];
 	3 -> 6	 [Weight=8];
 	5 -> 7	 [Weight=4];
+	6 -> 7	 [Weight=8];
 	0 -> 1	 [Weight=3];
 	0 -> 2	 [Weight=9];
 	0 -> 3	 [Weight=7];
@@ -19,8 +20,3 @@ digraph "Nodes_8_Random-output.dot" {
 	0 -> 6	 [Weight=4];
 	0 -> 7	 [Weight=9];
 	2 -> 4	 [Weight=8];
-	2 -> 5	 [Weight=6];
-	2 -> 7	 [Weight=3];
-	4 -> 6	 [Weight=2];
-	6 -> 7	 [Weight=8];
-}
