@@ -1,7 +1,6 @@
 package parallelprocesses;
 
 import common.*;
-import cost_function.CostFunctionService;
 
 import exception_classes.RecursiveWorkerException;
 import gui.model.StatisticsModel;
@@ -10,7 +9,6 @@ import javafx.application.Application;
 import javafx.concurrent.Task;
 
 import javafx.stage.Stage;
-import org.apache.commons.cli.*;
 import parser.ArgumentParser;
 import parser.KernelParser;
 
@@ -20,10 +18,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 public class Main extends Application implements PilotDoneListener, RecursiveDoneListener {
 
@@ -35,7 +31,7 @@ public class Main extends Application implements PilotDoneListener, RecursiveDon
 
     private static int numberOfBranchesCompleted;
 
-    private static int totalNumberOfStateTreeBranches;
+    private static int _totalNumberOfStateTreeBranches;
 
     private ExecutorService _pool;
 
@@ -76,13 +72,21 @@ public class Main extends Application implements PilotDoneListener, RecursiveDon
         State bestFoundSoln = dg.initialState(_argumentsParser.getProcessorNo());
         List<TaskDependencyNode> freeTasks = dg.getFreeTasks(null);
 
+        // initialise store and thread pool
         RecursionStore.constructRecursionStoreSingleton(_argumentsParser.getProcessorNo(), bestFoundSoln.getJobListDuration()[0], dg.getNodes().size(), _argumentsParser.getMaxThreads());
         RecursionStore.processPotentialBestState(bestFoundSoln);
         RecursionStore.pushStateTreeQueue(new StateTreeBranch(generateInitalState(RecursionStore.getBestStateHeuristic()), freeTasks, 0));
+        _pool = Executors.newFixedThreadPool(_argumentsParser.getMaxThreads());
+
+        // if the number of processors is one, then schedule everything on on recursive worker
+        if(_argumentsParser.getMaxThreads() == Integer.valueOf(Defaults.MAXTHREADS.toString())){
+            _totalNumberOfStateTreeBranches = RecursionStore.getTaskQueueSize();
+            RecursiveWorker singleWorker = new RecursiveWorker(RecursionStore.pollStateTreeQueue(), this);
+            _pool.submit(singleWorker);
+            return;
+        }
 
         PilotRecursiveWorker pilot = new PilotRecursiveWorker(_argumentsParser.getBoostMultiplier(), this);
-
-        _pool = Executors.newFixedThreadPool(_argumentsParser.getMaxThreads());
         _pool.submit(pilot);
     }
 
@@ -104,7 +108,7 @@ public class Main extends Application implements PilotDoneListener, RecursiveDon
         }
 
         Set<RecursiveWorker> callables = new HashSet<>();
-        this.totalNumberOfStateTreeBranches = RecursionStore.getTaskQueueSize();
+        this._totalNumberOfStateTreeBranches = RecursionStore.getTaskQueueSize();
         while (RecursionStore.getTaskQueueSize() > 0) {
             callables.add(new RecursiveWorker(RecursionStore.pollStateTreeQueue(), this));
         }
@@ -126,7 +130,7 @@ public class Main extends Application implements PilotDoneListener, RecursiveDon
     public synchronized void handleThreadRecursionHasCompleted() {
         //ensure that all branches have been explored before writing output
         this.numberOfBranchesCompleted++;
-        if (this.numberOfBranchesCompleted != this.totalNumberOfStateTreeBranches) {
+        if (this.numberOfBranchesCompleted != this._totalNumberOfStateTreeBranches) {
             return;
         }
         generateOutputAndClose();
