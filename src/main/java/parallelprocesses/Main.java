@@ -81,12 +81,9 @@ public class Main extends Application implements PilotDoneListener, RecursiveDon
         RecursionStore.pushStateTreeQueue(new StateTreeBranch(generateInitalState(RecursionStore.getBestStateHeuristic()), freeTasks, 0));
 
         PilotRecursiveWorker pilot = new PilotRecursiveWorker(_argumentsParser.getBoostMultiplier(), this);
-        pilot.recurse();
 
-
-        System.out.println("Finished");
-        //todo call algorithm and pass the model
-
+        _pool = Executors.newFixedThreadPool(_argumentsParser.getMaxThreads());
+        _pool.submit(pilot);
     }
 
     private static State generateInitalState(double initialHeuristic) {
@@ -101,6 +98,10 @@ public class Main extends Application implements PilotDoneListener, RecursiveDon
 
     @Override
     public void handlePilotRunHasCompleted() {
+        if(RecursionStore.getTaskQueueSize() < _argumentsParser.getBoostMultiplier() * _argumentsParser.getMaxThreads()){
+            generateOutputAndClose();
+            return;
+        }
 
         Set<RecursiveWorker> callables = new HashSet<>();
         this.totalNumberOfStateTreeBranches = RecursionStore.getTaskQueueSize();
@@ -112,7 +113,6 @@ public class Main extends Application implements PilotDoneListener, RecursiveDon
             throw new RecursiveWorkerException("No tasks are assigned to the thread call-ables");
         }
 
-        _pool = Executors.newFixedThreadPool(_argumentsParser.getMaxThreads());
         try {
             _pool.invokeAll(callables);
         } catch (InterruptedException ie) {
@@ -129,7 +129,10 @@ public class Main extends Application implements PilotDoneListener, RecursiveDon
         if (this.numberOfBranchesCompleted != this.totalNumberOfStateTreeBranches) {
             return;
         }
+        generateOutputAndClose();
+    }
 
+    public void generateOutputAndClose(){
         DependencyGraph dg = DependencyGraph.getGraph();
         String outputName = _argumentsParser.getOutputFileName();
 
@@ -140,6 +143,7 @@ public class Main extends Application implements PilotDoneListener, RecursiveDon
         }
 
         System.out.println("Finished");
+        System.exit(0);
     }
 
     private void validateArguments() {

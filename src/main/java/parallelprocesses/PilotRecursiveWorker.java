@@ -8,26 +8,43 @@ import cost_function.CostFunctionService;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PilotRecursiveWorker {
+public class PilotRecursiveWorker implements Runnable {
     private int recursiveDepth = 0;
 
     private Integer depth = 0;
     private int stateTreeStopValue;
     private PilotDoneListener listener;
+    private int counter =0;
 
     public PilotRecursiveWorker(int processorMultiplierWeight, PilotDoneListener listener) {
         this.stateTreeStopValue = processorMultiplierWeight * RecursionStore.getNumberOfCores();
         this.listener = listener;
     }
 
-    public void recurse() {
+    @Override
+    public void run(){
+        try{
+            recurse();
+        } catch(StackOverflowError sofe){
+            sofe.getStackTrace();
+        }
+    }
+
+    private void recurse() {
         this.recursiveDepth++;
         // pop next state-tree branch for expansion
         StateTreeBranch stb = RecursionStore.pollStateTreeQueue();
+
+        // check if the best state has been found by the pilot
+        if(stb == null){
+            done();
+            return;
+        }
+
         List<TaskDependencyNode> freeTasks = stb.getFreeNodes();
 
         // check if the stopping condition has been met
-        if (RecursionStore.getTaskQueueSize() < this.stateTreeStopValue) {
+        if (RecursionStore.getTaskQueueSize() < this.stateTreeStopValue && stb != null) {
             //For each available task, try scheduling it on a processor
             for (int i = 0; i < freeTasks.size(); i++) {
                 //if the current processor and the next processor are empty, skip the current one (all empty processors are equivalent)
@@ -85,6 +102,7 @@ public class PilotRecursiveWorker {
             }
         this.recurse();
         }
+
         this.recursiveDepth--;
         if(this.recursiveDepth == 0){
             done();
