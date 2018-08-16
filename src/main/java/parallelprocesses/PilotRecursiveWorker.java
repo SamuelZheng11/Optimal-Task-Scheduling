@@ -11,10 +11,8 @@ import java.util.List;
 public class PilotRecursiveWorker implements Runnable {
     private int recursiveDepth = 0;
 
-    private Integer depth = 0;
     private int stateTreeStopValue;
     private PilotDoneListener listener;
-    private int counter =0;
 
     public PilotRecursiveWorker(int processorMultiplierWeight, PilotDoneListener listener) {
         this.stateTreeStopValue = processorMultiplierWeight * RecursionStore.getNumberOfCores();
@@ -25,8 +23,8 @@ public class PilotRecursiveWorker implements Runnable {
     public void run(){
         try{
             recurse();
-        } catch(StackOverflowError sofe){
-            sofe.getStackTrace();
+        } catch(Exception e){
+            listener.handleThreadException(e);
         }
     }
 

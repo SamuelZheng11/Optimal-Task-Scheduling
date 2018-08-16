@@ -101,13 +101,17 @@ public class RecursiveWorker implements Callable<Integer> {
     }
 
     @Override
-    public Integer call() throws Exception {
+    public Integer call() {
+        try{
+            this.recurse(
+                    new ArrayList<>(this.freeTasks),
+                    new State(this.state.getJobLists(), this.state.getJobListDuration(), this.state.getHeuristicValue()),
+                    new Integer(this.tasksScheduled));
 
-        this.recurse(
-                new ArrayList<>(this.freeTasks),
-                new State(this.state.getJobLists(), this.state.getJobListDuration(), this.state.getHeuristicValue()),
-                new Integer(this.tasksScheduled));
-        done();
+            done();
+        } catch (Exception e){
+            listener.handleThreadException(e);
+        }
         return 0;
     }
 

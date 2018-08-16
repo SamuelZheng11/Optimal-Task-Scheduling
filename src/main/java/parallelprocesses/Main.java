@@ -154,4 +154,11 @@ public class Main extends Application implements PilotDoneListener, RecursiveDon
         _argumentsParser.getFilePath();
         _argumentsParser.getProcessorNo();
     }
+
+    @Override
+    public void handleThreadException(Exception e){
+        System.out.println("A thread has thrown an uncaught exception");
+        e.printStackTrace();
+        System.out.println(1);
+    }
 }
