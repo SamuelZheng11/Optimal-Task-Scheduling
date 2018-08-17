@@ -61,7 +61,8 @@ public class Main extends Application {
         dg.parse();
         System.out.println("Calculating schedule, Please wait ...");
 
-        State bestFoundSoln = dg.initialState(_argumentsParser.getProcessorNo());
+        GreedyState greedyState = new GreedyState();
+        State bestFoundSoln = greedyState.getInitialState(dg, _argumentsParser.getProcessorNo());
         List<TaskDependencyNode> freeTasks = dg.getFreeTasks(null);
 
         bestFoundSoln = recursion(_argumentsParser.getProcessorNo(), freeTasks, 0, null, bestFoundSoln, dg.getNodes().size(), bestFoundSoln.getJobListDuration()[0]);
