@@ -39,15 +39,20 @@ public class TestParser implements ArgumentParser {
         return 1;
     }
 
-    public void setProcessorNo(int processors){
+    @Override
+    public int getBoostMultiplier() {
+        return 5;
+    }
+
+    public void setProcessorNo(int processors) {
 
     }
 
-    public void setFileSuffix(){
+    public void setFileSuffix() {
 
     }
 
-    public void setOutputFileFormat(){
+    public void setOutputFileFormat() {
 
     }
 }

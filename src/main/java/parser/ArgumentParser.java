@@ -14,4 +14,6 @@ public interface ArgumentParser {
     public boolean displayVisuals();
 
     public int getMaxThreads();
+
+    public int getBoostMultiplier();
 }
