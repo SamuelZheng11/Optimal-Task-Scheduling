@@ -67,7 +67,7 @@ public class Main extends Application implements PilotDoneListener, RecursiveDon
         //todo parsing of command line args to graph parsing function
         dg.parse();
         System.out.println("Calculating schedule, Please wait ...");
-        
+
         GreedyState greedyState = new GreedyState();
         State bestFoundSoln = greedyState.getInitialState(dg, _argumentsParser.getProcessorNo());
 
