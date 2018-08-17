@@ -66,10 +66,10 @@ public class GreedyStateTest {
 
         String inputFileName = "test.dot";
 
-        GreedyState greedyState = new GreedyState();
-        State state = greedyState.getInitialState(_dg, 2);
+//        GreedyState greedyState = new GreedyState();
+//        State state = greedyState.getInitialState(_dg, 2);
 
-        _dg.generateOutput(state, inputFileName);
+//        _dg.generateOutput(state, inputFileName);
 
     }
 }
