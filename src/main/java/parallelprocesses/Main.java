@@ -67,6 +67,11 @@ public class Main extends Application implements PilotDoneListener, RecursiveDon
         dg.parse();
         System.out.println("Calculating schedule, Please wait ...");
 
+        GreedyState greedyState = new GreedyState();
+        State bestFoundSoln = greedyState.getInitialState(dg, _argumentsParser.getProcessorNo());
+
+        List<TaskDependencyNode> freeTasks = dg.getFreeTasks(null);
+
         // initialise store and thread pool
         RecursionStore.constructRecursionStoreSingleton(_argumentsParser.getProcessorNo(), dg.remainingCosts(), dg.getNodes().size(), _argumentsParser.getMaxThreads());
         _pool = Executors.newFixedThreadPool(_argumentsParser.getMaxThreads());
