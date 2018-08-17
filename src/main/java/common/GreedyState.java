@@ -53,20 +53,26 @@ public class GreedyState {
             processorList.add(_processors.get(i));
         }
 
-        int counter = 1;
+        int[] durationArr = new int[_numProc];
+        int counter = 0;
         for (List<Job> processors : processorList) { //Iterate through each processor
            // System.out.println("Looking at processor number " + counter);
-                for (Job jobs : processors) {
-                    if(jobs instanceof TaskJob) {
-                        TaskJob job = (TaskJob) jobs;
-                     //   System.out.print(((TaskJob) jobs).getName() + " ");
-                    }
-                }
+            int duration = 0;
+            for (Job jobs : processors) {
+                duration += jobs.getDuration();
             }
-        int[] joblist = new int[2];
-        int huristic = 5;
+            durationArr[counter] = duration;
+            counter++;
+        }
 
-        State state = new State(processorList, joblist, huristic);
+        int heuristic = durationArr[0];
+        for(int i = 1; i < durationArr.length; i++) {
+            if(durationArr[i] > heuristic) {
+                heuristic = durationArr[i];
+            }
+        }
+
+        State state = new State(processorList, durationArr, heuristic);
 
         return state;
     }
