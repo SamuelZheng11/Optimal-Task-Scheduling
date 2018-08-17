@@ -13,7 +13,7 @@ public class PieChartScreen {
         _pieChart = pieChart;
         pieChart.setTitle("JVM Memory Usage");
         _data = FXCollections.observableArrayList(
-                new PieChart.Data("Maximum Memory", 1),
+                new PieChart.Data("Free Memory", 1),
                 new PieChart.Data("Used Memory", 0)
         );
         _pieChart.setData(_data);

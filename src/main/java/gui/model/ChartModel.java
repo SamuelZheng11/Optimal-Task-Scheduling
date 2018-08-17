@@ -1,6 +1,5 @@
 package gui.model;
 
-import com.sun.jdi.connect.Connector;
 import common.*;
 import gui.listeners.AlgorithmListener;
 import gui.listeners.ModelChangeListener;
@@ -20,7 +19,7 @@ public class ChartModel implements AlgorithmListener {
         _processorNum = ProcessorNum;
         _maxTime = maxTime;
     }
-
+/*
     public int getProcessorNumber(){
         return _processorNum;
     }
@@ -42,7 +41,7 @@ public class ChartModel implements AlgorithmListener {
             return _state.getJobLists();
         }
     }
-
+*/
     @Override
     public void update(State state){
         _state = state;
@@ -50,6 +49,35 @@ public class ChartModel implements AlgorithmListener {
             l.update();
         }
     }
+//////////////////////////////////////////////////////////
+    public int getProcessorNumber(){
+        return 2;
+    }
+
+    public double getMaximumTime(){
+        return 375;
+    }
+
+    public List<List<Job>> getJobList(){
+        List<List<Job>> list = new ArrayList<List<Job>>();
+        List<Job> jobList = new ArrayList<Job>();
+        List<Job> jobList2 = new ArrayList<Job>();
+
+        jobList.add(new DelayJob(125));
+        jobList.add(new TaskJob(100, "node 1" ,null));
+
+
+        jobList2.add(new TaskJob(200, "node 2" ,null));
+        jobList2.add(new DelayJob(150));
+        jobList2.add(new TaskJob(25, "node 3" ,null));
+
+        list.add(jobList);
+        list.add(jobList2);
+
+
+        return list;
+    }
+    ///////////////////////////////////////////////////////
 
     public void addListener(ModelChangeListener listener){
         _listeners.add(listener);
