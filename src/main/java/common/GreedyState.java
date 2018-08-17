@@ -80,7 +80,6 @@ public class GreedyState implements Runnable {
     private void addNode() {
         TaskDependencyNode nodeToAdd = _freeTasks.get(0); //get first node in priority
         _freeTasks = _dg.getFreeTasks(nodeToAdd);
-        TaskJob jobToAdd = new TaskJob(nodeToAdd._duration, nodeToAdd._name, nodeToAdd); // create next job based on priority
 
         //System.out.println("Attempting to add node: " + nodeToAdd._name);
 
