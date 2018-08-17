@@ -27,6 +27,22 @@ Our solution solves this by giving the least worst solution.
 To run our application:
 1. Download jar file (or build a jar from the repository). 
 2. the open a terminal in the location where the jar is.
-3. run the command "java -jar 306_Parallel_Processes_Team_5 [name of the .DOT file that contains the tasks you want to find a minimal schedule for] -p [Integer representing the of processors] -o [Name of the output file]"
+3. run the command "__java -jar 306_Parallel_Processes_Team_5 [name of the .DOT file that contains the tasks you want to find a minimal schedule for] [Integer representing the of processors]__"
 
-NOTE: As this program is still under development, The jar and the file containing the tasks must be in the same place and must directory for an output to be generated. In addtion the view (-v) parameter is not configured to display a view as it is not a requirement for milestone 1
+Optional parameters:
+
+Parameter representing the maximum number of threads the algorithm is allowed to use.
+
+"__-p [Integer representing the number of cores on the machine or the maximum number of threads]__"
+
+Parameter only to be used by advanced users who know excatly how wide or narrow they want the search to be. (depending on the complexity of the graph, this parameter can speed up the search significantly).
+
+"__-b [Integer representing the boosting value]__"
+
+Parameter representing what you want the output graph .dot file to be called.
+
+"__-o [Name of the output file]__"
+
+Parameter to specify if the user wants the algorithm's search to be visualised.
+
+"__-v__"

@@ -1,33 +1,40 @@
 package gui.view;
 
 import gui.model.StatisticCell;
+import gui.model.StatisticsModel;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 
+import java.time.Duration;
+
 
 public class StatisticsScreen {
 
     TableView _tableView;
+    TableColumn _statName;
+    TableColumn _statField;
+
+    ObservableList<StatisticCell> _data;
 
     public StatisticsScreen(TableView tableView){
 
         _tableView = tableView;
-        tableView.setEditable(false);
+        _tableView.setEditable(false);
 
-        TableColumn statName = new TableColumn("");
-        statName.setCellValueFactory(new PropertyValueFactory<>("statName"));
-        statName.setMinWidth(250);
-        statName.setMaxWidth(250);
+        _statName = new TableColumn("");
+        _statName.setCellValueFactory(new PropertyValueFactory<>("statName"));
+        _statName.setMinWidth(250);
+        _statName.setMaxWidth(250);
 
-        TableColumn stat = new TableColumn("");
-        stat.setCellValueFactory(new PropertyValueFactory<>("statField"));
-        stat.setMinWidth(116);
-        stat.setMaxWidth(116);
+        _statField = new TableColumn("");
+        _statField.setCellValueFactory(new PropertyValueFactory<>("statField"));
+        _statField.setMinWidth(116);
+        _statField.setMaxWidth(116);
 
-        ObservableList<StatisticCell> data = FXCollections.observableArrayList(
+        _data = FXCollections.observableArrayList(
                 new StatisticCell("Time Elapsed", ""),
                 new StatisticCell("Number of processors", ""),
                 new StatisticCell("Number of threads", ""),
@@ -35,15 +42,53 @@ public class StatisticsScreen {
                 new StatisticCell("Current best schedule time", "")
         );
 
-        _tableView.setItems(data);
+        _tableView.setItems(_data);
 
-        _tableView.getColumns().addAll(statName, stat);
+        _tableView.getColumns().addAll(_statName, _statField);
     }
 
-    public void updateStatisticsScreen(){
+    public void updateStatisticsScreen(StatisticsModel model){
+
+        setTime(model.getStartTime());
 
 
     }
+
+    private void setTime(long startTime){
+
+        long nanoseconds = System.nanoTime() - startTime;
+
+        long remainingTime = nanoseconds;
+        StringBuilder sb = new StringBuilder();
+        long seconds = remainingTime / 1000000000;
+        long days = seconds / (3600 * 24);
+        append(sb, days, "d");
+        seconds -= (days * 3600 * 24);
+        long hours = seconds / 3600;
+        append(sb, hours, "h");
+        seconds -= (hours * 3600);
+        long minutes = seconds / 60;
+        append(sb, minutes, "m");
+        seconds -= (minutes * 60);
+        append(sb, seconds, "s");
+        long nanos = remainingTime % 1000;
+        append(sb, nanos, "ms");
+
+        _data.get(0).statField = sb.toString();
+
+        _tableView.refresh();
+    }
+
+    private void append(StringBuilder sb, long value, String text) {
+        if (value > 0) {
+            if (sb.length() > 0) {
+                sb.append(" ");
+            }
+            sb.append(value).append(text);
+        }
+    }
+
+
 
 
 

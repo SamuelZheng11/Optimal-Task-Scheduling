@@ -58,7 +58,7 @@ public class ChartScreen {
         _gc.strokeLine(100, _canvasHeight - _canvasBuffer, _canvasWidth - _canvasBuffer, _canvasHeight - _canvasBuffer);
         _gc.strokeLine(100, _canvasHeight - _canvasBuffer, _canvasBuffer, _canvasBuffer);
 
-        double tickMagnitude = Math.round(Math.log10(model.getMaximumTime()) - 1);
+        double tickMagnitude = Math.round(Math.log10(model.getMaximumTime()) );
         if(tickMagnitude <= 0){
             tickMagnitude = 1;
         }

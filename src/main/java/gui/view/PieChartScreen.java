@@ -4,12 +4,14 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.chart.PieChart;
 
+
 public class PieChartScreen {
 
-    PieChart _pieChart;
-    ObservableList<PieChart.Data> _data;
 
-    public PieChartScreen(PieChart pieChart){
+    private PieChart _pieChart;
+    private ObservableList<PieChart.Data> _data;
+
+    public PieChartScreen(PieChart pieChart ){
         _pieChart = pieChart;
         pieChart.setTitle("JVM Memory Usage");
         _data = FXCollections.observableArrayList(
@@ -17,6 +19,7 @@ public class PieChartScreen {
                 new PieChart.Data("Used Memory", 0)
         );
         _pieChart.setData(_data);
+        _pieChart.setLabelsVisible(true);
     }
 
     public void updatePieChart(){
@@ -25,12 +28,15 @@ public class PieChartScreen {
 
         Runtime runtime = Runtime.getRuntime();
 
-        double freeMemory = runtime.freeMemory() / mb;
+        long freeMemory = runtime.freeMemory() / mb;
 
-        double totalMemoryUsed = runtime.totalMemory() / mb;
+        long totalMemoryUsed = runtime.totalMemory() / mb;
 
-        _data.get(0).setPieValue(totalMemoryUsed);
-        _data.get(1).setPieValue(freeMemory);
+        _data.get(0).setName("Free Memory\n" + freeMemory + " Mb");
+        _data.get(0).setPieValue(freeMemory);
+
+        _data.get(1).setName("Used Memory\n" + totalMemoryUsed + " Mb");
+        _data.get(1).setPieValue(totalMemoryUsed);
 
     }
 

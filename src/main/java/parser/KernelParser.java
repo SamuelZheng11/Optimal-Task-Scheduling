@@ -52,6 +52,14 @@ public class KernelParser extends AbstractParser {
     }
 
     @Override
+    public int getBoostMultiplier() {
+        if(_commands.getOptionValue('b') != null){
+            _maxThreads = Integer.valueOf(_commands.getOptionValue('b'));
+        }
+        return _maxThreads;
+    }
+
+    @Override
     public String getFileSuffix() {
         return _suffix;
     }
@@ -67,6 +75,7 @@ public class KernelParser extends AbstractParser {
         options.addOption("p", true, "The number of processors for the algorithm to run on");
         options.addOption("v", "Whether to visualise the search");
         options.addOption("o", true,"The output file");
+        options.addOption("b",true,"Initial boost Value");
         DefaultParser parser = new DefaultParser();
         String[] params = new String[getParameters(application).getRaw().size()];
         params = getParameters(application).getRaw().toArray(params);

@@ -1,34 +1,55 @@
 package gui.model;
 
 import common.*;
-import gui.listeners.AlgorithmListener;
 import gui.listeners.ModelChangeListener;
-import parser.ArgumentParser;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChartModel implements AlgorithmListener {
+public class ChartModel {
 
     private int _processorNum;
     private State _state;
-    private int _maxTime;
+    private int _maxTime = - 1;
     private List<ModelChangeListener> _listeners = new ArrayList<>();
 
-    public ChartModel(int ProcessorNum, int maxTime){
+    public ChartModel(int ProcessorNum){
         _processorNum = ProcessorNum;
-        _maxTime = maxTime;
     }
-/*
-    public int getProcessorNumber(){
+
+    public synchronized int getProcessorNumber(){
         return _processorNum;
     }
 
-    public double getMaximumTime(){
-        return _maxTime;
+    public synchronized double getMaximumTime(){
+
+        if(_maxTime == -1){
+
+            int newMaxTime = 0;
+
+            for(int i = 0; i < getJobList().size(); i++){
+                int procMaxTime = 0;
+
+                for(int j = 0; j < getJobList().get(i).size(); j++){
+                    procMaxTime += getJobList().get(i).get(j).getDuration();
+                }
+
+                if(procMaxTime > newMaxTime){
+                    newMaxTime = procMaxTime;
+                }
+            }
+
+            _maxTime = newMaxTime;
+            return _maxTime;
+
+        }else{
+            return _maxTime;
+        }
+
+
     }
 
-    public List<List<Job>> getJobList(){
+    public synchronized List<List<Job>> getJobList(){
         if(_state == null){
             List<List<Job>> temp = new ArrayList<>();
             for(int i = 0; i < _processorNum; i++){
@@ -41,15 +62,14 @@ public class ChartModel implements AlgorithmListener {
             return _state.getJobLists();
         }
     }
-*/
-    @Override
-    public void update(State state){
+
+
+    public synchronized void updateState(State state){
         _state = state;
-        for(ModelChangeListener l : _listeners){
-            l.update();
-        }
     }
-//////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////// MOCKING
+    /*
     public int getProcessorNumber(){
         return 2;
     }
@@ -77,10 +97,9 @@ public class ChartModel implements AlgorithmListener {
 
         return list;
     }
+
+    */
     ///////////////////////////////////////////////////////
 
-    public void addListener(ModelChangeListener listener){
-        _listeners.add(listener);
-    }
 
 }
