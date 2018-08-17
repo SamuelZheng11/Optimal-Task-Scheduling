@@ -10,7 +10,6 @@ import java.util.Map;
 
 public class GreedyStateTest {
 
-    //TESTED USING Nodes_9_SeriesParallel.dot
     private static DependencyGraph _dg = DependencyGraph.getGraph();
     private Map<String, TaskDependencyNode> _nodes;
     private List<TaskDependencyNode> _freeTasks;

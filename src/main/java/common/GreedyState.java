@@ -55,11 +55,11 @@ public class GreedyState {
 
         int counter = 1;
         for (List<Job> processors : processorList) { //Iterate through each processor
-            System.out.println("Looking at processor number " + counter);
+           // System.out.println("Looking at processor number " + counter);
                 for (Job jobs : processors) {
                     if(jobs instanceof TaskJob) {
                         TaskJob job = (TaskJob) jobs;
-                        System.out.print(((TaskJob) jobs).getName() + " ");
+                     //   System.out.print(((TaskJob) jobs).getName() + " ");
                     }
                 }
             }
@@ -76,7 +76,7 @@ public class GreedyState {
         _freeTasks = _dg.getFreeTasks(nodeToAdd);
         TaskJob jobToAdd = new TaskJob(nodeToAdd._duration, nodeToAdd._name, nodeToAdd); // create next job based on priority
 
-        System.out.println("Attempting to add node: " + nodeToAdd._name);
+        //System.out.println("Attempting to add node: " + nodeToAdd._name);
 
         int[] bestProcStartTimes = new int[_numProc];
         int counter = 0;
@@ -84,19 +84,19 @@ public class GreedyState {
         for (TaskDependencyEdge parentEdge:
              nodeToAdd._parents) {
 
-            System.out.println("Looking at parent node: " + parentEdge._parent._name);
+          //  System.out.println("Looking at parent node: " + parentEdge._parent._name);
 
             int[] nodeEarliestStartTimeArr = new int[_numProc];
             int[] procEarliestStartTimeArr = new int[_numProc];
             int parentNodeEndTime = _nodeStartTime.get(parentEdge._parent) + parentEdge._parent._duration; //get starttime(parent node) + weight(parent node)
 
-            System.out.println("Parent node end time is: " + Integer.toString(parentNodeEndTime));
+           // System.out.println("Parent node end time is: " + Integer.toString(parentNodeEndTime));
 
             for (int i = 0; i < _numProc; i++) { //iterate through each processor and get earliest start time based on precedence check
                 int nodeEarliestStartTime = parentNodeEndTime;
                 int procEarliestStartTime = 0;
                 if (!_scheduledNodes.get(i + 1).contains(parentEdge._parent)) {
-                    System.out.println("Processor number " + Integer.toString(i + 1) + "does not contain parent node");
+                  //  System.out.println("Processor number " + Integer.toString(i + 1) + "does not contain parent node");
                     nodeEarliestStartTime += parentEdge._communicationDelay; //add comm delay if proc(node i) =/= proc(node j)
                 }
                 for (Job jobs :
@@ -110,15 +110,15 @@ public class GreedyState {
                     procEarliestStartTimeArr[i] = nodeEarliestStartTimeArr[i]; //update earliest possible start time for node
                 }
             }
-            if (nodeToAdd._name.equals("7")) {
-                System.out.println("EARLIEST START TIME FOR NODE " + nodeToAdd._name + " on processor " + Integer.toString(1) + " is " + procEarliestStartTimeArr[0]);
-                System.out.println("EARLIEST START TIME FOR NODE " + nodeToAdd._name + " on processor " + Integer.toString(2) + " is " + procEarliestStartTimeArr[1]);
-
-            }
+//            if (nodeToAdd._name.equals("7")) {
+//             //   System.out.println("EARLIEST START TIME FOR NODE " + nodeToAdd._name + " on processor " + Integer.toString(1) + " is " + procEarliestStartTimeArr[0]);
+//              //  System.out.println("EARLIEST START TIME FOR NODE " + nodeToAdd._name + " on processor " + Integer.toString(2) + " is " + procEarliestStartTimeArr[1]);
+//
+//            }
 
             if (counter == 0) {
                 for (int i = 0; i < _numProc; i++) {
-                    System.out.println(Integer.toString(procEarliestStartTimeArr[i]));
+                   // System.out.println(Integer.toString(procEarliestStartTimeArr[i]));
                     bestProcStartTimes[i] = procEarliestStartTimeArr[i];
                 }
             } else {
@@ -130,9 +130,9 @@ public class GreedyState {
             counter++;
         }
 
-        for(int i = 0; i< bestProcStartTimes.length; i++) {
-            System.out.print(Integer.toString(bestProcStartTimes[i])+ " ");
-        }
+//        for(int i = 0; i< bestProcStartTimes.length; i++) {
+//            System.out.print(Integer.toString(bestProcStartTimes[i])+ " ");
+//        }
 
         //Find lowest start time for the node
         int minumumStartTime = bestProcStartTimes[0];
@@ -144,15 +144,15 @@ public class GreedyState {
                 bestProcessor = i+1;
             }
         }
-        System.out.println("MOST OPTIMAL start time is: " + Integer.toString(minumumStartTime) + " on processor " + Integer.toString(bestProcessor));
+      //  System.out.println("MOST OPTIMAL start time is: " + Integer.toString(minumumStartTime) + " on processor " + Integer.toString(bestProcessor));
         int endTime = 0; //current end time for the best processor
         for(Job jobs:
             _processors.get(bestProcessor)) {
             endTime += jobs.getDuration();
         }
         int idleTime = minumumStartTime - endTime;
-        System.out.println("Current end time is " + Integer.toString(endTime));
-        System.out.println("Current idle time is " + Integer.toString(idleTime));
+      //  System.out.println("Current end time is " + Integer.toString(endTime));
+     //   System.out.println("Current idle time is " + Integer.toString(idleTime));
 
         if(idleTime > 0) {
             DelayJob delay = new DelayJob(idleTime);
@@ -169,7 +169,7 @@ public class GreedyState {
             nodeStartTime += jobs.getDuration();
         }
         nodeStartTime -= nodeToAdd._duration;
-        System.out.println(Integer.toString(nodeStartTime));
+     //   System.out.println(Integer.toString(nodeStartTime));
         _nodeStartTime.put(nodeToAdd, nodeStartTime);
 
 
