@@ -1,35 +1,35 @@
 package common;
 
 import javafx.concurrent.Task;
+import parallelprocesses.RecursionStore;
 
 import java.util.*;
 
-public class GreedyState {
+public class GreedyState implements Runnable {
 
-    private State _currentState;
     private List<TaskDependencyNode> _freeTasks;
     private Map<Integer, List<Job>> _processors;
     private Map<Integer, List<TaskDependencyNode>> _scheduledNodes;
     private Map<TaskDependencyNode, Integer> _nodeStartTime;
-    private int _numFreeTasks;
     private int _numProc;
     private DependencyGraph _dg;
-    private int _numNodes;
+    private GreedySearchListener _listener;
 
-
-
-    public State getInitialState(DependencyGraph dg, int numProc) {
-        _numProc = numProc;
+    public GreedyState(DependencyGraph dg, GreedySearchListener listener){
         _dg = dg;
-        _numNodes = _dg.getNodes().size();
+        _numProc = RecursionStore.getNumberOfProcessors();
+        _listener = listener;
+    }
+
+    private State calculateInitalState() {
         //Create map with number of processors specified as input
-        _processors = new HashMap<Integer, List<Job>>();
-        _scheduledNodes = new HashMap<Integer, List<TaskDependencyNode>>();
-        _nodeStartTime = new HashMap<TaskDependencyNode, Integer>();
+        _processors = new HashMap<>();
+        _scheduledNodes = new HashMap<>();
+        _nodeStartTime = new HashMap<>();
 
         for(int i = 1; i <= _numProc; i++) {
-            _processors.put(i, new ArrayList<Job>());
-            _scheduledNodes.put(i, new ArrayList<TaskDependencyNode>());
+            _processors.put(i, new ArrayList<>());
+            _scheduledNodes.put(i, new ArrayList<>());
         }
 
         _freeTasks = _dg.getFreeTasks(null); // Get all root nodes
@@ -77,7 +77,7 @@ public class GreedyState {
         return state;
     }
 
-    public void addNode() {
+    private void addNode() {
         TaskDependencyNode nodeToAdd = _freeTasks.get(0); //get first node in priority
         _freeTasks = _dg.getFreeTasks(nodeToAdd);
 
@@ -178,6 +178,16 @@ public class GreedyState {
         _nodeStartTime.put(nodeToAdd, nodeStartTime);
 
 
+    }
+
+    @Override
+    public void run() {
+        try{
+            State greedyState = this.calculateInitalState();
+            this._listener.handleGreedySearchHasCompleted(greedyState);
+        } catch (Exception e){
+            this._listener.handleThreadException(e);
+        }
     }
 }
 

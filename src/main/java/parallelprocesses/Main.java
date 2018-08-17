@@ -21,7 +21,7 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class Main extends Application implements PilotDoneListener, RecursiveDoneListener {
+public class Main extends Application implements PilotDoneListener, RecursiveDoneListener, GreedySearchListener {
 
     public static void main(String[] args) {
         launch(args);
@@ -34,7 +34,6 @@ public class Main extends Application implements PilotDoneListener, RecursiveDon
     private static int _totalNumberOfStateTreeBranches;
 
     private ExecutorService _pool;
-
 
     public void start(Stage primaryStage) throws Exception {
 
@@ -74,10 +73,29 @@ public class Main extends Application implements PilotDoneListener, RecursiveDon
         List<TaskDependencyNode> freeTasks = dg.getFreeTasks(null);
 
         // initialise store and thread pool
-        RecursionStore.constructRecursionStoreSingleton(_argumentsParser.getProcessorNo(), bestFoundSoln.getJobListDuration()[0], dg.getNodes().size(), _argumentsParser.getMaxThreads());
-        RecursionStore.processPotentialBestState(bestFoundSoln);
-        RecursionStore.pushStateTreeQueue(new StateTreeBranch(generateInitalState(RecursionStore.getBestStateHeuristic()), freeTasks, 0));
+        RecursionStore.constructRecursionStoreSingleton(_argumentsParser.getProcessorNo(), dg.remainingCosts(), dg.getNodes().size(), _argumentsParser.getMaxThreads());
         _pool = Executors.newFixedThreadPool(_argumentsParser.getMaxThreads());
+
+        GreedyState greedyState = new GreedyState(dg, this);
+        _pool.execute(greedyState);
+    }
+
+    private static State generateInitalState(double initialHeuristic) {
+        ArrayList<List<Job>> jobList = new ArrayList<>(RecursionStore.getNumberOfProcessors());
+        for (int i = 0; i < RecursionStore.getNumberOfProcessors(); i++) {
+            jobList.add(new ArrayList<>());
+        }
+        int[] procDur = new int[RecursionStore.getNumberOfProcessors()];
+        java.util.Arrays.fill(procDur, 0);
+        return new State(jobList, procDur, initialHeuristic);
+    }
+
+    @Override
+    public void handleGreedySearchHasCompleted(State greedyState) {
+        // set up the results from the greedy search to be used for the optimal search
+        List<TaskDependencyNode> freeTasks = DependencyGraph.getGraph().getFreeTasks(null);
+        RecursionStore.processPotentialBestState(greedyState);
+        RecursionStore.pushStateTreeQueue(new StateTreeBranch(generateInitalState(RecursionStore.getBestStateHeuristic()), freeTasks, 0));
 
         // if the number of processors is one, then schedule everything on on recursive worker
         if(_argumentsParser.getMaxThreads() == Integer.valueOf(Defaults.MAXTHREADS.toString())){
@@ -89,16 +107,6 @@ public class Main extends Application implements PilotDoneListener, RecursiveDon
 
         PilotRecursiveWorker pilot = new PilotRecursiveWorker(_argumentsParser.getBoostMultiplier(), this);
         _pool.submit(pilot);
-    }
-
-    private static State generateInitalState(double initialHeuristic) {
-        ArrayList<List<Job>> jobList = new ArrayList<>(RecursionStore.getNumberOfProcessors());
-        for (int i = 0; i < RecursionStore.getNumberOfProcessors(); i++) {
-            jobList.add(new ArrayList<>());
-        }
-        int[] procDur = new int[RecursionStore.getNumberOfProcessors()];
-        java.util.Arrays.fill(procDur, 0);
-        return new State(jobList, procDur, initialHeuristic);
     }
 
     @Override
@@ -123,8 +131,6 @@ public class Main extends Application implements PilotDoneListener, RecursiveDon
         } catch (InterruptedException ie) {
             ie.printStackTrace();
         }
-
-        _pool.shutdown();
     }
 
     @Override
@@ -134,6 +140,7 @@ public class Main extends Application implements PilotDoneListener, RecursiveDon
         if (this.numberOfBranchesCompleted != this._totalNumberOfStateTreeBranches) {
             return;
         }
+        // write output file
         generateOutputAndClose();
     }
 
