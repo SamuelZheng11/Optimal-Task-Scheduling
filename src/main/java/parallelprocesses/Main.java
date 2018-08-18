@@ -82,7 +82,7 @@ public class Main extends Application implements PilotDoneListener, RecursiveDon
         }
         int[] procDur = new int[RecursionStore.getNumberOfProcessors()];
         java.util.Arrays.fill(procDur, 0);
-        return new State(jobList, procDur, initialHeuristic);
+        return new State(jobList, procDur, initialHeuristic, 0);
     }
 
     @Override

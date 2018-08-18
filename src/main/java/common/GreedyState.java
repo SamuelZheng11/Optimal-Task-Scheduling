@@ -26,6 +26,7 @@ public class GreedyState implements Runnable {
         _processors = new HashMap<>();
         _scheduledNodes = new HashMap<>();
         _nodeStartTime = new HashMap<>();
+        int scheduledTasks = 0;
 
         for(int i = 1; i <= _numProc; i++) {
             _processors.put(i, new ArrayList<>());
@@ -38,6 +39,7 @@ public class GreedyState implements Runnable {
         TaskDependencyNode firstNode = _freeTasks.get(0);
         TaskJob firstJob = new TaskJob(firstNode._duration, firstNode._name, firstNode);
         _processors.get(1).add(firstJob);
+        scheduledTasks += firstJob.getDuration();
         _scheduledNodes.get(1).add(firstNode);
         _nodeStartTime.put(firstNode, 0);
 
@@ -46,6 +48,7 @@ public class GreedyState implements Runnable {
 
 
         while (_freeTasks.size() > 0) {
+            scheduledTasks += _freeTasks.get(0)._duration;
             addNode();
         }
         List<List<Job>> processorList = new ArrayList(_numProc);
@@ -72,7 +75,7 @@ public class GreedyState implements Runnable {
             }
         }
 
-        State state = new State(processorList, durationArr, heuristic);
+        State state = new State(processorList, durationArr, heuristic, scheduledTasks);
 
         return state;
     }
