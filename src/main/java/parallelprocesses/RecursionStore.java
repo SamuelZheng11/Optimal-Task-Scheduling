@@ -48,6 +48,10 @@ public class RecursionStore {
         statisticsModel.setThreadNumber(maxThreads);
     }
 
+    public static synchronized void setGreedyState(State greedyState){
+        statisticsModel.setGreedyState(greedyState);
+    }
+
     public static int getNumberOfTasksTotal(){
         return RecursionStore.numberOfTasks;
     }

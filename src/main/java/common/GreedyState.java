@@ -184,6 +184,7 @@ public class GreedyState implements Runnable {
     public void run() {
         try{
             State greedyState = this.calculateInitalState();
+            RecursionStore.setGreedyState(greedyState);
             this._listener.handleGreedySearchHasCompleted(greedyState);
         } catch (Exception e){
             this._listener.handleThreadException(e);

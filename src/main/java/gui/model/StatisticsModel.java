@@ -8,6 +8,7 @@ public class StatisticsModel {
 
     final private ChartModel _chartModel;
     private State _state;
+    private State _greedyState;
     private boolean _running = true;
     private boolean _updated = false;
     private long _startTime;
@@ -64,4 +65,11 @@ public class StatisticsModel {
     }
 
 
+    public State getGreedyState() {
+        return _greedyState;
+    }
+
+    public void setGreedyState(State greedyState) {
+        this._greedyState = greedyState;
+    }
 }

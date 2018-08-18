@@ -52,7 +52,10 @@ public class StatisticsScreen {
         setTime(model.getStartTime());
         _data.get(1).statField = Integer.toString(model.getState().getJobLists().size());
         _data.get(2).statField = Long.toString(model.getThreadNumber());
-
+        if(model.getGreedyState() != null){
+            _data.get(3).statField = Double.toString(model.getGreedyState().getHeuristicValue());
+        }
+        _data.get(4).statField = Double.toString(model.getState().getHeuristicValue());
 
 
         _tableView.refresh();
