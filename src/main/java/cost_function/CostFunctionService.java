@@ -14,7 +14,6 @@ import java.util.List;
 public class CostFunctionService {
     private State state;
     private int inputProcessorCompletionTime = 0;
-    private int sumOfAlreadyScheduledTasks = 0;
     private int processorThatFinishesLast = 0;
     private List<Boolean> parentsFound;
             
@@ -34,11 +33,8 @@ public class CostFunctionService {
      */
     public State scheduleNode(TaskDependencyNode node, int onProcessorNumber, State withCurrentState, int costOfAllNodes) {
         // generate a deep copy of the input state
-        this.generateDeepCopy(withCurrentState);
+        this.generateDeepCopy(withCurrentState, node);
         this.parentsFound = new ArrayList<>(Collections.nCopies(node._parents.size(), Boolean.FALSE));
-
-        // account for tasks that need to be scheduled regard less for easy tracking
-        this.sumOfAlreadyScheduledTasks += node._duration;
 
         // generate the arrays that will be used to easily find a parent and its communication delay with the target node
         ArrayList<TaskDependencyNode> parentNodes = new ArrayList<>();
@@ -54,6 +50,7 @@ public class CostFunctionService {
 
         // check if the node has any parents
         if (parentNodes.size() == 0) {
+
             // returns the state with the new task on the processor
             this.state.getJobLists().get(onProcessorNumber).add(new TaskJob(node._duration, node._name, node));
             this.state.getJobListDuration()[onProcessorNumber] += node._duration;
@@ -68,15 +65,19 @@ public class CostFunctionService {
                 freeSpace += fullTime-this.state.getJobListDuration()[i];
             }
             double heuristicValue = fullTime;
-            double costOfNodesAfterGapsFilled = (double)costOfAllNodes - this.sumOfAlreadyScheduledTasks - freeSpace;
+            double costOfNodesAfterGapsFilled = (double)costOfAllNodes - (this.state.getSumOfScheduledTasks() + node._duration + freeSpace);
             if (costOfNodesAfterGapsFilled > 0){
                 heuristicValue += costOfNodesAfterGapsFilled/withCurrentState.getJobLists().size();
+            }
+            if (this.state.getJobLists().get(1).size()>0 && this.state.getJobLists().get(1).get(0) instanceof TaskJob && ((TaskJob) this.state.getJobLists().get(1).get(0)).getName().equals("1")){
+                //System.out.println("");
             }
             // return state early with node scheduled as it has not parents
             return new State(
                     this.state.getJobLists(),
                     this.state.getJobListDuration(),
-                    heuristicValue
+                    heuristicValue,
+                    this.state.getSumOfScheduledTasks()
             );
         }
 
@@ -113,7 +114,7 @@ public class CostFunctionService {
             freeSpace += fullTime-this.state.getJobListDuration()[i];
         }
         double heuristicValue = fullTime;
-        double costOfNodesAfterGapsFilled = (double)costOfAllNodes - this.sumOfAlreadyScheduledTasks - freeSpace;
+        double costOfNodesAfterGapsFilled = (double)costOfAllNodes - this.state.getSumOfScheduledTasks() + node._duration - freeSpace;
         if (costOfNodesAfterGapsFilled > 0){
             heuristicValue += costOfNodesAfterGapsFilled/withCurrentState.getJobLists().size();
         }
@@ -122,7 +123,8 @@ public class CostFunctionService {
         return new State(
                 this.state.getJobLists(),
                 this.state.getJobListDuration(),
-                heuristicValue
+                heuristicValue,
+                this.state.getSumOfScheduledTasks()
         );
     }
 
@@ -155,8 +157,6 @@ public class CostFunctionService {
                 buildingCostForProcessor.set(i, buildingCostForProcessor.get(i) + this.state.getJobLists().get(i).get(j).getDuration());
                 if (this.state.getJobLists().get(i).get(j).getClass() == TaskJob.class) {
                     TaskJob potentialParentJob = (TaskJob) this.state.getJobLists().get(i).get(j);
-                    this.sumOfAlreadyScheduledTasks += this.state.getJobLists().get(i).get(j).getDuration();
-
                     // check if the TaskJob's node is a parent of the node
                     if (parents.contains(potentialParentJob.getNode())) {
                         // only update the current best cost for the processor if the cost of the processor up to the
@@ -199,9 +199,6 @@ public class CostFunctionService {
         // sum up the cost of tasks on the processor for the heuristic cost
         for (int i = 0; i < onProcessor.size(); i++) {
             this.inputProcessorCompletionTime += onProcessor.get(i).getDuration();
-            if(onProcessor.get(i) instanceof TaskJob) {
-                this.sumOfAlreadyScheduledTasks += onProcessor.get(i).getDuration();
-            }
             for (TaskDependencyNode parentNode: parentNodes) {
                 if(onProcessor.get(i) instanceof TaskJob) {
                     TaskJob job = (TaskJob) onProcessor.get(i);
@@ -219,7 +216,7 @@ public class CostFunctionService {
      * be passed in.
      * @param inputState: the input state that was passed into the method signature
      */
-    private void generateDeepCopy(State inputState) {
+    private void generateDeepCopy(State inputState, TaskDependencyNode node) {
         List<List<Job>> jobs = new ArrayList<>(inputState.getJobLists().size());
 
         // create deep copy as java does not do deep copying
@@ -227,7 +224,7 @@ public class CostFunctionService {
             jobs.add(new ArrayList<>());
             jobs.set(i, new ArrayList<>(inputState.getJobLists().get(i)));
         }
-        this.state = new State( jobs, Arrays.copyOf(inputState.getJobListDuration(), inputState.getJobListDuration().length), 0);
+        this.state = new State( jobs, Arrays.copyOf(inputState.getJobListDuration(), inputState.getJobListDuration().length), 0, inputState.getSumOfScheduledTasks()+node._duration);
     }
 
     private void determineProcessorThatFinishesLast() {
