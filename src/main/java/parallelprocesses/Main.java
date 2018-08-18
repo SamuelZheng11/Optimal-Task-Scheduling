@@ -75,7 +75,7 @@ public class Main extends Application implements PilotDoneListener, RecursiveDon
         _pool.execute(greedyState);
     }
 
-    private static State generateInitalState(double initialHeuristic) {
+    private static State generateInitialState(double initialHeuristic) {
         ArrayList<List<Job>> jobList = new ArrayList<>(RecursionStore.getNumberOfProcessors());
         for (int i = 0; i < RecursionStore.getNumberOfProcessors(); i++) {
             jobList.add(new ArrayList<>());
@@ -90,7 +90,7 @@ public class Main extends Application implements PilotDoneListener, RecursiveDon
         // set up the results from the greedy search to be used for the optimal search
         List<TaskDependencyNode> freeTasks = DependencyGraph.getGraph().getFreeTasks(null);
         RecursionStore.processPotentialBestState(greedyState);
-        RecursionStore.pushStateTreeQueue(new StateTreeBranch(generateInitalState(RecursionStore.getBestStateHeuristic()), freeTasks, 0));
+        RecursionStore.pushStateTreeQueue(new StateTreeBranch(generateInitialState(RecursionStore.getBestStateHeuristic()), freeTasks, 0));
 
         // if the number of processors is one, then schedule everything on on recursive worker
         if(_argumentsParser.getMaxThreads() == Integer.valueOf(Defaults.MAXTHREADS.toString())){
@@ -106,25 +106,15 @@ public class Main extends Application implements PilotDoneListener, RecursiveDon
 
     @Override
     public void handlePilotRunHasCompleted() {
+        System.out.println(RecursionStore.getTaskQueueSize() + " branches");
         if(RecursionStore.getTaskQueueSize() < _argumentsParser.getBoostMultiplier() * _argumentsParser.getMaxThreads()){
             generateOutputAndClose();
             return;
         }
 
-        Set<RecursiveWorker> callables = new HashSet<>();
         this._totalNumberOfStateTreeBranches = RecursionStore.getTaskQueueSize();
         while (RecursionStore.getTaskQueueSize() > 0) {
-            callables.add(new RecursiveWorker(RecursionStore.pollStateTreeQueue(), this));
-        }
-
-        if (callables.size() == 0) {
-            throw new RecursiveWorkerException("No tasks are assigned to the thread call-ables");
-        }
-
-        try {
-            _pool.invokeAll(callables);
-        } catch (InterruptedException ie) {
-            ie.printStackTrace();
+            _pool.submit(new RecursiveWorker(RecursionStore.pollStateTreeQueue(), this));
         }
     }
 
@@ -132,6 +122,7 @@ public class Main extends Application implements PilotDoneListener, RecursiveDon
     public synchronized void handleThreadRecursionHasCompleted() {
         //ensure that all branches have been explored before writing output
         this.numberOfBranchesCompleted++;
+        System.out.println(this.numberOfBranchesCompleted + " complete");
         if (this.numberOfBranchesCompleted != this._totalNumberOfStateTreeBranches) {
             return;
         }

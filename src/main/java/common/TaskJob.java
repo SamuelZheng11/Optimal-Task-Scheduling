@@ -24,4 +24,9 @@ public final class TaskJob implements Job {
     public String getName(){
         return _name;
     }
+
+    @Override
+    public String toString(){
+        return _name;
+    }
 }

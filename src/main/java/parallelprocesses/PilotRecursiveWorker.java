@@ -30,6 +30,7 @@ public class PilotRecursiveWorker implements Runnable {
 
     private void recurse() {
         this.recursiveDepth++;
+
         // pop next state-tree branch for expansion
         StateTreeBranch stb = RecursionStore.pollStateTreeQueue();
 
@@ -93,7 +94,9 @@ public class PilotRecursiveWorker implements Runnable {
                     if (newState.getHeuristicValue() <= RecursionStore.getBestStateHeuristic() && tasksScheduled == RecursionStore.getNumberOfTasksTotal()) {
                         RecursionStore.processPotentialBestState(newState);
                     } else if (newState.getHeuristicValue() <= RecursionStore.getBestStateHeuristic() && tasksScheduled < RecursionStore.getNumberOfTasksTotal()) {
-                        RecursionStore.pushStateTreeQueue(new StateTreeBranch(newState, prospectiveFreeTasks, tasksScheduled));
+                        if(!RecursionStore.hasExplored(newState.toString())){
+                            RecursionStore.pushStateTreeQueue(new StateTreeBranch(newState, prospectiveFreeTasks, tasksScheduled));
+                        }
                     }
                     tasksScheduled--;
                 }

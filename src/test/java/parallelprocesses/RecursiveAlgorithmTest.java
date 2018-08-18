@@ -27,14 +27,14 @@ public class RecursiveAlgorithmTest {
         State bestFoundSoln = dg.initialState(2);
         int costOfAllProcessorsOnOneProcessor = bestFoundSoln.getJobListDuration()[0];
 
-        bestFoundSoln = adapter.callAlgorithm(
-                bestFoundSoln.getJobListDuration().length,
-                freeTasks,
-                0,
-                null,
-                bestFoundSoln,
-                dg.getNodes().size(),
-                bestFoundSoln.getJobListDuration()[0]);
+//        bestFoundSoln = adapter.callAlgorithm(
+//                bestFoundSoln.getJobListDuration().length,
+//                freeTasks,
+//                0,
+//                null,
+//                bestFoundSoln,
+//                dg.getNodes().size(),
+//                bestFoundSoln.getJobListDuration()[0]);
 
         int algoirthmScheduleFinishTime = bestFoundSoln.getJobListDuration()[0];
         for (int i = 1; i < bestFoundSoln.getJobListDuration().length; i++) {
@@ -56,14 +56,14 @@ public class RecursiveAlgorithmTest {
         State bestFoundSoln = dg.initialState(2);
         int costOfAllProcessorsOnOneProcessor = bestFoundSoln.getJobListDuration()[0];
 
-        bestFoundSoln = adapter.callAlgorithm(
-                bestFoundSoln.getJobListDuration().length,
-                freeTasks,
-                0,
-                null,
-                bestFoundSoln,
-                dg.getNodes().size(),
-                bestFoundSoln.getJobListDuration()[0]);
+//        bestFoundSoln = adapter.callAlgorithm(
+//                bestFoundSoln.getJobListDuration().length,
+//                freeTasks,
+//                0,
+//                null,
+//                bestFoundSoln,
+//                dg.getNodes().size(),
+//                bestFoundSoln.getJobListDuration()[0]);
 
         int algoirthmScheduleFinishTime = bestFoundSoln.getJobListDuration()[0];
         for (int i = 1; i < bestFoundSoln.getJobListDuration().length; i++) {
@@ -85,14 +85,14 @@ public class RecursiveAlgorithmTest {
         State bestFoundSoln = dg.initialState(2);
         int costOfAllProcessorsOnOneProcessor = bestFoundSoln.getJobListDuration()[0];
 
-        bestFoundSoln = adapter.callAlgorithm(
-                bestFoundSoln.getJobListDuration().length,
-                freeTasks,
-                0,
-                null,
-                bestFoundSoln,
-                dg.getNodes().size(),
-                bestFoundSoln.getJobListDuration()[0]);
+//        bestFoundSoln = adapter.callAlgorithm(
+//                bestFoundSoln.getJobListDuration().length,
+//                freeTasks,
+//                0,
+//                null,
+//                bestFoundSoln,
+//                dg.getNodes().size(),
+//                bestFoundSoln.getJobListDuration()[0]);
 
         int algoirthmScheduleFinishTime = bestFoundSoln.getJobListDuration()[0];
         for (int i = 1; i < bestFoundSoln.getJobListDuration().length; i++) {
@@ -113,14 +113,14 @@ public class RecursiveAlgorithmTest {
         List<TaskDependencyNode> freeTasks = dg.getFreeTasks(null);
         State bestFoundSoln = dg.initialState(2);
 
-        bestFoundSoln = adapter.callAlgorithm(
-                bestFoundSoln.getJobListDuration().length,
-                freeTasks,
-                0,
-                null,
-                bestFoundSoln,
-                dg.getNodes().size(),
-                bestFoundSoln.getJobListDuration()[0]);
+//        bestFoundSoln = adapter.callAlgorithm(
+//                bestFoundSoln.getJobListDuration().length,
+//                freeTasks,
+//                0,
+//                null,
+//                bestFoundSoln,
+//                dg.getNodes().size(),
+//                bestFoundSoln.getJobListDuration()[0]);
 
         boolean hasScheduledDuplicateNode = false;
         HashMap<TaskDependencyNode, Boolean> mapOfScheduledNodes = new HashMap<>();
@@ -151,14 +151,14 @@ public class RecursiveAlgorithmTest {
         List<TaskDependencyNode> freeTasks = dg.getFreeTasks(null);
         State bestFoundSoln = dg.initialState(2);
 
-        bestFoundSoln = adapter.callAlgorithm(
-                bestFoundSoln.getJobListDuration().length,
-                freeTasks,
-                0,
-                null,
-                bestFoundSoln,
-                dg.getNodes().size(),
-                bestFoundSoln.getJobListDuration()[0]);
+//        bestFoundSoln = adapter.callAlgorithm(
+//                bestFoundSoln.getJobListDuration().length,
+//                freeTasks,
+//                0,
+//                null,
+//                bestFoundSoln,
+//                dg.getNodes().size(),
+//                bestFoundSoln.getJobListDuration()[0]);
 
         boolean hasScheduledDuplicateNode = false;
         HashMap<TaskDependencyNode, Boolean> mapOfScheduledNodes = new HashMap<>();
@@ -189,14 +189,14 @@ public class RecursiveAlgorithmTest {
         List<TaskDependencyNode> freeTasks = dg.getFreeTasks(null);
         State bestFoundSoln = dg.initialState(2);
 
-        bestFoundSoln = adapter.callAlgorithm(
-                bestFoundSoln.getJobListDuration().length,
-                freeTasks,
-                0,
-                null,
-                bestFoundSoln,
-                dg.getNodes().size(),
-                bestFoundSoln.getJobListDuration()[0]);
+//        bestFoundSoln = adapter.callAlgorithm(
+//                bestFoundSoln.getJobListDuration().length,
+//                freeTasks,
+//                0,
+//                null,
+//                bestFoundSoln,
+//                dg.getNodes().size(),
+//                bestFoundSoln.getJobListDuration()[0]);
 
         boolean hasScheduledDuplicateNode = false;
         HashMap<TaskDependencyNode, Boolean> mapOfScheduledNodes = new HashMap<>();
@@ -227,14 +227,14 @@ public class RecursiveAlgorithmTest {
         List<TaskDependencyNode> freeTasks = dg.getFreeTasks(null);
         State bestFoundSoln = dg.initialState(2);
 
-        bestFoundSoln = adapter.callAlgorithm(
-                bestFoundSoln.getJobListDuration().length,
-                freeTasks,
-                0,
-                null,
-                bestFoundSoln,
-                dg.getNodes().size(),
-                bestFoundSoln.getJobListDuration()[0]);
+//        bestFoundSoln = adapter.callAlgorithm(
+//                bestFoundSoln.getJobListDuration().length,
+//                freeTasks,
+//                0,
+//                null,
+//                bestFoundSoln,
+//                dg.getNodes().size(),
+//                bestFoundSoln.getJobListDuration()[0]);
 
         boolean hasScheduledDuplicateNode = false;
         HashMap<TaskDependencyNode, Boolean> mapOfScheduledNodes = new HashMap<>();
@@ -265,14 +265,14 @@ public class RecursiveAlgorithmTest {
         List<TaskDependencyNode> freeTasks = dg.getFreeTasks(null);
         State bestFoundSoln = dg.initialState(2);
 
-        bestFoundSoln = adapter.callAlgorithm(
-                bestFoundSoln.getJobListDuration().length,
-                freeTasks,
-                0,
-                null,
-                bestFoundSoln,
-                dg.getNodes().size(),
-                bestFoundSoln.getJobListDuration()[0]);
+//        bestFoundSoln = adapter.callAlgorithm(
+//                bestFoundSoln.getJobListDuration().length,
+//                freeTasks,
+//                0,
+//                null,
+//                bestFoundSoln,
+//                dg.getNodes().size(),
+//                bestFoundSoln.getJobListDuration()[0]);
 
         boolean hasScheduledDuplicateNode = false;
         HashMap<TaskDependencyNode, Boolean> mapOfScheduledNodes = new HashMap<>();

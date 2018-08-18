@@ -17,7 +17,6 @@ public class RecursiveWorker implements Callable<Integer> {
     private int tasksScheduled;
     private RecursiveDoneListener listener;
 
-
     public RecursiveWorker(StateTreeBranch branch, RecursiveDoneListener listener) {
         if(branch.getStateSnapshot() == null){
             throw new RecursiveWorkerException("No state snapshot found in the StateTreeBranch object");
@@ -92,7 +91,9 @@ public class RecursiveWorker implements Callable<Integer> {
                     }
                     //if possibly better and not complete, recurse.
                     else if (newState.getHeuristicValue() < RecursionStore.getBestStateHeuristic() && tasksScheduled < RecursionStore.getNumberOfTasksTotal()) {
-                        recurse(prospectiveFreeTasks, newState, tasksScheduled);
+                        if(!RecursionStore.hasExplored(newState.toString())){
+                            recurse(prospectiveFreeTasks, newState, tasksScheduled);
+                        }
                     }
                     tasksScheduled--;
                 }
@@ -107,7 +108,6 @@ public class RecursiveWorker implements Callable<Integer> {
                     new ArrayList<>(this.freeTasks),
                     new State(this.state.getJobLists(), this.state.getJobListDuration(), this.state.getHeuristicValue(), this.state.getSumOfScheduledTasks()),
                     new Integer(this.tasksScheduled));
-
             done();
         } catch (Exception e){
             listener.handleThreadException(e);
