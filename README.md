@@ -33,14 +33,18 @@ To run our application:
 
 Optional parameters:
 
-Parameter representing the maximum number of threads the algorithm is allowed to use.--
+Parameter representing the maximum number of threads the algorithm is allowed to use.
+
 "__-p [Integer representing the number of cores on the machine or the maximum number of threads]__"
 
 Parameter only to be used by advanced users who know excatly how wide or narrow they want the search to be. (depending on the complexity of the graph, this parameter can speed up the search significantly).
+
 "__-b [Integer representing the boosting value]__"
 
 Parameter representing what you want the output graph .dot file to be called.
+
 "__-o [Name of the output file]__"
 
 Parameter to specify if the user wants the algorithm's search to be visualised.
+
 "__-v__"
