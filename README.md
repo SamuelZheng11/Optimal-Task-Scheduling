@@ -1,4 +1,6 @@
-# 306_Parallel_Processes
+# The Original Sinnens
+
+## Optimal Task Scheduling
 
 This repository is used for storing code artefacts related to the first project of SoftEng 306 2018, The Parallel Scheduling Problem.
 ### Contributors
