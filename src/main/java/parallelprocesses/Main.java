@@ -75,21 +75,24 @@ public class Main extends Application implements PilotDoneListener, RecursiveDon
     }
 
 
+
     public void InitialiseScheduling(StatisticsModel model) {
-        _startTime = System.nanoTime();
         DependencyGraph dg = DependencyGraph.getGraph();
+        dg.setFilePath(_argumentsParser.getFilePath());
+        //todo parsing of command line args to graph parsing function
+        dg.parse();
         System.out.println("Calculating schedule, Please wait ...");
 
-        List<TaskDependencyNode> freeTasks = dg.getFreeTasks(null);
-
         // initialise store and thread pool
-        RecursionStore.constructRecursionStoreSingleton(model, _argumentsParser.getProcessorNo(), bestFoundSoln.getJobListDuration()[0], dg.getNodes().size(), _argumentsParser.getMaxThreads());
-        RecursionStore.processPotentialBestState(bestFoundSoln);
-        RecursionStore.pushStateTreeQueue(new StateTreeBranch(generateInitalState(RecursionStore.getBestStateHeuristic()), freeTasks, 0));
+        RecursionStore.constructRecursionStoreSingleton(model, _argumentsParser.getProcessorNo(), dg.remainingCosts(), dg.getNodes().size(), _argumentsParser.getMaxThreads());
         _pool = Executors.newFixedThreadPool(_argumentsParser.getMaxThreads());
 
         GreedyState greedyState = new GreedyState(dg, this);
         _pool.execute(greedyState);
+
+        RecursionStore.setMaxThreads(_maxThreads);
+
+
     }
 
     private static State generateInitalState(double initialHeuristic) {
@@ -169,7 +172,7 @@ public class Main extends Application implements PilotDoneListener, RecursiveDon
         RecursionStore.finishGuiProcessing();
         System.out.println("Finished");
 
-        
+
 
     }
 

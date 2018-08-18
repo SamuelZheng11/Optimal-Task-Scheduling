@@ -44,6 +44,10 @@ public class RecursionStore {
         statisticsModel.setRunning(false);
     }
 
+    public static synchronized void setMaxThreads(int maxThreads){
+        statisticsModel.setThreadNumber(maxThreads);
+    }
+
     public static int getNumberOfTasksTotal(){
         return RecursionStore.numberOfTasks;
     }

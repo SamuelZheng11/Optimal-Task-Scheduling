@@ -51,6 +51,8 @@ public class StatisticsScreen {
 
         setTime(model.getStartTime());
         _data.get(1).statField = Integer.toString(model.getState().getJobLists().size());
+        _data.get(2).statField = Long.toString(model.getThreadNumber());
+
 
 
         _tableView.refresh();
