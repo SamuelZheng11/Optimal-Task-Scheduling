@@ -38,6 +38,7 @@ public class Main extends Application implements PilotDoneListener, RecursiveDon
 
     private ExecutorService _pool;
 
+    private long _startTime;
 
     public void start(Stage primaryStage) throws Exception {
         DependencyGraph dg = DependencyGraph.getGraph();
@@ -75,6 +76,7 @@ public class Main extends Application implements PilotDoneListener, RecursiveDon
 
 
     public void InitialiseScheduling(StatisticsModel model) {
+        _startTime = System.nanoTime();
         DependencyGraph dg = DependencyGraph.getGraph();
         System.out.println("Calculating schedule, Please wait ...");
 
@@ -142,6 +144,7 @@ public class Main extends Application implements PilotDoneListener, RecursiveDon
         if (this.numberOfBranchesCompleted != this._totalNumberOfStateTreeBranches) {
             return;
         }
+        System.out.println((System.nanoTime() - _startTime) / 1000000000.0);
         generateOutputAndClose();
     }
 
@@ -158,7 +161,8 @@ public class Main extends Application implements PilotDoneListener, RecursiveDon
         RecursionStore.finishGuiProcessing();
         System.out.println("Finished");
 
-        //System.exit(0);
+        
+
     }
 
     private void validateArguments() {

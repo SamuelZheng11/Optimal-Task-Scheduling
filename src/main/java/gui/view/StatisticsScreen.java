@@ -38,7 +38,7 @@ public class StatisticsScreen {
                 new StatisticCell("Time Elapsed", ""),
                 new StatisticCell("Number of processors", ""),
                 new StatisticCell("Number of threads", ""),
-                new StatisticCell("Number of branches pruned", ""),
+                new StatisticCell("Greedy Schedule Time", ""),
                 new StatisticCell("Current best schedule time", "")
         );
 
@@ -50,8 +50,10 @@ public class StatisticsScreen {
     public void updateStatisticsScreen(StatisticsModel model){
 
         setTime(model.getStartTime());
+        _data.get(1).statField = Integer.toString(model.getState().getJobLists().size());
 
 
+        _tableView.refresh();
     }
 
     private void setTime(long startTime){
@@ -76,7 +78,7 @@ public class StatisticsScreen {
 
         _data.get(0).statField = sb.toString();
 
-        _tableView.refresh();
+
     }
 
     private void append(StringBuilder sb, long value, String text) {

@@ -11,6 +11,7 @@ public class StatisticsModel {
     private boolean _running = true;
     private boolean _updated = false;
     private long _startTime;
+    private long _threadNumber;
 
     public StatisticsModel(ChartModel chartModel){
         _chartModel = chartModel;
@@ -53,5 +54,14 @@ public class StatisticsModel {
     public synchronized void setStartTime(long startTime){
         _startTime = startTime;
     }
+
+    public synchronized long getThreadNumber(){
+        return _threadNumber;
+    }
+
+    public synchronized void setThreadNumber(long threadNumber){
+        _threadNumber = threadNumber;
+    }
+
 
 }
