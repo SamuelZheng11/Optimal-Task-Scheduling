@@ -37,7 +37,7 @@ public class RecursiveWorker implements Callable<Integer> {
     // linearScheduleTime: The total time it would take if this was all on processor (no comms delays),
     // recursionStore used to house the constant information
     public void recurse(List<TaskDependencyNode> freeTasks, State state, int tasksScheduled) {
-
+        System.out.println("working");
         //If there are available tasks to schedule
         if (freeTasks.size() > 0) {
             //For each available task, try scheduling it on a processor

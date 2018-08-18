@@ -69,13 +69,14 @@ public class Main extends Application implements PilotDoneListener, RecursiveDon
 
         // initialise store and thread pool
         RecursionStore.constructRecursionStoreSingleton(_argumentsParser.getProcessorNo(), dg.remainingCosts(), dg.getNodes().size(), _argumentsParser.getMaxThreads());
-        _pool = Executors.newFixedThreadPool(_argumentsParser.getMaxThreads());
+//        _pool = Executors.newFixedThreadPool(_argumentsParser.getMaxThreads());
+        _pool = Executors.newFixedThreadPool(1);
 
         GreedyState greedyState = new GreedyState(dg, this);
         _pool.execute(greedyState);
     }
 
-    private static State generateInitalState(double initialHeuristic) {
+    private static State generateInitialState(double initialHeuristic) {
         ArrayList<List<Job>> jobList = new ArrayList<>(RecursionStore.getNumberOfProcessors());
         for (int i = 0; i < RecursionStore.getNumberOfProcessors(); i++) {
             jobList.add(new ArrayList<>());
@@ -90,7 +91,7 @@ public class Main extends Application implements PilotDoneListener, RecursiveDon
         // set up the results from the greedy search to be used for the optimal search
         List<TaskDependencyNode> freeTasks = DependencyGraph.getGraph().getFreeTasks(null);
         RecursionStore.processPotentialBestState(greedyState);
-        RecursionStore.pushStateTreeQueue(new StateTreeBranch(generateInitalState(RecursionStore.getBestStateHeuristic()), freeTasks, 0));
+        RecursionStore.pushStateTreeQueue(new StateTreeBranch(generateInitialState(RecursionStore.getBestStateHeuristic()), freeTasks, 0));
 
         // if the number of processors is one, then schedule everything on on recursive worker
         if(_argumentsParser.getMaxThreads() == Integer.valueOf(Defaults.MAXTHREADS.toString())){
@@ -106,6 +107,7 @@ public class Main extends Application implements PilotDoneListener, RecursiveDon
 
     @Override
     public void handlePilotRunHasCompleted() {
+        System.out.println(RecursionStore.getTaskQueueSize() + " branches");
         if(RecursionStore.getTaskQueueSize() < _argumentsParser.getBoostMultiplier() * _argumentsParser.getMaxThreads()){
             generateOutputAndClose();
             return;
@@ -132,6 +134,7 @@ public class Main extends Application implements PilotDoneListener, RecursiveDon
     public synchronized void handleThreadRecursionHasCompleted() {
         //ensure that all branches have been explored before writing output
         this.numberOfBranchesCompleted++;
+        System.out.println(this.numberOfBranchesCompleted + " complete");
         if (this.numberOfBranchesCompleted != this._totalNumberOfStateTreeBranches) {
             return;
         }
