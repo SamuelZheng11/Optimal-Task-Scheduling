@@ -11,4 +11,9 @@ public class DelayJob implements Job {
     public int getDuration() {
         return _duration;
     }
+
+    @Override
+    public String toString(){
+        return "Delay";
+    }
 }

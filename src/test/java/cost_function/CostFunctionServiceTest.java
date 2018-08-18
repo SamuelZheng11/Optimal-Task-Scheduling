@@ -27,7 +27,7 @@ public class CostFunctionServiceTest {
         jobList.add(this.targetProcessor);
         jobList.add(this.secondaryProcessor);
 
-        this.currentState = new State(jobList, new int[]{0,0}, 0);
+//        this.currentState = new State(jobList, new int[]{0,0}, 0);
 
         TaskDependencyNode rootNode = new TaskDependencyNode(1, new ArrayList<>(), new ArrayList<>(), "root node");
         TaskDependencyNode node1 = new TaskDependencyNode(2, new ArrayList<>(), new ArrayList<>(), "Level 1 node");

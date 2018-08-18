@@ -17,7 +17,6 @@ public class RecursiveWorker implements Callable<Integer> {
     private int tasksScheduled;
     private RecursiveDoneListener listener;
 
-
     public RecursiveWorker(StateTreeBranch branch, RecursiveDoneListener listener) {
         if(branch.getStateSnapshot() == null){
             throw new RecursiveWorkerException("No state snapshot found in the StateTreeBranch object");
@@ -37,7 +36,7 @@ public class RecursiveWorker implements Callable<Integer> {
     // linearScheduleTime: The total time it would take if this was all on processor (no comms delays),
     // recursionStore used to house the constant information
     public void recurse(List<TaskDependencyNode> freeTasks, State state, int tasksScheduled) {
-        System.out.println("working");
+
         //If there are available tasks to schedule
         if (freeTasks.size() > 0) {
             //For each available task, try scheduling it on a processor
@@ -92,7 +91,9 @@ public class RecursiveWorker implements Callable<Integer> {
                     }
                     //if possibly better and not complete, recurse.
                     else if (newState.getHeuristicValue() < RecursionStore.getBestStateHeuristic() && tasksScheduled < RecursionStore.getNumberOfTasksTotal()) {
-                        recurse(prospectiveFreeTasks, newState, tasksScheduled);
+                        if(!RecursionStore.hasExplored(newState.toString())){
+                            recurse(prospectiveFreeTasks, newState, tasksScheduled);
+                        }
                     }
                     tasksScheduled--;
                 }
@@ -107,7 +108,6 @@ public class RecursiveWorker implements Callable<Integer> {
                     new ArrayList<>(this.freeTasks),
                     new State(this.state.getJobLists(), this.state.getJobListDuration(), this.state.getHeuristicValue(), this.state.getSumOfScheduledTasks()),
                     new Integer(this.tasksScheduled));
-
             done();
         } catch (Exception e){
             listener.handleThreadException(e);

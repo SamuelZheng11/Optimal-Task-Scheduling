@@ -69,8 +69,7 @@ public class Main extends Application implements PilotDoneListener, RecursiveDon
 
         // initialise store and thread pool
         RecursionStore.constructRecursionStoreSingleton(_argumentsParser.getProcessorNo(), dg.remainingCosts(), dg.getNodes().size(), _argumentsParser.getMaxThreads());
-//        _pool = Executors.newFixedThreadPool(_argumentsParser.getMaxThreads());
-        _pool = Executors.newFixedThreadPool(1);
+        _pool = Executors.newFixedThreadPool(_argumentsParser.getMaxThreads());
 
         GreedyState greedyState = new GreedyState(dg, this);
         _pool.execute(greedyState);
@@ -113,20 +112,9 @@ public class Main extends Application implements PilotDoneListener, RecursiveDon
             return;
         }
 
-        Set<RecursiveWorker> callables = new HashSet<>();
         this._totalNumberOfStateTreeBranches = RecursionStore.getTaskQueueSize();
         while (RecursionStore.getTaskQueueSize() > 0) {
-            callables.add(new RecursiveWorker(RecursionStore.pollStateTreeQueue(), this));
-        }
-
-        if (callables.size() == 0) {
-            throw new RecursiveWorkerException("No tasks are assigned to the thread call-ables");
-        }
-
-        try {
-            _pool.invokeAll(callables);
-        } catch (InterruptedException ie) {
-            ie.printStackTrace();
+            _pool.submit(new RecursiveWorker(RecursionStore.pollStateTreeQueue(), this));
         }
     }
 
