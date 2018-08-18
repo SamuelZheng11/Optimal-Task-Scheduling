@@ -49,7 +49,7 @@ public class RecursionStore {
     }
 
     public static synchronized void setGreedyState(State greedyState){
-        statisticsModel.setGreedyState(greedyState);
+        statisticsModel.updateGreedyState(greedyState);
     }
 
     public static int getNumberOfTasksTotal(){

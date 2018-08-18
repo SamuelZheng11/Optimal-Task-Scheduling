@@ -7,8 +7,8 @@ public class StatisticsModel {
     // Now using the mediator pattern
 
     final private ChartModel _chartModel;
+    private ChartModel _greedyChartModel;
     private State _state;
-    private State _greedyState;
     private boolean _running = true;
     private boolean _updated = false;
     private long _startTime;
@@ -16,12 +16,20 @@ public class StatisticsModel {
 
     public StatisticsModel(ChartModel chartModel){
         _chartModel = chartModel;
-
+        _greedyChartModel = new ChartModel(chartModel.getProcessorNumber());
     }
 
     public synchronized void updateState(State state){
         _state = state;
         _chartModel.updateState(state);
+    }
+
+    public void updateGreedyState(State greedyState){
+        _greedyChartModel.updateState(greedyState);
+    }
+
+    public ChartModel getGreedyChartModel(){
+        return _greedyChartModel;
     }
 
     public synchronized State getState(){
@@ -64,12 +72,4 @@ public class StatisticsModel {
         _threadNumber = threadNumber;
     }
 
-
-    public State getGreedyState() {
-        return _greedyState;
-    }
-
-    public void setGreedyState(State greedyState) {
-        this._greedyState = greedyState;
-    }
 }

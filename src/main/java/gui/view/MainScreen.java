@@ -24,6 +24,7 @@ public class MainScreen{
 
     MainController _controller;
     private ChartScreen _chart;
+    private ChartScreen _greedyChart;
 
     public MainScreen(Stage primaryStage, StatisticsModel statModel) throws IOException {
 
@@ -40,6 +41,11 @@ public class MainScreen{
         GraphicsContext gc = canvas.getGraphicsContext2D();
         _chart = new ChartScreen(gc);
         _chart.drawChart(statModel.getChartModel());
+
+        Canvas greedyCanvas = ((Canvas)loader.getNamespace().get("greedyChartCanvas"));
+        GraphicsContext gc2 = greedyCanvas.getGraphicsContext2D();
+        _greedyChart = new ChartScreen(gc2);
+        _greedyChart.drawChart(statModel.getChartModel());
 
         PieChart pieChart = ((PieChart)loader.getNamespace().get("pieChart"));
         PieChartScreen pieChartScreen = new PieChartScreen(pieChart);

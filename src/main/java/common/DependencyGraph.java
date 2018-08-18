@@ -174,6 +174,7 @@ public class DependencyGraph {
         fs.addSink(g);
         try {
             fs.readAll(_filePath);
+            
             convert();
 //            Iterator<Node> iter = g.getNodeIterator();
 //            while(iter.hasNext()){
