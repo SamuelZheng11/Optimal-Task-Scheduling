@@ -3,6 +3,7 @@ package parallelprocesses;
 import common.State;
 import exception_classes.RecursionStoreException;
 import gui.model.StatisticsModel;
+import org.graphstream.graph.Graph;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -50,6 +51,10 @@ public class RecursionStore {
 
     public static synchronized void setGreedyState(State greedyState){
         statisticsModel.updateGreedyState(greedyState);
+    }
+
+    public static synchronized void setInputGraph(Graph graph){
+        statisticsModel.setInputGraph(graph);
     }
 
     public static int getNumberOfTasksTotal(){

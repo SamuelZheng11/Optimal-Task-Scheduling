@@ -1,11 +1,13 @@
 package gui.view;
 
 
+import common.DependencyGraph;
 import gui.controller.MainController;
 import gui.listeners.ModelChangeListener;
 import gui.model.ChartModel;
 import gui.model.StatisticsModel;
 import javafx.application.Platform;
+import javafx.embed.swing.SwingNode;
 import javafx.event.EventHandler;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -52,6 +54,10 @@ public class MainScreen{
 
         TableView tableView = ((TableView)loader.getNamespace().get("statisticsTable"));
         StatisticsScreen statisticsScreen = new StatisticsScreen(tableView);
+
+
+        SwingNode swingNode = ((SwingNode)loader.getNamespace().get("swingNode"));
+        InputGraphScreen graphScreen = new InputGraphScreen(swingNode, DependencyGraph.getGraph().getInputGraph());
 
         Scene scene = new Scene(pane, 1280, 720);
         primaryStage.setScene(scene);

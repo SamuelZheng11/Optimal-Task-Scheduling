@@ -1,6 +1,7 @@
 package gui.model;
 
 import common.State;
+import org.graphstream.graph.Graph;
 
 public class StatisticsModel {
 
@@ -13,6 +14,7 @@ public class StatisticsModel {
     private boolean _updated = false;
     private long _startTime;
     private long _threadNumber;
+    private Graph _inputGraph;
 
     public StatisticsModel(ChartModel chartModel){
         _chartModel = chartModel;
@@ -70,6 +72,14 @@ public class StatisticsModel {
 
     public synchronized void setThreadNumber(long threadNumber){
         _threadNumber = threadNumber;
+    }
+
+    public void setInputGraph(Graph inputGraph){
+        _inputGraph = inputGraph;
+    }
+
+    public Graph getInputGraph(){
+        return _inputGraph;
     }
 
 }

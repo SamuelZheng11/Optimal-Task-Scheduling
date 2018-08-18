@@ -6,6 +6,7 @@ import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.DefaultGraph;
 import org.graphstream.stream.file.FileSource;
 import org.graphstream.stream.file.FileSourceDOT;
+import parallelprocesses.RecursionStore;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -174,7 +175,7 @@ public class DependencyGraph {
         fs.addSink(g);
         try {
             fs.readAll(_filePath);
-            
+
             convert();
 //            Iterator<Node> iter = g.getNodeIterator();
 //            while(iter.hasNext()){
@@ -308,5 +309,9 @@ public class DependencyGraph {
 
     public int getLinearScheduleDuration(){
         return _linearScheduleDuration;
+    }
+
+    public Graph getInputGraph(){
+        return g;
     }
 }

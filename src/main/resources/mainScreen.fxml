@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.embed.swing.SwingNode?>
 <?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.chart.PieChart?>
 <?import javafx.scene.control.Label?>
@@ -14,7 +15,7 @@
   <items>
       <TabPane>
          <tabs>
-            <Tab text="Current Best Solution">
+            <Tab closable="false" text="Current Best Solution">
                <content>
                 <AnchorPane id="chart" minHeight="0.0" minWidth="0.0" prefHeight="400.0" prefWidth="510.0">
                      <children>
@@ -23,7 +24,7 @@
                   </AnchorPane>
                </content>
             </Tab>
-            <Tab text="Greedy Solution">
+            <Tab closable="false" text="Greedy Solution">
                <content>
                   <AnchorPane id="chart" minHeight="0.0" minWidth="0.0" prefHeight="400.0" prefWidth="510.0">
                      <children>
@@ -32,9 +33,9 @@
                   </AnchorPane>
                </content>
             </Tab>
-            <Tab text="Input Graph">
+            <Tab closable="false" text="Input Graph">
                <content>
-                  <AnchorPane id="chart" minHeight="0.0" minWidth="0.0" prefHeight="400.0" prefWidth="510.0" />
+                   <SwingNode fx:id="swingNode" layoutX="6.0" layoutY="8.0" />
                </content>
             </Tab>
          </tabs>
