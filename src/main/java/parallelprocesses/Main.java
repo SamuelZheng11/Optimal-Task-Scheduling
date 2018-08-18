@@ -111,6 +111,9 @@ public class Main extends Application implements PilotDoneListener, RecursiveDon
             return;
         }
 
+        System.out.println("hitting pilot complete, Size " + RecursionStore.getTaskQueueSize());
+
+
         Set<RecursiveWorker> callables = new HashSet<>();
         this._totalNumberOfStateTreeBranches = RecursionStore.getTaskQueueSize();
         while (RecursionStore.getTaskQueueSize() > 0) {
