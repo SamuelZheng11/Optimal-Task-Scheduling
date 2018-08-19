@@ -14,6 +14,6 @@ public class DelayJob implements Job {
 
     @Override
     public String toString(){
-        return "Delay";
+        return "D";
     }
 }

@@ -18,7 +18,7 @@ public class RecursionStore {
     private static Integer numberOfTasks;
     private static Integer numberOfCores;
     private static Queue<StateTreeBranch> stb = new PriorityQueue<>();
-    private static Set<String> exploredStateString = new HashSet<>();
+    private static Set<byte[]> exploredStateString = new HashSet<>();
     private static StatisticsModel statisticsModel;
 
     private RecursionStore(StatisticsModel model, int noOfProc, int linearScheduleTime, int numTasks, int numOfCores){
@@ -101,11 +101,15 @@ public class RecursionStore {
         return RecursionStore.numberOfCores;
     }
 
-    public static boolean hasExplored(String stateString){
-        if(exploredStateString.contains(stateString)){
+    public static boolean hasExplored(byte[] stateByteForm){
+        if(exploredStateString.contains(stateByteForm)){
             return true;
         }
-        exploredStateString.add(stateString);
+        exploredStateString.add(stateByteForm);
         return false;
+    }
+
+    public static void clearHashSet(){
+        exploredStateString.clear();
     }
 }

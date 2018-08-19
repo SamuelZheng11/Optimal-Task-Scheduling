@@ -37,8 +37,18 @@ public class State {
         return _heuristicValue;
     }
 
+    public byte[] getByteArray(){
+        char[] charArrayForm = this.toString().toCharArray();
+        byte[] byteArray = new byte[charArrayForm.length];
+        for (int i = 0; i < charArrayForm.length; i++) {
+            int ascii = charArrayForm[i];
+            byteArray[i] = (byte)ascii;
+        }
+        return byteArray;
+    }
+
     @Override
-    public String toString(){
+    private String toString(){
         String stateString = "";
         int subject =  -1;
         for (int processor = 0; processor < this.getJobLists().size(); processor++) {

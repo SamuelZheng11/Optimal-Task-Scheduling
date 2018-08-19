@@ -25,7 +25,7 @@ public class DependencyGraph {
     private List<TaskDependencyNode> _scheduledNodes = new ArrayList<TaskDependencyNode>();
     private int _linearScheduleDuration;
 
-    private DependencyGraph(){
+    protected DependencyGraph(){
     }
 
     public static DependencyGraph getGraph(){

@@ -59,7 +59,7 @@ public class PilotRecursiveWorker implements Runnable {
                     //create the new state with the task scheduled to evaluate pass to the recursion
                     State newState = new CostFunctionService().scheduleNode(currentNode, j, state, RecursionStore.getLinearScheduleTime());
 
-                    if (newState.getHeuristicValue() < RecursionStore.getBestStateHeuristic() && !RecursionStore.hasExplored(newState.toString())) {
+                    if (newState.getHeuristicValue() < RecursionStore.getBestStateHeuristic() && !RecursionStore.hasExplored(newState.getByteArray())) {
                         int tasksScheduled = stb.getNumTaskScheduled() + 1;
                         for (int k = 0; k < currentNode._children.size(); k++) {
                             TaskDependencyNode child = currentNode._children.get(k)._child;
@@ -111,6 +111,7 @@ public class PilotRecursiveWorker implements Runnable {
     }
 
     private void done() {
+        RecursionStore.clearHashSet();
         this.listener.handlePilotRunHasCompleted();
     }
 }
