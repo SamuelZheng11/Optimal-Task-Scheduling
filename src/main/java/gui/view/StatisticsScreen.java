@@ -10,7 +10,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 
 import java.time.Duration;
 
-
+/**
+ * This class renders the entire statistics table on the GUI when the search visualisation is enabled
+ */
 public class StatisticsScreen {
 
     TableView _tableView;
@@ -19,6 +21,10 @@ public class StatisticsScreen {
 
     ObservableList<StatisticCell> _data;
 
+    /**
+     * create the table itself for the render
+     * @param tableView
+     */
     public StatisticsScreen(TableView tableView){
 
         _tableView = tableView;
@@ -51,6 +57,10 @@ public class StatisticsScreen {
         _tableView.getColumns().addAll(_statName, _statField);
     }
 
+    /**
+     * when the controller tries to update the view it calls this method to get the new information from the mediator pattern
+     * @param model
+     */
     public void updateStatisticsScreen(StatisticsModel model){
 
         _data.get(0).statField = model.getInputGraphName();
@@ -73,6 +83,10 @@ public class StatisticsScreen {
         _tableView.refresh();
     }
 
+    /**
+     * Used to calculate the amount of time passed. This method is called by updateStatisticsScreen to get the time that has passed
+     * @param startTime
+     */
     private void setTime(long startTime){
 
         long nanoseconds = System.nanoTime() - startTime;
@@ -98,6 +112,12 @@ public class StatisticsScreen {
 
     }
 
+    /**
+     * used to format the time string on the statistic model
+     * @param sb stringBuilder class object
+     * @param value the value of the time unit (eg 1, 2, 100)
+     * @param text the suffix of the time unit (s(econds), h(our), d(ays))
+     */
     private void append(StringBuilder sb, long value, String text) {
         if (value > 0) {
             if (sb.length() > 0) {

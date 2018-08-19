@@ -1,5 +1,8 @@
 package common;
 
+/**
+ * constants that are used in the DOT/GraphStream format
+ */
 public enum AttributeConstants {
 
     WEIGHT("Weight");

@@ -1,6 +1,8 @@
 package common;
 
-//Edge of the acyclic task dependency tree
+/**
+ * Class used to represent an edge of the acyclic task dependency tree
+ */
 public class TaskDependencyEdge {
     public TaskDependencyNode _parent;
     public TaskDependencyNode _child;

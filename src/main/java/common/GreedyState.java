@@ -5,6 +5,9 @@ import parallelprocesses.RecursionStore;
 
 import java.util.*;
 
+/**
+ * this runnable class is responsible when executed to calculate the greedy schedule given an input graph
+ */
 public class GreedyState implements Runnable {
 
     private List<TaskDependencyNode> _freeTasks;
@@ -21,7 +24,11 @@ public class GreedyState implements Runnable {
         _listener = listener;
     }
 
-    private State calculateInitalState() {
+    /**
+     * called to get the greedy schedule
+     * @return State object representing the greedy schedule
+     */
+    private State calculateInitialState() {
         //Create map with number of processors specified as input
         _processors = new HashMap<>();
         _scheduledNodes = new HashMap<>();
@@ -59,7 +66,6 @@ public class GreedyState implements Runnable {
         int[] durationArr = new int[_numProc];
         int counter = 0;
         for (List<Job> processors : processorList) { //Iterate through each processor
-           // System.out.println("Looking at processor number " + counter);
             int duration = 0;
             for (Job jobs : processors) {
                 duration += jobs.getDuration();
@@ -80,11 +86,13 @@ public class GreedyState implements Runnable {
         return state;
     }
 
+    /**
+     * called by the calculateInitialState method to add the next node on to the schedule
+     * when calculating the initial greedy schedule
+     */
     private void addNode() {
         TaskDependencyNode nodeToAdd = _freeTasks.get(0); //get first node in priority
         _freeTasks = _dg.getFreeTasks(nodeToAdd);
-
-        //System.out.println("Attempting to add node: " + nodeToAdd._name);
 
         int[] bestProcStartTimes = new int[_numProc];
         int counter = 0;
@@ -92,19 +100,14 @@ public class GreedyState implements Runnable {
         for (TaskDependencyEdge parentEdge:
              nodeToAdd._parents) {
 
-          //  System.out.println("Looking at parent node: " + parentEdge._parent._name);
-
             int[] nodeEarliestStartTimeArr = new int[_numProc];
             int[] procEarliestStartTimeArr = new int[_numProc];
             int parentNodeEndTime = _nodeStartTime.get(parentEdge._parent) + parentEdge._parent._duration; //get starttime(parent node) + weight(parent node)
-
-           // System.out.println("Parent node end time is: " + Integer.toString(parentNodeEndTime));
 
             for (int i = 0; i < _numProc; i++) { //iterate through each processor and get earliest start time based on precedence check
                 int nodeEarliestStartTime = parentNodeEndTime;
                 int procEarliestStartTime = 0;
                 if (!_scheduledNodes.get(i + 1).contains(parentEdge._parent)) {
-                  //  System.out.println("Processor number " + Integer.toString(i + 1) + "does not contain parent node");
                     nodeEarliestStartTime += parentEdge._communicationDelay; //add comm delay if proc(node i) =/= proc(node j)
                 }
                 for (Job jobs :
@@ -118,15 +121,9 @@ public class GreedyState implements Runnable {
                     procEarliestStartTimeArr[i] = nodeEarliestStartTimeArr[i]; //update earliest possible start time for node
                 }
             }
-//            if (nodeToAdd._name.equals("7")) {
-//             //   System.out.println("EARLIEST START TIME FOR NODE " + nodeToAdd._name + " on processor " + Integer.toString(1) + " is " + procEarliestStartTimeArr[0]);
-//              //  System.out.println("EARLIEST START TIME FOR NODE " + nodeToAdd._name + " on processor " + Integer.toString(2) + " is " + procEarliestStartTimeArr[1]);
-//
-//            }
 
             if (counter == 0) {
                 for (int i = 0; i < _numProc; i++) {
-                   // System.out.println(Integer.toString(procEarliestStartTimeArr[i]));
                     bestProcStartTimes[i] = procEarliestStartTimeArr[i];
                 }
             } else {
@@ -138,10 +135,6 @@ public class GreedyState implements Runnable {
             counter++;
         }
 
-//        for(int i = 0; i< bestProcStartTimes.length; i++) {
-//            System.out.print(Integer.toString(bestProcStartTimes[i])+ " ");
-//        }
-
         //Find lowest start time for the node
         int minumumStartTime = bestProcStartTimes[0];
 
@@ -152,15 +145,13 @@ public class GreedyState implements Runnable {
                 bestProcessor = i+1;
             }
         }
-      //  System.out.println("MOST OPTIMAL start time is: " + Integer.toString(minumumStartTime) + " on processor " + Integer.toString(bestProcessor));
         int endTime = 0; //current end time for the best processor
         for(Job jobs:
             _processors.get(bestProcessor)) {
             endTime += jobs.getDuration();
         }
         int idleTime = minumumStartTime - endTime;
-      //  System.out.println("Current end time is " + Integer.toString(endTime));
-     //   System.out.println("Current idle time is " + Integer.toString(idleTime));
+
 
         if(idleTime > 0) {
             DelayJob delay = new DelayJob(idleTime);
@@ -177,16 +168,19 @@ public class GreedyState implements Runnable {
             nodeStartTime += jobs.getDuration();
         }
         nodeStartTime -= nodeToAdd._duration;
-     //   System.out.println(Integer.toString(nodeStartTime));
         _nodeStartTime.put(nodeToAdd, nodeStartTime);
 
 
     }
 
+    /**
+     * Method that is called when the runnable is executed
+     */
     @Override
     public void run() {
         try{
-            State greedyState = this.calculateInitalState();
+            State greedyState = this.calculateInitialState();
+            //start greedy search
             RecursionStore.setGreedyState(greedyState);
             this._listener.handleGreedySearchHasCompleted(greedyState);
         } catch (Exception e){
@@ -194,26 +188,3 @@ public class GreedyState implements Runnable {
         }
     }
 }
-
-
-//                    if(jobs instanceof TaskJob) {
-//                        TaskJob task = (TaskJob) jobs;
-//                        if(task.getNode().equals(parentEdge._parent)) {
-//                            earliestStartTime += task.getDuration();
-//                            break;
-//                        }
-//                    }
-//                    else if(jobs instanceof DelayJob) {
-//                        earliestStartTime += jobs.getDuration();
-//                        continue;
-//                    }
-//                    else if(jobs instanceof TaskJob) {
-//                        TaskJob task = (TaskJob) jobs;
-//                        if(!task.getNode().equals(parentEdge._parent)) {
-//                            earliestStartTime += task.getDuration();
-//                            continue;
-//                        }
-//                    }
-//                    else {
-//                        continue;
-//                    }

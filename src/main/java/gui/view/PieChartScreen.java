@@ -4,7 +4,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.chart.PieChart;
 
-
+/**
+ * This class is used to render a pie chart, in the case of the program it renders the JVM ram usage
+ */
 public class PieChartScreen {
 
 

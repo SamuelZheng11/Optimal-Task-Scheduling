@@ -8,6 +8,9 @@ import cost_function.CostFunctionService;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * this class represents the initial search of the state tree to expand the number of branches so that it can be parallelised easily
+ */
 public class PilotRecursiveWorker implements Runnable {
     private int recursiveDepth = 0;
 
@@ -19,6 +22,9 @@ public class PilotRecursiveWorker implements Runnable {
         this.listener = listener;
     }
 
+    /**
+     * called when the runnable is scheduled on a thread to be run
+     */
     @Override
     public void run() {
         try {
@@ -110,6 +116,9 @@ public class PilotRecursiveWorker implements Runnable {
         }
     }
 
+    /**
+     * method called to notify listeners that the task is finished
+     */
     private void done() {
         RecursionStore.clearHashSet();
         this.listener.handlePilotRunHasCompleted();

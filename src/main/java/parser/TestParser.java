@@ -1,7 +1,8 @@
 package parser;
 
-import parallelprocesses.Defaults;
-
+/**
+ * interface used by the parser test class
+ */
 public class TestParser implements ArgumentParser {
 
     @Override

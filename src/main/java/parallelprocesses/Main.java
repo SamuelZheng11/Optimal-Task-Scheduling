@@ -19,8 +19,15 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+/**
+ * this class is used like a template pattern to schedule an optimal output
+ */
 public class Main extends Application implements PilotDoneListener, RecursiveDoneListener, GreedySearchListener {
 
+    /**
+     * launches the application
+     * @param args
+     */
     public static void main(String[] args) {
         launch(args);
     }
@@ -39,6 +46,11 @@ public class Main extends Application implements PilotDoneListener, RecursiveDon
 
     private long _startTime;
 
+    /**
+     * entry point for FX projects
+     * @param primaryStage
+     * @throws Exception
+     */
     public void start(Stage primaryStage) throws Exception {
         DependencyGraph dg = DependencyGraph.getGraph();
 
@@ -51,11 +63,12 @@ public class Main extends Application implements PilotDoneListener, RecursiveDon
         dg.setFilePath(_argumentsParser.getFilePath());
         dg.parse();
 
-        //ChartModel cModel = new ChartModel(_argumentsParser.getProcessorNo(), DependencyGraph.getGraph().getLinearScheduleDuration());
+        //set up statistics
         ChartModel cModel = new ChartModel(_argumentsParser.getProcessorNo());
         _sModel = new StatisticsModel(cModel, _argumentsParser.getFilePath());
         _sModel.setStartTime(System.nanoTime());
 
+        // run the algorithm
         Task task = new Task<Void>() {
             @Override
             public Void call() {
@@ -66,13 +79,17 @@ public class Main extends Application implements PilotDoneListener, RecursiveDon
 
         new Thread(task).start();
 
+        // renders the visualisation if nessasary
         if (_argumentsParser.displayVisuals()) {
             MainScreen mainScreen = new MainScreen(primaryStage, _sModel, this);
         }
 
     }
 
-
+    /**
+     * Starts the seraching part scheduling search of the program and runs the greedy algorithm
+     * @param model
+     */
     public void InitialiseScheduling(StatisticsModel model) {
         DependencyGraph dg = DependencyGraph.getGraph();
 
@@ -84,14 +101,18 @@ public class Main extends Application implements PilotDoneListener, RecursiveDon
         RecursionStore.constructRecursionStoreSingleton(model, _argumentsParser.getProcessorNo(), dg.remainingCosts(), dg.getNodes().size(), _argumentsParser.getMaxThreads());
         _pool = Executors.newFixedThreadPool(_argumentsParser.getMaxThreads());
 
+        //start greedy search
         GreedyState greedyState = new GreedyState(dg, this);
         _pool.execute(greedyState);
 
         RecursionStore.setMaxThreads(_maxThreads);
-
-
     }
 
+    /**
+     * method used to generate the entry nodes inside the search
+     * @param initialHeuristic
+     * @return
+     */
     private static State generateInitialState(double initialHeuristic) {
         ArrayList<List<Job>> jobList = new ArrayList<>(RecursionStore.getNumberOfProcessors());
         for (int i = 0; i < RecursionStore.getNumberOfProcessors(); i++) {
@@ -102,6 +123,10 @@ public class Main extends Application implements PilotDoneListener, RecursiveDon
         return new State(jobList, procDur, initialHeuristic, 0);
     }
 
+    /**
+     * gets notified when the greedy search is done to start the BFS search
+     * @param greedyState
+     */
     @Override
     public void handleGreedySearchHasCompleted(State greedyState) {
         // set up the results from the greedy search to be used for the optimal search
@@ -113,6 +138,9 @@ public class Main extends Application implements PilotDoneListener, RecursiveDon
         _pool.submit(pilot);
     }
 
+    /**
+     * Method used to start the parallelisation search after the BFS pilot search is done
+     */
     @Override
     public void handlePilotRunHasCompleted() {
         RecursionStore.publishTotalBranches();
@@ -127,6 +155,9 @@ public class Main extends Application implements PilotDoneListener, RecursiveDon
         }
     }
 
+    /**
+     * when a thread i finished with a runnable it calls here which waits until all tasks are finished before moving on
+     */
     @Override
     public synchronized void handleThreadRecursionHasCompleted() {
         //ensure that all branches have been explored before writing output
@@ -139,6 +170,9 @@ public class Main extends Application implements PilotDoneListener, RecursiveDon
         generateOutputAndClose();
     }
 
+    /**
+     * used to write and output file and close the program
+     */
     public void generateOutputAndClose() {
 
         RecursionStore.finishGuiProcessing();

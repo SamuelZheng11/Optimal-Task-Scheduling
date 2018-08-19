@@ -2,6 +2,10 @@ package common;
 
 import java.util.List;
 
+/**
+ * The class that represents the an entire state during the search and building up of the schedule. Each state object
+ * represents a schedule whether it be incomplete or complete
+ */
 public class State {
 //  Joblists consists of p arrays, each with an ordered list of Jobs for that processor, in the order which they are to
 //  be carried out
@@ -37,6 +41,11 @@ public class State {
         return _heuristicValue;
     }
 
+    /**
+     * uses the toString override to generate the unique identifier for the state (uses a small amount of space when its in
+     * the byte array)
+     * @return
+     */
     public byte[] getByteArray(){
         char[] charArrayForm = this.toString().toCharArray();
         byte[] byteArray = new byte[charArrayForm.length];
@@ -47,6 +56,10 @@ public class State {
         return byteArray;
     }
 
+    /**
+     * Override to string method to uniquely identify the state string value
+     * @return
+     */
     @Override
     public String toString(){
         String stateString = "";
@@ -56,6 +69,7 @@ public class State {
             if(nextAccInfo[0] == -1){
                 break;
             }
+            // generate string value of the string with a "E" character to signify the end of the processor
             for (int i = 0; i < this.getJobLists().get(nextAccInfo[0]).size(); i++) {
                 stateString = stateString.concat(this.getJobLists().get(nextAccInfo[0]).get(i).toString());
             }
@@ -65,9 +79,15 @@ public class State {
         return stateString;
     }
 
+    /**
+     * Method that is called to help the toString method build the unique identifier for the state object
+     * @param subject
+     * @return
+     */
     public int[] getNextAccedingIndexInJobList(int subject){
         int nextAcceding = Integer.MAX_VALUE;
         int nextAccedingIndex = -1;
+        //iterate though each processor list in acceding order and get the index and value at that processor
         for (int processor = 0; processor < this.getJobLists().size(); processor++) {
             if(this.getJobLists().get(processor).size() != 0 ){
                 if(this.getJobLists().get(processor).get(0) instanceof TaskJob) {
@@ -85,6 +105,7 @@ public class State {
                 }
             }
         }
+        //return map of the next acceding index and its value
         return new int[]{nextAccedingIndex, nextAcceding};
     }
 }

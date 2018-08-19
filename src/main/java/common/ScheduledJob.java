@@ -2,7 +2,9 @@ package common;
 
 import java.util.Comparator;
 
-//A TaskJob wrapper for testing purposes.
+/**
+ * A TaskJob wrapper for testing purposes.
+ */
 public final class ScheduledJob implements Job,  Comparable<ScheduledJob> {
     public final int _startTime;
     public final int _processorNo;

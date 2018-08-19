@@ -1,5 +1,8 @@
 package parser;
 
+/**
+ * interface to be implemented by any argument parser which handles command line arguments
+ */
 public interface ArgumentParser {
     public int getProcessorNo();
 

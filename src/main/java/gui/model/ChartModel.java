@@ -6,6 +6,10 @@ import gui.listeners.ModelChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class is used to hold information regarding a chart on the GUI when the user enables search visualisation
+ * In this case it is a pie chart
+ */
 public class ChartModel {
 
     private int _processorNum;

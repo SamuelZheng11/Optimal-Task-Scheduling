@@ -10,6 +10,10 @@ import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Set;
 
+/**
+ * This class is used to store information about the status of the algorithm. the main point of interest about it is that it stores
+ * the number of branches in the state tree after the BFS search and also holds the best found schedule
+ */
 public class RecursionStore {
     private static RecursionStore recursionStore;
     private static State bestState;
@@ -107,6 +111,11 @@ public class RecursionStore {
         return RecursionStore.numberOfCores;
     }
 
+    /**
+     * used to check if a state has been explored by comparing its byte string
+     * @param stateByteForm
+     * @return
+     */
     public static boolean hasExplored(byte[] stateByteForm){
         if(exploredStates.contains(stateByteForm)){
             return true;

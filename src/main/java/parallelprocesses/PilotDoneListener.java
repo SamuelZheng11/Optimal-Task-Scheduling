@@ -2,6 +2,9 @@ package parallelprocesses;
 
 import java.util.EventListener;
 
+/**
+ * to be implemented by anything that needs to know about things that happen to the pilot BFS search
+ */
 public interface PilotDoneListener extends EventListener {
 
     /**

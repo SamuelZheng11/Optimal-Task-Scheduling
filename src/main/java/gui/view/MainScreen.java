@@ -21,6 +21,9 @@ import parallelprocesses.Main;
 
 import java.io.IOException;
 
+/**
+ * This class is used to host all the components that the user will see when they enable search visualisation
+ */
 public class MainScreen{
 
     MainController _controller;

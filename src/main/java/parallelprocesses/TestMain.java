@@ -20,6 +20,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * test class used to main and run it
+ */
 public class TestMain extends Main implements PilotDoneListener, RecursiveDoneListener, GreedySearchListener {
 
     public static void main(String[] args) {

@@ -8,6 +8,9 @@ import org.apache.commons.cli.ParseException;
 
 import static com.sun.javafx.application.ParametersImpl.getParameters;
 
+/**
+ * This is the concrete implementation of the argument parser which manages the command line arguments used
+ */
 public class KernelParser extends AbstractParser {
 
     private CommandLine _commands;
@@ -51,6 +54,10 @@ public class KernelParser extends AbstractParser {
         return outputName;
     }
 
+    /**
+     * get boost multiplier value
+     * @return
+     */
     @Override
     public int getBoostMultiplier() {
         if(_commands.getOptionValue('b') != null){
@@ -69,6 +76,12 @@ public class KernelParser extends AbstractParser {
         return _format;
     }
 
+    /**
+     * use the apache library to format the expected arguments from the command line
+     * @param application
+     * @return
+     * @throws ParseException
+     */
     private CommandLine getCommands(Application application) throws ParseException
     {
         Options options = new Options();
@@ -82,6 +95,10 @@ public class KernelParser extends AbstractParser {
         return parser.parse(options, params);
     }
 
+    /**
+     * get the file path to the input graph
+     * @return
+     */
     @Override
     public String getFilePath() {
         try {
@@ -95,6 +112,10 @@ public class KernelParser extends AbstractParser {
         return _commands.getArgs()[0];
     }
 
+    /**
+     * get number of processors that will be in the final output graph
+     * @return
+     */
     @Override
     public int getProcessorNo(){
         try{

@@ -10,7 +10,10 @@ import javafx.scene.control.ButtonType;
 import parallelprocesses.Main;
 import sun.util.resources.cldr.mas.CalendarData_mas_KE;
 
-
+/**
+ * This class is the Controller in the MVC pattern. Its job is to control the flow of logic on the View
+ * The primary use in this case is to update the parameters on the GUI every 100ms
+ */
 public class MainController {
 
     StatisticsModel _model;

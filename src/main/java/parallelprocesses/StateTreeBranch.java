@@ -5,6 +5,9 @@ import common.TaskDependencyNode;
 
 import java.util.List;
 
+/**
+ * used by the BFS to store in the Recursive store a branch on the state tree
+ */
 public class StateTreeBranch implements Comparable<StateTreeBranch>{
     private State stateSnapshot;
     private List<TaskDependencyNode> freeNodes;
@@ -28,6 +31,11 @@ public class StateTreeBranch implements Comparable<StateTreeBranch>{
         return this.tasksScheduled;
     }
 
+    /**
+     * compare to used for the priority queue on the recursion store
+     * @param stateTreeBranch
+     * @return
+     */
     @Override
     public int compareTo(StateTreeBranch stateTreeBranch) {
         if(this.stateSnapshot.getHeuristicValue() == stateTreeBranch.stateSnapshot.getHeuristicValue()){

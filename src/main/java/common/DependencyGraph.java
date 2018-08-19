@@ -14,6 +14,9 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.*;
 
+/**
+ * Dependency Graph is a singleton class used to represent the the input graph
+ */
 public class DependencyGraph {
 
     private final String WEIGHT = AttributeConstants.WEIGHT.toString();
@@ -130,6 +133,7 @@ public class DependencyGraph {
         List<Job> jobList = new ArrayList<Job>(); // create job list
         List<TaskDependencyNode> freeTasks = getFreeTasks(null); // get set of initial nodes
 
+        // generate the list of nodes
         while (freeTasks.size() > 0) {
             TaskDependencyNode nodeToAdd = freeTasks.get(0);
             nodeList.add(nodeToAdd);
@@ -141,10 +145,12 @@ public class DependencyGraph {
             scheduledTasksLength += job.getDuration();
         }
 
+        // generate the array to store the finish times for each processor
         int[] durationArr = new int[numProcessors];
         java.util.Arrays.fill(durationArr, 0);
         durationArr[0] = _linearScheduleDuration;
 
+        //generate the lists used to represent each processor
         List<List<Job>> processorList = new ArrayList(numProcessors);
         for (int i = 0; i < numProcessors; i++) {
             processorList.add(i, new ArrayList<Job>());
@@ -162,6 +168,7 @@ public class DependencyGraph {
      * @return cost.
      */
     public int remainingCosts(){
+        // calculate the cost of all remaining nodes that are still yet to be scheduled
         int cost = 0;
         for(Map.Entry<String, TaskDependencyNode> node : _nodes.entrySet()){
             if(!_scheduledNodes.contains(node.getValue())){

@@ -3,7 +3,9 @@ package common;
 import java.util.ArrayList;
 import java.util.List;
 
-//Node of the acyclic Task Dependency Tree
+/**
+ * Node of the acyclic Task Dependency Tree
+ */
 public class TaskDependencyNode {
     public int _duration;
     public List<TaskDependencyEdge> _children;

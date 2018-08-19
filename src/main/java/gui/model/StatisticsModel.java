@@ -3,6 +3,10 @@ package gui.model;
 import common.State;
 import org.graphstream.graph.Graph;
 
+/**
+ * This class represents the statistics model, it is used when the user enables search visualisation.
+ * This is used to hold information and bridge the gap between the algorithm store and the view itself (mediator pattern)
+ */
 public class StatisticsModel {
 
     // Now using the mediator pattern

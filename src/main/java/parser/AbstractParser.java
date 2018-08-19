@@ -2,7 +2,9 @@ package parser;
 
 import parallelprocesses.Defaults;
 
-
+/**
+ * abstract class that determine what need to be handled by a argument parser
+ */
 public abstract class AbstractParser implements ArgumentParser {
     protected int _processor;
     protected String _format = Defaults.FORMAT.toString();

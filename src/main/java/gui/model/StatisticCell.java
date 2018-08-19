@@ -1,5 +1,8 @@
 package gui.model;
 
+/**
+ * This class is used for the purposes of representing a single cell to display data on the statistic model class
+ */
 public class StatisticCell {
 
     public String statName;

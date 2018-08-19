@@ -9,7 +9,9 @@ import org.graphstream.ui.layout.Layouts;
 
 import javax.swing.*;
 
-
+/**
+ * This class is used to render in JavaFX's swing node library to render the input node as a graph
+ */
 public class InputGraphScreen {
 
     private SwingNode _swingNode;

@@ -1,5 +1,8 @@
 package common;
 
+/**
+ * Class used to represent a Task job on the schedule. This node is used to represent a node that has been scheduled
+ */
 public final class TaskJob implements Job {
 
     private final int _duration;

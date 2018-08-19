@@ -14,6 +14,9 @@ import javafx.scene.text.TextAlignment;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * this class is used to style and set up the GUI that the user sees when the user enables visualisation of the search
+ */
 public class ChartScreen {
 
     GraphicsContext _gc;

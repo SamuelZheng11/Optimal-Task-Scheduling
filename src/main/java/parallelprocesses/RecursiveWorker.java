@@ -9,7 +9,9 @@ import exception_classes.RecursiveWorkerException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
-
+/**
+ * this class represents the initial search of the state tree to expand the number of branches so that it can be parallelised easily
+ */
 public class RecursiveWorker implements Callable<Integer> {
 
     private List<TaskDependencyNode> freeTasks;
@@ -100,6 +102,9 @@ public class RecursiveWorker implements Callable<Integer> {
         }
     }
 
+    /**
+     * called when the callable is scheduled on a thread to be run
+     */
     @Override
     public Integer call() {
         try {
@@ -114,6 +119,9 @@ public class RecursiveWorker implements Callable<Integer> {
         return 0;
     }
 
+    /**
+     * method called to notify listeners that the task is finished
+     */
     public void done() {
         this.listener.handleThreadRecursionHasCompleted();
     }
