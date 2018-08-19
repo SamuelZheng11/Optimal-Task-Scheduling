@@ -5,16 +5,17 @@
 This repository is used for storing code artefacts related to the first project of SoftEng 306 which lasts 6 weeks starting on the 16 July 2018, The Parallel Scheduling Problem.
 ### Contributors
 The 5 architects who worked on solving this problems are:
+A photo of the team can also be found under the code tab
 
-**Samuel Zheng** : **GitHub Username**: samuelzheng11, **UID**: 634715579, **UPI**: szhe560 (Leader)
+**Samuel Zheng** : **GitHub Username**: samuelzheng11, **UID**: 634715579, **UPI**: szhe560 (Leader) (center)
 
-**Edwar Zhang** : **GitHub Username**: Eddiwar, **UID**: 78468327, **UPI**: ezha219
+**Edwar Zhang** : **GitHub Username**: Eddiwar, **UID**: 78468327, **UPI**: ezha219 (close Right)
 
-**Alex Morgan** : **GitHub Username**: AlexRMorgan, **UID**: 5577546, **UPI**: amor789
+**Alex Morgan** : **GitHub Username**: AlexRMorgan, **UID**: 5577546, **UPI**: amor789 (far left)
 
-**Cameron Scoular** : **GitHub Username**: cameronscoular, **UID**: 139876164, **UPI**: csco768
+**Cameron Scoular** : **GitHub Username**: cameronscoular, **UID**: 139876164, **UPI**: csco768 (far right)
 
-**Andrew Fairweather** : **GitHub Username**: theandrewfairweather, **UID**: 518641205, **UPI**: afai640
+**Andrew Fairweather** : **GitHub Username**: theandrewfairweather, **UID**: 518641205, **UPI**: afai640 (close left)
 
 ## The Scheduling Problem
 The problem description is given a certain number of processors and a number of tasks to scheduled on the processor, 
@@ -59,5 +60,3 @@ For the project deadlines and planning they can be found in both the "Planning a
 The final jar to be marked is called "Planning and Notes for Project" under the code section
 
 Communication between teams mainly happend either in person or electronically, meeting discussion can be found inside the "Planning and Notes for Project" folder. Plans, decisions and background research can also be found inside that folder
-
-A photo of the team can also be found in the code tab
