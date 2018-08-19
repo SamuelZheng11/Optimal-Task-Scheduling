@@ -52,6 +52,7 @@ jar {
     destinationDir = file(libsDirName)
     manifest {
         attributes 'Main-Class': 'parallelprocesses.Main'
+
     }
     from {
         configurations.compile.collect {it.isDirectory() ? it : zipTree(it) }

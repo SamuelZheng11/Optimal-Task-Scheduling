@@ -45,8 +45,6 @@ public class MainController {
 
                 Platform.runLater(() -> statisticsScreen.updateStatisticsScreen(_model));
             }
-            _main.generateOutputAndClose();
-            System.out.println("Finished");
         }).start();
 
         new Thread(() -> {
