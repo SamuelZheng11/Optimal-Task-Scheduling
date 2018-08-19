@@ -76,7 +76,6 @@ public class Main extends Application implements PilotDoneListener, RecursiveDon
     public void InitialiseScheduling(StatisticsModel model) {
         DependencyGraph dg = DependencyGraph.getGraph();
         dg.setFilePath(_argumentsParser.getFilePath());
-        //todo parsing of command line args to graph parsing function
         dg.parse();
         System.out.println("Calculating schedule, Please wait ...");
 
@@ -108,14 +107,6 @@ public class Main extends Application implements PilotDoneListener, RecursiveDon
         List<TaskDependencyNode> freeTasks = DependencyGraph.getGraph().getFreeTasks(null);
         RecursionStore.processPotentialBestState(greedyState);
         RecursionStore.pushStateTreeQueue(new StateTreeBranch(generateInitialState(RecursionStore.getBestStateHeuristic()), freeTasks, 0));
-
-        // if the number of processors is one, then schedule everything on on recursive worker
-        if (_argumentsParser.getMaxThreads() == Integer.valueOf(Defaults.MAXTHREADS.toString())) {
-            _totalNumberOfStateTreeBranches = RecursionStore.getTaskQueueSize();
-            RecursiveWorker singleWorker = new RecursiveWorker(RecursionStore.pollStateTreeQueue(), this);
-            _pool.submit(singleWorker);
-            return;
-        }
 
         PilotRecursiveWorker pilot = new PilotRecursiveWorker(_argumentsParser.getBoostMultiplier(), this);
         _pool.submit(pilot);
