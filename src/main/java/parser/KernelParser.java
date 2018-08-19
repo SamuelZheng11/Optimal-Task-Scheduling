@@ -30,8 +30,11 @@ public class KernelParser extends AbstractParser {
     public int getMaxThreads() {
         if(_commands.getOptionValue('p') != null){
             _maxThreads = Integer.valueOf(_commands.getOptionValue('p'));
+            return _maxThreads;
+        }else{
+            return 1;
         }
-        return _maxThreads;
+
     }
 
     @Override

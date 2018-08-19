@@ -1,72 +1,82 @@
 package gui.view;
 
 
+import common.DependencyGraph;
 import gui.controller.MainController;
+import gui.listeners.ModelChangeListener;
+import gui.model.ChartModel;
 import gui.model.StatisticsModel;
+import javafx.application.Platform;
 import javafx.embed.swing.SwingNode;
-import javafx.fxml.FXML;
-import javafx.scene.layout.Pane;
+import javafx.event.EventHandler;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.chart.PieChart;
+import javafx.scene.control.SplitPane;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.data.category.CategoryDataset;
+import javafx.stage.WindowEvent;
 
-
-import javax.swing.*;
-import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 
-import static org.jfree.chart.ChartFactory.*;
-
-
-public class MainScreen {
+public class MainScreen{
 
     MainController _controller;
+    private ChartScreen _chart;
+    private ChartScreen _greedyChart;
 
-    public MainScreen(Stage primaryStage, StatisticsModel model) throws IOException {
+    public MainScreen(Stage primaryStage, StatisticsModel statModel) throws IOException {
+
+        _controller = new MainController();
+        _controller.setModel(statModel);
+
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/mainScreen.fxml"));
-        Pane pane = loader.load();
-
-        _controller = new MainController(model);
         loader.setController(_controller);
+        SplitPane pane = loader.load();
 
         primaryStage.setTitle("Parallel Task Scheduler");
 
-        SwingNode swingNode = new SwingNode();
-        createGanttChart(swingNode);
-        pane.getChildren().add(swingNode);
+        Canvas canvas = ((Canvas)loader.getNamespace().get("chartCanvas"));
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        _chart = new ChartScreen(gc, "Best Found Solution");
+        _chart.drawChart(statModel.getChartModel());
 
-        primaryStage.setScene(new Scene(pane, 1600, 900));
+        Canvas greedyCanvas = ((Canvas)loader.getNamespace().get("greedyChartCanvas"));
+        GraphicsContext gc2 = greedyCanvas.getGraphicsContext2D();
+        _greedyChart = new ChartScreen(gc2, "Greedy Solution");
+        _greedyChart.drawChart(statModel.getChartModel());
+
+        PieChart pieChart = ((PieChart)loader.getNamespace().get("pieChart"));
+        PieChartScreen pieChartScreen = new PieChartScreen(pieChart);
+
+        TableView tableView = ((TableView)loader.getNamespace().get("statisticsTable"));
+        StatisticsScreen statisticsScreen = new StatisticsScreen(tableView);
+
+
+        SwingNode swingNode = ((SwingNode)loader.getNamespace().get("swingNode"));
+        InputGraphScreen graphScreen = new InputGraphScreen(swingNode, DependencyGraph.getGraph().getInputGraph());
+
+        Scene scene = new Scene(pane, 1280, 720);
+        primaryStage.setScene(scene);
         primaryStage.show();
-    }
 
-    public void createGanttChart(SwingNode swingNode){
-        SwingUtilities.invokeLater(new Runnable() {
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
-            public void run() {
-
-                CategoryDataset data = _controller.getData();
-                final JFreeChart chart = createStackedBarChart(
-                        "Current Optimal Schedule",  // chart title
-                        "Processor",                  // domain axis label
-                        "Time",                     // range axis label
-                        data,                     // data
-                        PlotOrientation.HORIZONTAL,    // the plot orientation
-                        false,                        // legend
-                        true,                        // tooltips
-                        false                        // urls
-                );
-
-
-                swingNode.setContent(new ChartPanel(chart));
-
+            public void handle(WindowEvent t) {
+                Platform.exit();
+                System.exit(0);
             }
         });
+
+
+
+        _controller.initStatistics(pieChartScreen, statisticsScreen, _chart);
+
     }
+
+
 
 }

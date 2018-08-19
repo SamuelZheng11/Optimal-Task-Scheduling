@@ -1,5 +1,6 @@
 package common;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class State {
@@ -24,9 +25,6 @@ public class State {
         _sumOfScheduledTasks = sumOfScheduledTasks;
     }
 
-    public State add(TaskDependencyNode node, int i){
-        return null;
-    }
 
     public List<List<Job>> getJobLists(){
         return _jobLists;

@@ -2,6 +2,7 @@ package parallelprocesses;
 
 import common.*;
 
+import gui.model.ChartModel;
 import exception_classes.RecursiveWorkerException;
 import gui.model.StatisticsModel;
 import gui.view.MainScreen;
@@ -33,31 +34,46 @@ public class Main extends Application implements PilotDoneListener, RecursiveDon
 
     private static int _totalNumberOfStateTreeBranches;
 
+    private static int _maxThreads;
+
     private ExecutorService _pool;
 
+    private long _startTime;
+
     public void start(Stage primaryStage) throws Exception {
+        DependencyGraph dg = DependencyGraph.getGraph();
 
-
-        StatisticsModel model = new StatisticsModel();
+        //Validate out arguments and make sure they are correct
         _argumentsParser = new KernelParser(this);
         validateArguments();
+        _maxThreads = _argumentsParser.getMaxThreads();
 
+        //Parse the graph so that our data is ready for use in any point post this line.
+        dg.setFilePath(_argumentsParser.getFilePath());
+        dg.parse();
+
+
+        //ChartModel cModel = new ChartModel(_argumentsParser.getProcessorNo(), DependencyGraph.getGraph().getLinearScheduleDuration());
+        ChartModel cModel = new ChartModel(_argumentsParser.getProcessorNo());
+        StatisticsModel sModel = new StatisticsModel(cModel);
+        sModel.setStartTime(System.nanoTime());
 
         Task task = new Task<Void>() {
             @Override
             public Void call() {
-                InitialiseScheduling(model);
+                InitialiseScheduling(sModel);
                 return null;
             }
         };
 
         new Thread(task).start();
 
-        if (_argumentsParser.displayVisuals()) {
-            MainScreen mainScreen = new MainScreen(primaryStage, model);
+        if( _argumentsParser.displayVisuals()){
+            MainScreen mainScreen = new MainScreen(primaryStage, sModel);
         }
 
     }
+
 
 
     public void InitialiseScheduling(StatisticsModel model) {
@@ -68,11 +84,15 @@ public class Main extends Application implements PilotDoneListener, RecursiveDon
         System.out.println("Calculating schedule, Please wait ...");
 
         // initialise store and thread pool
-        RecursionStore.constructRecursionStoreSingleton(_argumentsParser.getProcessorNo(), dg.remainingCosts(), dg.getNodes().size(), _argumentsParser.getMaxThreads());
+        RecursionStore.constructRecursionStoreSingleton(model, _argumentsParser.getProcessorNo(), dg.remainingCosts(), dg.getNodes().size(), _argumentsParser.getMaxThreads());
         _pool = Executors.newFixedThreadPool(_argumentsParser.getMaxThreads());
 
         GreedyState greedyState = new GreedyState(dg, this);
         _pool.execute(greedyState);
+
+        RecursionStore.setMaxThreads(_maxThreads);
+
+
     }
 
     private static State generateInitalState(double initialHeuristic) {
@@ -149,8 +169,11 @@ public class Main extends Application implements PilotDoneListener, RecursiveDon
             e.printStackTrace();
         }
 
+        RecursionStore.finishGuiProcessing();
         System.out.println("Finished");
-        System.exit(0);
+
+
+
     }
 
     private void validateArguments() {
