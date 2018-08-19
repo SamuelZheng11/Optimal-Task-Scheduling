@@ -65,13 +65,12 @@ public class CostFunctionService {
                 freeSpace += fullTime-this.state.getJobListDuration()[i];
             }
             double heuristicValue = fullTime;
-            double costOfNodesAfterGapsFilled = (double)costOfAllNodes - (this.state.getSumOfScheduledTasks() + node._duration + freeSpace);
+            double costOfNodesAfterGapsFilled = (double)costOfAllNodes - (this.state.getSumOfScheduledTasks() + freeSpace);
             if (costOfNodesAfterGapsFilled > 0){
                 heuristicValue += costOfNodesAfterGapsFilled/withCurrentState.getJobLists().size();
             }
-            if (this.state.getJobLists().get(1).size()>0 && this.state.getJobLists().get(1).get(0) instanceof TaskJob && ((TaskJob) this.state.getJobLists().get(1).get(0)).getName().equals("1")){
-                //System.out.println("");
-            }
+
+
             // return state early with node scheduled as it has not parents
             return new State(
                     this.state.getJobLists(),
@@ -114,12 +113,11 @@ public class CostFunctionService {
             freeSpace += fullTime-this.state.getJobListDuration()[i];
         }
         double heuristicValue = fullTime;
-        double costOfNodesAfterGapsFilled = (double)costOfAllNodes - this.state.getSumOfScheduledTasks() + node._duration - freeSpace;
+        double costOfNodesAfterGapsFilled = (double)costOfAllNodes - this.state.getSumOfScheduledTasks() - freeSpace;
         if (costOfNodesAfterGapsFilled > 0){
             heuristicValue += costOfNodesAfterGapsFilled/withCurrentState.getJobLists().size();
         }
 
-        // return state early with node scheduled as it has not parents
         return new State(
                 this.state.getJobLists(),
                 this.state.getJobListDuration(),
