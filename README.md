@@ -6,7 +6,7 @@ This repository is used for storing code artefacts related to the first project 
 ### Contributors
 The 5 architects who worked on solving this problems are:
 
-**Samuel Zheng** : **GitHub Username**: samuelzheng11, **UID**: 634715579, **UPI**: szhe560
+**Samuel Zheng** : **GitHub Username**: samuelzheng11, **UID**: 634715579, **UPI**: szhe560 (Leader)
 
 **Edwar Zhang** : **GitHub Username**: Eddiwar, **UID**: 78468327, **UPI**: ezha219
 
