@@ -18,7 +18,7 @@ public class RecursiveWorker implements Callable<Integer> {
     private RecursiveDoneListener listener;
 
     public RecursiveWorker(StateTreeBranch branch, RecursiveDoneListener listener) {
-        if(branch.getStateSnapshot() == null){
+        if (branch.getStateSnapshot() == null) {
             throw new RecursiveWorkerException("No state snapshot found in the StateTreeBranch object");
         }
         this.freeTasks = branch.getFreeNodes();
@@ -43,55 +43,55 @@ public class RecursiveWorker implements Callable<Integer> {
             for (int i = 0; i < freeTasks.size(); i++) {
                 //if the current processor and the next processor are empty, skip the current one (all empty processors are equivalent)
                 for (int j = 0; j < RecursionStore.getNumberOfProcessors(); j++) {
-                    if (j < RecursionStore.getNumberOfProcessors()-1 && state.getJobListDuration()[j] == 0 && state.getJobListDuration()[j + 1] == 0) {
+                    if (j < RecursionStore.getNumberOfProcessors() - 1 && state.getJobListDuration()[j] == 0 && state.getJobListDuration()[j + 1] == 0) {
                         continue;
                     }
                     tasksScheduled++;
                     TaskDependencyNode currentNode = freeTasks.get(i);
                     List<TaskDependencyNode> prospectiveFreeTasks = new ArrayList<>(freeTasks);
                     prospectiveFreeTasks.remove(currentNode);
-
-                    //add all children of the task to the free task list and remove the task
-                    for (int k = 0; k < currentNode._children.size(); k++) {
-
-                        TaskDependencyNode child = currentNode._children.get(k)._child;
-                        int numUnresolvedParents = child._parents.size();
-
-                        for (int parentIndex = 0; parentIndex <child._parents.size(); parentIndex++) {
-                            if (currentNode == child._parents.get(parentIndex)._parent){
-                                numUnresolvedParents--;
-                                continue;
-                            }
-                            // if at any point a parent has been found break out of job list search and look at next parent
-                            nestedLoop:
-                            for (int processorIndex = 0; processorIndex < state.getJobLists().size(); processorIndex++) {
-                                for (int taskIndex = 0; taskIndex < state.getJobLists().get(processorIndex).size(); taskIndex++) {
-                                    if (state.getJobLists().get(processorIndex).get(taskIndex) instanceof TaskJob &&
-                                            ((TaskJob) state.getJobLists().get(processorIndex).get(taskIndex)).getNode() == child._parents.get(parentIndex)._parent){
-                                        numUnresolvedParents--;
-                                        break nestedLoop;
-                                    }
-                                }
-                            }
-                            if (numUnresolvedParents == 0 ){
-                                break;
-                            }
-                        }
-                        if (numUnresolvedParents == 0) {
-                            prospectiveFreeTasks.add(currentNode._children.get(k)._child);
-                        }
-                    }
-
-                    //create the new state with the task scheduled to evaluate pass to the recursion
                     State newState = new CostFunctionService().scheduleNode(currentNode, j, state, RecursionStore.getLinearScheduleTime());
 
-                    //if this state is complete and better than existing best, update.
-                    if (newState.getHeuristicValue() < RecursionStore.getBestStateHeuristic() && tasksScheduled == RecursionStore.getNumberOfTasksTotal()) {
-                        RecursionStore.processPotentialBestState(newState);
-                    }
-                    //if possibly better and not complete, recurse.
-                    else if (newState.getHeuristicValue() < RecursionStore.getBestStateHeuristic() && tasksScheduled < RecursionStore.getNumberOfTasksTotal()) {
-                        if(!RecursionStore.hasExplored(newState.toString())){
+                    if (newState.getHeuristicValue() < RecursionStore.getBestStateHeuristic() && !RecursionStore.hasExplored(newState.toString())) {
+                        //add all children of the task to the free task list and remove the task
+                        for (int k = 0; k < currentNode._children.size(); k++) {
+
+                            TaskDependencyNode child = currentNode._children.get(k)._child;
+                            int numUnresolvedParents = child._parents.size();
+
+                            for (int parentIndex = 0; parentIndex < child._parents.size(); parentIndex++) {
+                                if (currentNode == child._parents.get(parentIndex)._parent) {
+                                    numUnresolvedParents--;
+                                    continue;
+                                }
+                                // if at any point a parent has been found break out of job list search and look at next parent
+                                nestedLoop:
+                                for (int processorIndex = 0; processorIndex < state.getJobLists().size(); processorIndex++) {
+                                    for (int taskIndex = 0; taskIndex < state.getJobLists().get(processorIndex).size(); taskIndex++) {
+                                        if (state.getJobLists().get(processorIndex).get(taskIndex) instanceof TaskJob &&
+                                                ((TaskJob) state.getJobLists().get(processorIndex).get(taskIndex)).getNode() == child._parents.get(parentIndex)._parent) {
+                                            numUnresolvedParents--;
+                                            break nestedLoop;
+                                        }
+                                    }
+                                }
+                                if (numUnresolvedParents == 0) {
+                                    break;
+                                }
+                            }
+                            if (numUnresolvedParents == 0) {
+                                prospectiveFreeTasks.add(currentNode._children.get(k)._child);
+                            }
+                        }
+
+                        //create the new state with the task scheduled to evaluate pass to the recursion
+
+                        //if this state is complete and better than existing best, update.
+                        if (tasksScheduled == RecursionStore.getNumberOfTasksTotal()) {
+                            RecursionStore.processPotentialBestState(newState);
+                        }
+                        //if possibly better and not complete, recurse.
+                        else if (tasksScheduled < RecursionStore.getNumberOfTasksTotal()) {
                             recurse(prospectiveFreeTasks, newState, tasksScheduled);
                         }
                     }
@@ -103,19 +103,19 @@ public class RecursiveWorker implements Callable<Integer> {
 
     @Override
     public Integer call() {
-        try{
+        try {
             this.recurse(
                     new ArrayList<>(this.freeTasks),
                     new State(this.state.getJobLists(), this.state.getJobListDuration(), this.state.getHeuristicValue(), this.state.getSumOfScheduledTasks()),
                     new Integer(this.tasksScheduled));
             done();
-        } catch (Exception e){
+        } catch (Exception e) {
             listener.handleThreadException(e);
         }
         return 0;
     }
 
-    public void done(){
+    public void done() {
         this.listener.handleThreadRecursionHasCompleted();
     }
 }
