@@ -182,8 +182,8 @@ public class Main extends Application implements PilotDoneListener, RecursiveDon
 
         try {
             dg.generateOutput(RecursionStore.getBestState(), outputName);
+            System.out.println("Finished");
             if(!_argumentsParser.displayVisuals()){
-                System.out.println("Finished");
                 System.exit(0);
             }
         } catch (IOException e) {
