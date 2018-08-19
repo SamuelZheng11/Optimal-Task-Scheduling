@@ -5,7 +5,7 @@ import common.TaskDependencyNode;
 
 import java.util.List;
 
-public class StateTreeBranch implements Comparable<StateTreeBranch>{
+public class StateTreeBranch {
     private State stateSnapshot;
     private List<TaskDependencyNode> freeNodes;
     private int tasksScheduled;
@@ -26,16 +26,5 @@ public class StateTreeBranch implements Comparable<StateTreeBranch>{
 
     public int getNumTaskScheduled(){
         return this.tasksScheduled;
-    }
-
-    @Override
-    public int compareTo(StateTreeBranch stateTreeBranch) {
-        if(this.stateSnapshot.getHeuristicValue() == stateTreeBranch.stateSnapshot.getHeuristicValue()){
-            return 0;
-        } else if(this.stateSnapshot.getHeuristicValue() > stateTreeBranch.stateSnapshot.getHeuristicValue()){
-            return 1;
-        } else {
-            return -1;
-        }
     }
 }

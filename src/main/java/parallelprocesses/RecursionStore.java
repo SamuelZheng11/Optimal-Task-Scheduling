@@ -3,8 +3,8 @@ package parallelprocesses;
 import common.State;
 import exception_classes.RecursionStoreException;
 
-import java.util.PriorityQueue;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class RecursionStore {
     private static RecursionStore recursionStore;
@@ -13,7 +13,7 @@ public class RecursionStore {
     private static Integer linearScheduleTime;
     private static Integer numberOfTasks;
     private static Integer numberOfCores;
-    private static Queue<StateTreeBranch> stb = new PriorityQueue<>();
+    private static Queue<StateTreeBranch> stb = new ConcurrentLinkedQueue<>();
 
     private RecursionStore(int noOfProc, int linearScheduleTime, int numTasks, int numOfCores){
         RecursionStore.linearScheduleTime = linearScheduleTime;
