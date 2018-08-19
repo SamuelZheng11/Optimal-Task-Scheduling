@@ -19,14 +19,16 @@ public class ChartScreen {
     GraphicsContext _gc;
     double _canvasHeight;
     double _canvasWidth;
+    String _title;
     int _barColorIndex = 0;
 
     double _canvasBuffer = 100;
 
-    public ChartScreen(GraphicsContext graphicsContext){
+    public ChartScreen(GraphicsContext graphicsContext, String title){
         _gc = graphicsContext;
         _canvasHeight = _gc.getCanvas().getHeight();
         _canvasWidth = _gc.getCanvas().getWidth();
+        _title = title;
     }
 
     public void drawChart(ChartModel model){
@@ -90,7 +92,7 @@ public class ChartScreen {
         //draw title
         _gc.setTextAlign(TextAlignment.CENTER);
         _gc.setFont(new Font("Arial", 24));
-        _gc.fillText("Best Found Schedule", _canvasWidth/2, _canvasBuffer - _canvasBuffer/2);
+        _gc.fillText(_title, _canvasWidth/2, _canvasBuffer - _canvasBuffer/2);
         _gc.setStroke(Color.BLACK);
         _gc.strokeLine(_canvasWidth/2 - 115, _canvasBuffer - _canvasBuffer/2 + 6, _canvasWidth/2 + 115,_canvasBuffer - _canvasBuffer/2 + 6);
         //_gc.strokeRoundRect(_canvasWidth/2 - 125, _canvasBuffer - _canvasBuffer/2 - 28, 250,40, 5, 5);

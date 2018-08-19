@@ -16,10 +16,11 @@ public class InputGraphScreen {
 
     public InputGraphScreen(SwingNode swingNode, Graph graph){
         _swingNode = swingNode;
+        System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
+        graph.addAttribute("ui.quality");
+        graph.addAttribute("ui.antialias");
 
-        graph.addAttribute("ui.stylesheet", "graph { fill-color: grey; }");
-
-        //Viewer viewer = new Viewer(graph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
+        graph.addAttribute("ui.stylesheet", "url('graphStyle.css')");
 
         Viewer viewer = new Viewer(graph,Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
 

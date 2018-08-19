@@ -24,6 +24,7 @@ dependencies {
     testCompile 'junit:junit:4.12'
 
     compile group: 'org.graphstream', name: 'gs-algo', version: '1.3'
+    compile group: 'org.graphstream', name: 'gs-ui', version: '1.3'
     compile group: 'org.jfree', name: 'jfreechart', version: '1.0.19'
     compile group: 'org.jfree', name: 'jcommon', version: '1.0.23'
     compile group: 'commons-cli', name: 'commons-cli', version: '1.4'

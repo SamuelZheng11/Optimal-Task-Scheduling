@@ -175,7 +175,7 @@ public class DependencyGraph {
         fs.addSink(g);
         try {
             fs.readAll(_filePath);
-
+            addNodeLabels();
             convert();
 //            Iterator<Node> iter = g.getNodeIterator();
 //            while(iter.hasNext()){
@@ -196,6 +196,14 @@ public class DependencyGraph {
             System.exit(1);
         }
 
+    }
+
+    // Adds the label attribute for ui purposes
+    private void addNodeLabels(){
+
+        for(int i = 0; i < g.getNodeCount(); i++) {
+            g.getNode(i).addAttribute("ui.label", g.getNode(i).getId());
+        }
     }
 
     /**
