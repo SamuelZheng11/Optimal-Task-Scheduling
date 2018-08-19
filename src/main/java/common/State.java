@@ -48,7 +48,7 @@ public class State {
     }
 
     @Override
-    private String toString(){
+    public String toString(){
         String stateString = "";
         int subject =  -1;
         for (int processor = 0; processor < this.getJobLists().size(); processor++) {
@@ -59,6 +59,7 @@ public class State {
             for (int i = 0; i < this.getJobLists().get(nextAccInfo[0]).size(); i++) {
                 stateString = stateString.concat(this.getJobLists().get(nextAccInfo[0]).get(i).toString());
             }
+            stateString = stateString.concat("E");
             subject = nextAccInfo[1];
         }
         return stateString;

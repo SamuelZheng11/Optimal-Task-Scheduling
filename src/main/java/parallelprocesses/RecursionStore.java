@@ -13,12 +13,13 @@ import java.util.Set;
 public class RecursionStore {
     private static RecursionStore recursionStore;
     private static State bestState;
+    private static int SET_RESET_SIZE = 80000;
     private static Integer numberOfProcessors;
     private static Integer linearScheduleTime;
     private static Integer numberOfTasks;
     private static Integer numberOfCores;
     private static Queue<StateTreeBranch> stb = new PriorityQueue<>();
-    private static Set<byte[]> exploredStateString = new HashSet<>();
+    public static Set<byte[]> exploredStates = new HashSet<>();
     private static StatisticsModel statisticsModel;
 
     private RecursionStore(StatisticsModel model, int noOfProc, int linearScheduleTime, int numTasks, int numOfCores){
@@ -41,6 +42,7 @@ public class RecursionStore {
         if( bestState == null || potentialBestState.getHeuristicValue() < bestState.getHeuristicValue()){
             bestState = potentialBestState;
             updateBestFoundState();
+            clearHashSet();
         }
     }
 
@@ -102,14 +104,24 @@ public class RecursionStore {
     }
 
     public static boolean hasExplored(byte[] stateByteForm){
-        if(exploredStateString.contains(stateByteForm)){
+        if(exploredStates.contains(stateByteForm)){
             return true;
+        } else if(exploredStates.size() > SET_RESET_SIZE){
+            clearHashSet();
         }
-        exploredStateString.add(stateByteForm);
+        exploredStates.add(stateByteForm);
         return false;
     }
 
     public static void clearHashSet(){
-        exploredStateString.clear();
+        exploredStates.clear();
+    }
+
+    public static void publishTotalBranches(){
+        statisticsModel.setTotalBranches(getTaskQueueSize());
+    }
+
+    public static void updateBranchesComplete(long branchesComplete){
+        statisticsModel.setBranchesSearched(branchesComplete);
     }
 }

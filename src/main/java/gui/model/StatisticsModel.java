@@ -15,10 +15,14 @@ public class StatisticsModel {
     private long _startTime;
     private long _threadNumber;
     private Graph _inputGraph;
+    private long _totalBranches;
+    private long _branchesSearched;
+    private String _graphName;
 
-    public StatisticsModel(ChartModel chartModel){
+    public StatisticsModel(ChartModel chartModel, String graphName){
         _chartModel = chartModel;
         _greedyChartModel = new ChartModel(chartModel.getProcessorNumber());
+        _graphName = graphName;
     }
 
     public synchronized void updateState(State state){
@@ -74,9 +78,19 @@ public class StatisticsModel {
         _threadNumber = threadNumber;
     }
 
+    public synchronized void setTotalBranches(long totalBranches) { _totalBranches = totalBranches; }
+
+    public synchronized long getTotalBranch() { return _totalBranches; }
+
+    public synchronized void setBranchesSearched(long totalBranches) { _branchesSearched = totalBranches; }
+
+    public synchronized long getBranchesSearched() { return _branchesSearched; }
+
     public void setInputGraph(Graph inputGraph){
         _inputGraph = inputGraph;
     }
+
+    public String getInputGraphName(){ return _graphName; }
 
     public Graph getInputGraph(){
         return _inputGraph;

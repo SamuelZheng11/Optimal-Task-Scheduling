@@ -36,7 +36,6 @@ public class RecursiveWorker implements Callable<Integer> {
     // linearScheduleTime: The total time it would take if this was all on processor (no comms delays),
     // recursionStore used to house the constant information
     public void recurse(List<TaskDependencyNode> freeTasks, State state, int tasksScheduled) {
-
         //If there are available tasks to schedule
         if (freeTasks.size() > 0) {
             //For each available task, try scheduling it on a processor
@@ -52,7 +51,7 @@ public class RecursiveWorker implements Callable<Integer> {
                     prospectiveFreeTasks.remove(currentNode);
                     State newState = new CostFunctionService().scheduleNode(currentNode, j, state, RecursionStore.getLinearScheduleTime());
 
-                    if (newState.getHeuristicValue() < RecursionStore.getBestStateHeuristic() && !RecursionStore.hasExplored(newState.toString())) {
+                    if (newState.getHeuristicValue() < RecursionStore.getBestStateHeuristic() && !RecursionStore.hasExplored(newState.getByteArray())) {
                         //add all children of the task to the free task list and remove the task
                         for (int k = 0; k < currentNode._children.size(); k++) {
 
