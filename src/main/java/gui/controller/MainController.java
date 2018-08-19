@@ -1,28 +1,58 @@
 package gui.controller;
 
 import gui.model.StatisticsModel;
-import org.jfree.data.category.CategoryDataset;
-import org.jfree.data.general.DatasetUtilities;
+import gui.view.ChartScreen;
+import gui.view.PieChartScreen;
+import gui.view.StatisticsScreen;
+import javafx.application.Platform;
+
 
 public class MainController {
 
     StatisticsModel _model;
 
-    public MainController(StatisticsModel model){
+    public void setModel(StatisticsModel model) {
         _model = model;
     }
 
-    public CategoryDataset getData(){
+    public void initStatistics(PieChartScreen pieChartScreen, StatisticsScreen statisticsScreen, ChartScreen chartScreen) {
 
-        // todo implement logic
+        chartScreen.drawChart(_model.getChartModel());
+        statisticsScreen.updateStatisticsScreen(_model);
+        pieChartScreen.updatePieChart();
 
-        final double[][] data = new double[][] {
-                {1.0, 43.0, 35.0, 58.0, 54.0, 77.0, 71.0, 89.0},
-                {54.0, 75.0, 63.0, 83.0, 43.0, 46.0, 27.0, 13.0},
-                {41.0, 33.0, 22.0, 34.0, 62.0, 32.0, 42.0, 34.0}
-        };
-        return DatasetUtilities.createCategoryDataset("Series ", "", data);
+        new Thread(() -> {
+            while (_model.getRunning()) {
+                try {
+                    Thread.sleep(100); // Wait for 500 msec before updating
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 
-    };
+                if(_model.getUpdated()){
+                    Platform.runLater(() -> chartScreen.drawChart(_model.getChartModel()));// Update on JavaFX Application Thread
+                    _model.setUpdated(false);
+                }
 
+                Platform.runLater(() -> statisticsScreen.updateStatisticsScreen(_model));
+            }
+        }).start();
+
+        new Thread(() -> {
+            while(true) {
+                try {
+                    Thread.sleep(100); // Wait for 500 msec before updating
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                Platform.runLater(() -> pieChartScreen.updatePieChart());
+            }
+        }).start();
+    }
 }
+
+
+
+
+
+

@@ -2,6 +2,8 @@ package parallelprocesses;
 
 import common.State;
 import exception_classes.RecursionStoreException;
+import gui.model.StatisticsModel;
+import org.graphstream.graph.Graph;
 
 import java.util.HashSet;
 import java.util.PriorityQueue;
@@ -17,17 +19,19 @@ public class RecursionStore {
     private static Integer numberOfCores;
     private static Queue<StateTreeBranch> stb = new PriorityQueue<>();
     private static Set<String> exploredStateString = new HashSet<>();
+    private static StatisticsModel statisticsModel;
 
-    private RecursionStore(int noOfProc, int linearScheduleTime, int numTasks, int numOfCores){
+    private RecursionStore(StatisticsModel model, int noOfProc, int linearScheduleTime, int numTasks, int numOfCores){
         RecursionStore.linearScheduleTime = linearScheduleTime;
         RecursionStore.numberOfProcessors = noOfProc;
         RecursionStore.numberOfTasks = numTasks;
         RecursionStore.numberOfCores = numOfCores;
+        RecursionStore.statisticsModel = model;
     }
 
-    public static void constructRecursionStoreSingleton(int noOfProc, int linearScheduleTime, int numTasks, int numOfCores){
+    public static void constructRecursionStoreSingleton(StatisticsModel model, int noOfProc, int linearScheduleTime, int numTasks, int numOfCores){
         if(recursionStore == null){
-            recursionStore = new RecursionStore(noOfProc, linearScheduleTime, numTasks, numOfCores);
+            recursionStore = new RecursionStore(model, noOfProc, linearScheduleTime, numTasks, numOfCores);
         } else {
             throw new RecursionStoreException("Attempted to re-assign store parameters that should never change");
         }
@@ -38,6 +42,22 @@ public class RecursionStore {
             bestState = potentialBestState;
             updateBestFoundState();
         }
+    }
+
+    public static synchronized void finishGuiProcessing(){
+        statisticsModel.setRunning(false);
+    }
+
+    public static synchronized void setMaxThreads(int maxThreads){
+        statisticsModel.setThreadNumber(maxThreads);
+    }
+
+    public static synchronized void setGreedyState(State greedyState){
+        statisticsModel.updateGreedyState(greedyState);
+    }
+
+    public static synchronized void setInputGraph(Graph graph){
+        statisticsModel.setInputGraph(graph);
     }
 
     public static int getNumberOfTasksTotal(){
@@ -57,7 +77,8 @@ public class RecursionStore {
     }
 
     private static void updateBestFoundState(){
-        //TODO: call the gui display method inside this method
+        statisticsModel.updateState(bestState);
+        statisticsModel.setUpdated(true);
     }
 
     public static State getBestState(){

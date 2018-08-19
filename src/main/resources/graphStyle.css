@@ -1,0 +1,33 @@
+graph {
+    fill-mode: gradient-radial;
+	fill-color: white, rgb(100, 100, 100);
+
+}
+
+node {
+	size: 35px, 35px;
+	shape: circle;
+
+	fill-mode: gradient-radial;
+	fill-color: white, Teal;
+
+	stroke-mode: plain;
+	stroke-width: 1px;
+	stroke-color: black;
+}
+
+edge {
+	shape: line;
+	fill-color: #222;
+	arrow-size: 5px, 4px;
+}
+
+node#0 {
+	fill-mode: gradient-radial;
+	fill-color: white, blue;
+}
+
+node:clicked {
+	fill-mode: gradient-radial;
+	fill-color: white, red;
+}
