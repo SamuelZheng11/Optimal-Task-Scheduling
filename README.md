@@ -32,6 +32,8 @@ To run our application:
 2. the open a terminal in the location where the jar is.
 3. run the command "__java -jar 306_Parallel_Processes_Team_5 [name of the .DOT file that contains the tasks you want to find a minimal schedule for] [Integer representing the of processors]__"
 
+Ulternativly You can build the jar by opening this repo in Intelij, Run the build Gradle build by running gradle with the "Build" goal, then running the "Jar" build goal and the resulting Jar will be generated in the folder.
+
 Optional parameters:
 
 Parameter representing the maximum number of threads the algorithm is allowed to use.
@@ -60,3 +62,6 @@ For the project deadlines and planning they can be found in both the "Planning a
 The final jar to be marked is called "Planning and Notes for Project" under the code section
 
 Communication between teams mainly happend either in person or electronically, meeting discussion can be found inside the "Planning and Notes for Project" folder. Plans, decisions and background research can also be found inside that folder
+
+## Common issues
+if the build is not running properly try refreshing the Gradle build menu (caches from other programs could be preventing the build from working)
