@@ -49,7 +49,7 @@ Parameter to specify if the user wants the algorithm's search to be visualised.
 
 "__-v__"
 
-## where to find detail description of project
+## Where to find detail description of project
 For code information, high level information is found in the Wiki tab of this repository
 
 For the project problems and bugs and issue tracking, the github issues board was used to document them
