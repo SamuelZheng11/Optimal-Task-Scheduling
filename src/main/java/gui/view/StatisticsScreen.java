@@ -109,7 +109,6 @@ public class StatisticsScreen {
 
         _data.get(1).statField = sb.toString();
 
-
     }
 
     /**
