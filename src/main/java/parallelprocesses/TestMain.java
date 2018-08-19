@@ -53,7 +53,7 @@ public class TestMain extends Main implements PilotDoneListener, RecursiveDoneLi
 
         //ChartModel cModel = new ChartModel(_argumentsParser.getProcessorNo(), DependencyGraph.getGraph().getLinearScheduleDuration());
         ChartModel cModel = new ChartModel(PROCESSORS);
-        StatisticsModel sModel = new StatisticsModel(cModel);
+        StatisticsModel sModel = new StatisticsModel(cModel, "test Graph");
         sModel.setStartTime(System.nanoTime());
 
         InitialiseScheduling(sModel);
