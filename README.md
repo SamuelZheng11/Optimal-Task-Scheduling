@@ -48,3 +48,5 @@ Parameter representing what you want the output graph .dot file to be called.
 Parameter to specify if the user wants the algorithm's search to be visualised.
 
 "__-v__"
+
+## where to find detail description of project
