@@ -28,7 +28,7 @@ Our solution solves this by giving the least worst solution.
 
 ## Running the Application
 To run our application:
-1. Download jar file (or build a jar from the repository). 
+1. Download jar file from the code tab (or build a jar from the repository). 
 2. the open a terminal in the location where the jar is.
 3. run the command "__java -jar 306_Parallel_Processes_Team_5 [name of the .DOT file that contains the tasks you want to find a minimal schedule for] [Integer representing the of processors]__"
 
