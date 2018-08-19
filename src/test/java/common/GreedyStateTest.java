@@ -1,12 +1,12 @@
 package common;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+        import org.junit.BeforeClass;
+        import org.junit.Test;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+        import java.io.IOException;
+        import java.util.ArrayList;
+        import java.util.List;
+        import java.util.Map;
 
 public class GreedyStateTest {
 
@@ -22,7 +22,7 @@ public class GreedyStateTest {
 
     @Test
     public void createFileTest() throws IOException {
-        _dg.parse();
+//        _dg.parse();
 
 //        TaskDependencyNode nodeAwithEdge = new TaskDependencyNode(2 , aChildren, aParents, "a");
 //        TaskDependencyNode nodeBwithEdge = new TaskDependencyNode(3, bChildren, bParents, "b");

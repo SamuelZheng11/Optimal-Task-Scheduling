@@ -12,13 +12,12 @@ import javafx.event.EventHandler;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.chart.PieChart;
-import javafx.scene.control.SplitPane;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.WindowEvent;
+import parallelprocesses.Main;
 
 import java.io.IOException;
 
@@ -28,10 +27,10 @@ public class MainScreen{
     private ChartScreen _chart;
     private ChartScreen _greedyChart;
 
-    public MainScreen(Stage primaryStage, StatisticsModel statModel) throws IOException {
+    public MainScreen(Stage primaryStage, StatisticsModel statModel, Main main) throws IOException {
 
         _controller = new MainController();
-        _controller.setModel(statModel);
+        _controller.setModel(statModel, main);
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/mainScreen.fxml"));
         loader.setController(_controller);
@@ -71,12 +70,6 @@ public class MainScreen{
             }
         });
 
-
-
         _controller.initStatistics(pieChartScreen, statisticsScreen, _chart);
-
     }
-
-
-
 }

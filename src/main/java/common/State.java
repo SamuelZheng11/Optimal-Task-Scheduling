@@ -1,6 +1,5 @@
 package common;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class State {
@@ -36,5 +35,56 @@ public class State {
 
     public double getHeuristicValue(){
         return _heuristicValue;
+    }
+
+    public byte[] getByteArray(){
+        char[] charArrayForm = this.toString().toCharArray();
+        byte[] byteArray = new byte[charArrayForm.length];
+        for (int i = 0; i < charArrayForm.length; i++) {
+            int ascii = charArrayForm[i];
+            byteArray[i] = (byte)ascii;
+        }
+        return byteArray;
+    }
+
+    @Override
+    public String toString(){
+        String stateString = "";
+        int subject =  -1;
+        for (int processor = 0; processor < this.getJobLists().size(); processor++) {
+            int[] nextAccInfo = this.getNextAccedingIndexInJobList(subject);
+            if(nextAccInfo[0] == -1){
+                break;
+            }
+            for (int i = 0; i < this.getJobLists().get(nextAccInfo[0]).size(); i++) {
+                stateString = stateString.concat(this.getJobLists().get(nextAccInfo[0]).get(i).toString());
+            }
+            stateString = stateString.concat("E");
+            subject = nextAccInfo[1];
+        }
+        return stateString;
+    }
+
+    public int[] getNextAccedingIndexInJobList(int subject){
+        int nextAcceding = Integer.MAX_VALUE;
+        int nextAccedingIndex = -1;
+        for (int processor = 0; processor < this.getJobLists().size(); processor++) {
+            if(this.getJobLists().get(processor).size() != 0 ){
+                if(this.getJobLists().get(processor).get(0) instanceof TaskJob) {
+                    int potentialNextAcc = Integer.valueOf(((TaskJob) this.getJobLists().get(processor).get(0)).getName());
+                    if( potentialNextAcc > subject && potentialNextAcc < nextAcceding){
+                        nextAccedingIndex = processor;
+                        nextAcceding = potentialNextAcc;
+                    }
+                } else {
+                    int potentialNextAcc = Integer.valueOf(((TaskJob) this.getJobLists().get(processor).get(1)).getName());
+                    if( potentialNextAcc > subject && potentialNextAcc < nextAcceding){
+                        nextAccedingIndex = processor;
+                        nextAcceding = potentialNextAcc;
+                    }
+                }
+            }
+        }
+        return new int[]{nextAccedingIndex, nextAcceding};
     }
 }
