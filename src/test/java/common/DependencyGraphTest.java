@@ -228,10 +228,11 @@ public class DependencyGraphTest {
 
         State state = new State(finalList, joblist, huristic, 0);
 
+
         String inputFileName = "test.dot";
 
 
-        _dg.generateOutput(state, inputFileName);
+//        _dg.generateOutput(state, inputFileName);
 
 
     }

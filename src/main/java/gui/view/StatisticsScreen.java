@@ -35,12 +35,15 @@ public class StatisticsScreen {
         _statField.setMaxWidth(116);
 
         _data = FXCollections.observableArrayList(
+                new StatisticCell("Input Graph", ""),
                 new StatisticCell("Time Elapsed", ""),
                 new StatisticCell("Status", ""),
                 new StatisticCell("Number of processors", ""),
                 new StatisticCell("Number of threads", ""),
                 new StatisticCell("Greedy Schedule Time", ""),
-                new StatisticCell("Current best schedule time", "")
+                new StatisticCell("Current best schedule time", ""),
+                new StatisticCell("Total Number of Branches", ""),
+                new StatisticCell("Branches Searched", "")
         );
 
         _tableView.setItems(_data);
@@ -50,20 +53,22 @@ public class StatisticsScreen {
 
     public void updateStatisticsScreen(StatisticsModel model){
 
+        _data.get(0).statField = model.getInputGraphName();
         setTime(model.getStartTime());
         if(model.getRunning()){
-            _data.get(1).statField = "Processing";
+            _data.get(2).statField = "Processing";
         }else{
-            _data.get(1).statField = "Complete";
+            _data.get(2).statField = "Complete";
         }
 
-        _data.get(2).statField = Integer.toString(model.getState().getJobLists().size());
-        _data.get(3).statField = Long.toString(model.getThreadNumber());
+        _data.get(3).statField = Integer.toString(model.getState().getJobLists().size());
+        _data.get(4).statField = Long.toString(model.getThreadNumber());
         if(model.getGreedyChartModel() != null){
-            _data.get(4).statField = Double.toString(model.getGreedyChartModel().getMaximumTime());
+            _data.get(5).statField = Double.toString(model.getGreedyChartModel().getMaximumTime());
         }
-        _data.get(5).statField = Double.toString(model.getState().getHeuristicValue());
-
+        _data.get(6).statField = Double.toString(model.getState().getHeuristicValue());
+        _data.get(7).statField = Long.toString(model.getTotalBranch());
+        _data.get(8).statField = Long.toString(model.getBranchesSearched());
 
         _tableView.refresh();
     }
@@ -88,7 +93,7 @@ public class StatisticsScreen {
         long nanos = remainingTime % 1000;
         append(sb, nanos, "ms");
 
-        _data.get(0).statField = sb.toString();
+        _data.get(1).statField = sb.toString();
 
 
     }
@@ -101,9 +106,4 @@ public class StatisticsScreen {
             sb.append(value).append(text);
         }
     }
-
-
-
-
-
 }
