@@ -50,3 +50,14 @@ Parameter to specify if the user wants the algorithm's search to be visualised.
 "__-v__"
 
 ## where to find detail description of project
+For code information, high level information is found in the Wiki tab of this repository
+
+For the project problems and bugs and issue tracking, the github issues board was used to document them
+
+For the project deadlines and planning they can be found in both the "Planning and Notes for Project" folder as well as the Projects tab
+
+The final jar to be marked is called "Planning and Notes for Project" under the code section
+
+Communication between teams mainly happend either in person or electronically, meeting discussion can be found inside the "Planning and Notes for Project" folder. Plans, decisions and background research can also be found inside that folder
+
+
