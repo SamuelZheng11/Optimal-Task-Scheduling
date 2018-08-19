@@ -60,4 +60,4 @@ The final jar to be marked is called "Planning and Notes for Project" under the 
 
 Communication between teams mainly happend either in person or electronically, meeting discussion can be found inside the "Planning and Notes for Project" folder. Plans, decisions and background research can also be found inside that folder
 
-
+A photo of the team can also be found in the code tab
