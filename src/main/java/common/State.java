@@ -14,12 +14,12 @@ public class State {
 //  corresponding processor(of the same index as in JobLists) will complete
     private final int[] _jobListDuration;
     private final double _heuristicValue;
+    private final int _sumOfScheduledTasks;
 
     public int getSumOfScheduledTasks() {
         return _sumOfScheduledTasks;
     }
 
-    private final int _sumOfScheduledTasks;
 
     public State(List<List<Job>> jobLists, int[] jobListDuration, double heuristicValue, int sumOfScheduledTasks){
         _jobLists = jobLists;
