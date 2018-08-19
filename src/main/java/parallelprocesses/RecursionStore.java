@@ -34,6 +34,10 @@ public class RecursionStore {
         }
     }
 
+    public static RecursionStore getRecursionStore(){
+        return recursionStore;
+    }
+
     public static synchronized void processPotentialBestState(State potentialBestState){
         if( bestState == null || potentialBestState.getHeuristicValue() < bestState.getHeuristicValue()){
             bestState = potentialBestState;

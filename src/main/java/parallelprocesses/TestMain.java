@@ -1,18 +1,15 @@
 package parallelprocesses;
 
 import common.*;
-
-import gui.model.ChartModel;
 import exception_classes.RecursiveWorkerException;
+import gui.model.ChartModel;
 import gui.model.StatisticsModel;
 import gui.view.MainScreen;
 import javafx.application.Application;
 import javafx.concurrent.Task;
-
 import javafx.stage.Stage;
 import parser.ArgumentParser;
 import parser.KernelParser;
-
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -21,78 +18,72 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
-public class Main extends Application implements PilotDoneListener, RecursiveDoneListener, GreedySearchListener {
+public class TestMain extends Main implements PilotDoneListener, RecursiveDoneListener, GreedySearchListener {
 
     public static void main(String[] args) {
-        launch(args);
+        FILEPATH = args[0];
+        PROCESSORS = Integer.valueOf(args[1]);
+        TestMain tm = new TestMain();
+        tm.start();
     }
 
-    private ArgumentParser _argumentsParser;
-
+    private static int PROCESSORS;
+    private static String FILEPATH;
     private static int numberOfBranchesCompleted;
 
     private static int _totalNumberOfStateTreeBranches;
 
-    private static int _maxThreads;
+    private static int _maxThreads = 1;
 
     private ExecutorService _pool;
 
     private long _startTime;
 
-    public void start(Stage primaryStage) throws Exception {
-        DependencyGraph dg = DependencyGraph.getGraph();
+    private static boolean complete = false;
 
-        //Validate out arguments and make sure they are correct
-        _argumentsParser = new KernelParser(this);
-        validateArguments();
-        _maxThreads = _argumentsParser.getMaxThreads();
-
-        //Parse the graph so that our data is ready for use in any point post this line.
-        dg.setFilePath(_argumentsParser.getFilePath());
-        dg.parse();
+    public void start(){
+//        DependencyGraph dg = DependencyGraph.getGraph();
+//
+//        //Parse the graph so that our data is ready for use in any point post this line.
+//        dg.setFilePath(FILEPATH);
+//        dg.parse();
 
 
         //ChartModel cModel = new ChartModel(_argumentsParser.getProcessorNo(), DependencyGraph.getGraph().getLinearScheduleDuration());
-        ChartModel cModel = new ChartModel(_argumentsParser.getProcessorNo());
+        ChartModel cModel = new ChartModel(PROCESSORS);
         StatisticsModel sModel = new StatisticsModel(cModel);
         sModel.setStartTime(System.nanoTime());
 
-        Task task = new Task<Void>() {
-            @Override
-            public Void call() {
-                InitialiseScheduling(sModel);
-                return null;
-            }
-        };
-
-        new Thread(task).start();
-
-        if( _argumentsParser.displayVisuals()){
-            MainScreen mainScreen = new MainScreen(primaryStage, sModel);
-        }
-
+        InitialiseScheduling(sModel);
+        return;
     }
 
 
 
     public void InitialiseScheduling(StatisticsModel model) {
         DependencyGraph dg = DependencyGraph.getGraph();
-//        dg.setFilePath(_argumentsParser.getFilePath());
-//        //todo parsing of command line args to graph parsing function
-//        dg.parse();
+        dg.setFilePath(FILEPATH);
+        //todo parsing of command line args to graph parsing function
+        dg.parse();
         System.out.println("Calculating schedule, Please wait ...");
 
         // initialise store and thread pool
-        RecursionStore.constructRecursionStoreSingleton(model, _argumentsParser.getProcessorNo(), dg.remainingCosts(), dg.getNodes().size(), _argumentsParser.getMaxThreads());
-        _pool = Executors.newFixedThreadPool(_argumentsParser.getMaxThreads());
+        RecursionStore.constructRecursionStoreSingleton(model, PROCESSORS, dg.remainingCosts(), dg.getNodes().size(), _maxThreads);
+        _pool = Executors.newFixedThreadPool(_maxThreads);
 
         GreedyState greedyState = new GreedyState(dg, this);
         _pool.execute(greedyState);
 
         RecursionStore.setMaxThreads(_maxThreads);
-
-
+        try {
+            _pool.awaitTermination(10, TimeUnit.SECONDS);
+            System.out.println("pause");
+            return;
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     private static State generateInitalState(double initialHeuristic) {
@@ -113,20 +104,20 @@ public class Main extends Application implements PilotDoneListener, RecursiveDon
         RecursionStore.pushStateTreeQueue(new StateTreeBranch(generateInitalState(RecursionStore.getBestStateHeuristic()), freeTasks, 0));
 
         // if the number of processors is one, then schedule everything on on recursive worker
-        if(_argumentsParser.getMaxThreads() == Integer.valueOf(Defaults.MAXTHREADS.toString())){
+        if(_maxThreads == Integer.valueOf(Defaults.MAXTHREADS.toString())){
             _totalNumberOfStateTreeBranches = RecursionStore.getTaskQueueSize();
             RecursiveWorker singleWorker = new RecursiveWorker(RecursionStore.pollStateTreeQueue(), this);
             _pool.submit(singleWorker);
             return;
         }
 
-        PilotRecursiveWorker pilot = new PilotRecursiveWorker(_argumentsParser.getBoostMultiplier(), this);
+        PilotRecursiveWorker pilot = new PilotRecursiveWorker(5, this);
         _pool.submit(pilot);
     }
 
     @Override
     public void handlePilotRunHasCompleted() {
-        if(RecursionStore.getTaskQueueSize() < _argumentsParser.getBoostMultiplier() * _argumentsParser.getMaxThreads()){
+        if(RecursionStore.getTaskQueueSize() < 5 * _maxThreads){
             generateOutputAndClose();
             return;
         }
@@ -157,11 +148,12 @@ public class Main extends Application implements PilotDoneListener, RecursiveDon
         }
         // write output file
         generateOutputAndClose();
+        _pool.shutdown();
     }
 
     public void generateOutputAndClose(){
         DependencyGraph dg = DependencyGraph.getGraph();
-        String outputName = _argumentsParser.getOutputFileName();
+        String outputName = "test-output";
 
         try {
             dg.generateOutput(RecursionStore.getBestState(), outputName);
@@ -171,18 +163,17 @@ public class Main extends Application implements PilotDoneListener, RecursiveDon
 
         RecursionStore.finishGuiProcessing();
         System.out.println("Finished");
-
     }
 
-    private void validateArguments() {
-        _argumentsParser.getFilePath();
-        _argumentsParser.getProcessorNo();
-    }
 
     @Override
     public void handleThreadException(Exception e){
         System.out.println("A thread has thrown an uncaught exception");
         e.printStackTrace();
         System.out.println(1);
+    }
+
+    public static boolean isComplete(){
+        return complete;
     }
 }

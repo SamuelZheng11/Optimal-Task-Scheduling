@@ -54,9 +54,9 @@ public class KernelParser extends AbstractParser {
     @Override
     public int getBoostMultiplier() {
         if(_commands.getOptionValue('b') != null){
-            _maxThreads = Integer.valueOf(_commands.getOptionValue('b'));
+            _boostMultiplier = Integer.valueOf(_commands.getOptionValue('b'));
         }
-        return _maxThreads;
+        return _boostMultiplier;
     }
 
     @Override
