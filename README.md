@@ -2,7 +2,7 @@
 
 ## Optimal Task Scheduling
 
-This repository is used for storing code artefacts related to the first project of SoftEng 306 2018, The Parallel Scheduling Problem.
+This repository is used for storing code artefacts related to the first project of SoftEng 306 which lasts 6 weeks starting on the 16 July 2018, The Parallel Scheduling Problem.
 ### Contributors
 The 5 architects who worked on solving this problems are:
 
