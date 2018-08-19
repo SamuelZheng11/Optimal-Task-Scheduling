@@ -41,7 +41,7 @@ Parameter only to be used by advanced users who know excatly how wide or narrow 
 
 "__-b [Integer representing the boosting value]__"
 
-Parameter representing what you want the output graph .dot file to be called.
+Parameter representing what you want the output graph .dot file to be called. (see wiki on command lines for general values to use)
 
 "__-o [Name of the output file]__"
 
