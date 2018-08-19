@@ -79,7 +79,6 @@ public class TestMain extends Main implements PilotDoneListener, RecursiveDoneLi
         RecursionStore.setMaxThreads(_maxThreads);
         try {
             _pool.awaitTermination(10, TimeUnit.SECONDS);
-            System.out.println("pause");
             return;
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -93,7 +92,7 @@ public class TestMain extends Main implements PilotDoneListener, RecursiveDoneLi
         }
         int[] procDur = new int[RecursionStore.getNumberOfProcessors()];
         java.util.Arrays.fill(procDur, 0);
-        return new State(jobList, procDur, initialHeuristic);
+        return new State(jobList, procDur, initialHeuristic, 0);
     }
 
     @Override
@@ -146,8 +145,7 @@ public class TestMain extends Main implements PilotDoneListener, RecursiveDoneLi
         if (this.numberOfBranchesCompleted != this._totalNumberOfStateTreeBranches) {
             return;
         }
-        // write output file
-        generateOutputAndClose();
+        // shutdown threads
         _pool.shutdown();
     }
 

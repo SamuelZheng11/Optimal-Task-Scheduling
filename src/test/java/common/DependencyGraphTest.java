@@ -226,7 +226,7 @@ public class DependencyGraphTest {
         int[] joblist = new int[5];
         int huristic = 5;
 
-        State state = new State(finalList, joblist, huristic);
+        State state = new State(finalList, joblist, huristic, 0);
 
         String inputFileName = "test.dot";
 
