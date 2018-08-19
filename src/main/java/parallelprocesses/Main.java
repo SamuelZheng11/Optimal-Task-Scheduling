@@ -75,6 +75,7 @@ public class Main extends Application implements PilotDoneListener, RecursiveDon
 
     public void InitialiseScheduling(StatisticsModel model) {
         DependencyGraph dg = DependencyGraph.getGraph();
+
         dg.setFilePath(_argumentsParser.getFilePath());
         dg.parse();
         System.out.println("Calculating schedule, Please wait ...");
@@ -154,7 +155,6 @@ public class Main extends Application implements PilotDoneListener, RecursiveDon
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     private void validateArguments() {

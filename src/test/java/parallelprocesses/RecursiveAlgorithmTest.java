@@ -8,6 +8,7 @@ import org.junit.Test;
 import java.util.HashMap;
 import java.util.List;
 
+
 public class RecursiveAlgorithmTest {
 
     private DependencyGraph dg;
@@ -35,6 +36,7 @@ public class RecursiveAlgorithmTest {
 //                bestFoundSoln,
 //                dg.getNodes().size(),
 //                bestFoundSoln.getJobListDuration()[0]);
+
 
         int algoirthmScheduleFinishTime = bestFoundSoln.getJobListDuration()[0];
         for (int i = 1; i < bestFoundSoln.getJobListDuration().length; i++) {
@@ -93,7 +95,6 @@ public class RecursiveAlgorithmTest {
 //                bestFoundSoln,
 //                dg.getNodes().size(),
 //                bestFoundSoln.getJobListDuration()[0]);
-
         int algoirthmScheduleFinishTime = bestFoundSoln.getJobListDuration()[0];
         for (int i = 1; i < bestFoundSoln.getJobListDuration().length; i++) {
             if(algoirthmScheduleFinishTime < bestFoundSoln.getJobListDuration()[i]) {
@@ -159,6 +160,7 @@ public class RecursiveAlgorithmTest {
 //                bestFoundSoln,
 //                dg.getNodes().size(),
 //                bestFoundSoln.getJobListDuration()[0]);
+
 
         boolean hasScheduledDuplicateNode = false;
         HashMap<TaskDependencyNode, Boolean> mapOfScheduledNodes = new HashMap<>();
@@ -235,7 +237,7 @@ public class RecursiveAlgorithmTest {
 //                bestFoundSoln,
 //                dg.getNodes().size(),
 //                bestFoundSoln.getJobListDuration()[0]);
-
+      
         boolean hasScheduledDuplicateNode = false;
         HashMap<TaskDependencyNode, Boolean> mapOfScheduledNodes = new HashMap<>();
         for (int i = 1; i < bestFoundSoln.getJobLists().size(); i++) {
