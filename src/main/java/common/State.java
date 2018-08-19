@@ -12,10 +12,17 @@ public class State {
     private final int[] _jobListDuration;
     private final double _heuristicValue;
 
-    public State(List<List<Job>> jobLists, int[] jobListDuration, double heuristicValue){
+    public int getSumOfScheduledTasks() {
+        return _sumOfScheduledTasks;
+    }
+
+    private final int _sumOfScheduledTasks;
+
+    public State(List<List<Job>> jobLists, int[] jobListDuration, double heuristicValue, int sumOfScheduledTasks){
         _jobLists = jobLists;
         _jobListDuration = jobListDuration;
         _heuristicValue = heuristicValue;
+        _sumOfScheduledTasks = sumOfScheduledTasks;
     }
 
 

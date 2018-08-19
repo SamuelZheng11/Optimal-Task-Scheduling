@@ -41,12 +41,12 @@ public class MainScreen{
 
         Canvas canvas = ((Canvas)loader.getNamespace().get("chartCanvas"));
         GraphicsContext gc = canvas.getGraphicsContext2D();
-        _chart = new ChartScreen(gc);
+        _chart = new ChartScreen(gc, "Best Found Solution");
         _chart.drawChart(statModel.getChartModel());
 
         Canvas greedyCanvas = ((Canvas)loader.getNamespace().get("greedyChartCanvas"));
         GraphicsContext gc2 = greedyCanvas.getGraphicsContext2D();
-        _greedyChart = new ChartScreen(gc2);
+        _greedyChart = new ChartScreen(gc2, "Greedy Solution");
         _greedyChart.drawChart(statModel.getChartModel());
 
         PieChart pieChart = ((PieChart)loader.getNamespace().get("pieChart"));

@@ -123,6 +123,9 @@ public class DependencyGraph {
     }
 
     public State initialState(int numProcessors) {
+        int duration = 0;
+        int scheduledTasksLength = 0;
+
         List<TaskDependencyNode> nodeList = new ArrayList<TaskDependencyNode>();
         List<Job> jobList = new ArrayList<Job>(); // create job list
         List<TaskDependencyNode> freeTasks = getFreeTasks(null); // get set of initial nodes
@@ -135,6 +138,7 @@ public class DependencyGraph {
             freeTasks = getFreeTasks(nodeToAdd); // update the set of free tasks
             _linearScheduleDuration += nodeToAdd._duration; // update the duration
             jobList.add(job);
+            scheduledTasksLength += job.getDuration();
         }
 
         int[] durationArr = new int[numProcessors];
@@ -148,7 +152,7 @@ public class DependencyGraph {
 
         processorList.set(0, jobList);
 
-        State initialState = new State(processorList, durationArr, durationArr[0]);
+        State initialState = new State(processorList, durationArr, durationArr[0], scheduledTasksLength);
 
         return initialState;
     }
@@ -175,7 +179,7 @@ public class DependencyGraph {
         fs.addSink(g);
         try {
             fs.readAll(_filePath);
-
+            addNodeLabels();
             convert();
 //            Iterator<Node> iter = g.getNodeIterator();
 //            while(iter.hasNext()){
@@ -196,6 +200,14 @@ public class DependencyGraph {
             System.exit(1);
         }
 
+    }
+
+    // Adds the label attribute for ui purposes
+    private void addNodeLabels(){
+
+        for(int i = 0; i < g.getNodeCount(); i++) {
+            g.getNode(i).addAttribute("ui.label", g.getNode(i).getId());
+        }
     }
 
     /**

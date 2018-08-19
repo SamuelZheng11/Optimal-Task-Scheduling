@@ -36,6 +36,7 @@ public class StatisticsScreen {
 
         _data = FXCollections.observableArrayList(
                 new StatisticCell("Time Elapsed", ""),
+                new StatisticCell("Status", ""),
                 new StatisticCell("Number of processors", ""),
                 new StatisticCell("Number of threads", ""),
                 new StatisticCell("Greedy Schedule Time", ""),
@@ -50,12 +51,18 @@ public class StatisticsScreen {
     public void updateStatisticsScreen(StatisticsModel model){
 
         setTime(model.getStartTime());
-        _data.get(1).statField = Integer.toString(model.getState().getJobLists().size());
-        _data.get(2).statField = Long.toString(model.getThreadNumber());
-        if(model.getGreedyChartModel() != null){
-            _data.get(3).statField = Double.toString(model.getGreedyChartModel().getMaximumTime());
+        if(model.getRunning()){
+            _data.get(1).statField = "Processing";
+        }else{
+            _data.get(1).statField = "Complete";
         }
-        _data.get(4).statField = Double.toString(model.getState().getHeuristicValue());
+
+        _data.get(2).statField = Integer.toString(model.getState().getJobLists().size());
+        _data.get(3).statField = Long.toString(model.getThreadNumber());
+        if(model.getGreedyChartModel() != null){
+            _data.get(4).statField = Double.toString(model.getGreedyChartModel().getMaximumTime());
+        }
+        _data.get(5).statField = Double.toString(model.getState().getHeuristicValue());
 
 
         _tableView.refresh();
