@@ -175,6 +175,12 @@ public class Main extends Application implements PilotDoneListener, RecursiveDon
      */
     public void generateOutputAndClose() {
 
+        try{
+            Thread.sleep(1000);
+        }catch(Exception e){
+
+        }
+
         RecursionStore.finishGuiProcessing();
 
         DependencyGraph dg = DependencyGraph.getGraph();

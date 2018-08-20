@@ -44,12 +44,12 @@ public class MainScreen{
         Canvas canvas = ((Canvas)loader.getNamespace().get("chartCanvas"));
         GraphicsContext gc = canvas.getGraphicsContext2D();
         _chart = new ChartScreen(gc, "Best Found Solution");
-        _chart.drawChart(statModel.getChartModel());
+        //_chart.drawChart(statModel.getChartModel());
 
         Canvas greedyCanvas = ((Canvas)loader.getNamespace().get("greedyChartCanvas"));
         GraphicsContext gc2 = greedyCanvas.getGraphicsContext2D();
         _greedyChart = new ChartScreen(gc2, "Greedy Solution");
-        _greedyChart.drawChart(statModel.getChartModel());
+        _greedyChart.drawChart(statModel.getGreedyChartModel());
 
         PieChart pieChart = ((PieChart)loader.getNamespace().get("pieChart"));
         PieChartScreen pieChartScreen = new PieChartScreen(pieChart);
@@ -60,6 +60,8 @@ public class MainScreen{
 
         SwingNode swingNode = ((SwingNode)loader.getNamespace().get("swingNode"));
         InputGraphScreen graphScreen = new InputGraphScreen(swingNode, DependencyGraph.getGraph().getInputGraph());
+
+        _controller.initStatistics(pieChartScreen, statisticsScreen, _chart);
 
         Scene scene = new Scene(pane, 1280, 720);
         primaryStage.setScene(scene);
@@ -73,6 +75,6 @@ public class MainScreen{
             }
         });
 
-        _controller.initStatistics(pieChartScreen, statisticsScreen, _chart);
+
     }
 }
