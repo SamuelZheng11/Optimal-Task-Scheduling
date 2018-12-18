@@ -7,15 +7,15 @@ This repository is used for storing code artefacts related to the first project 
 The 5 architects who worked on solving this problems are:
 A photo of the team can also be found under the code tab
 
-**Samuel Zheng** : **GitHub Username**: samuelzheng11, **UID**: 634715579, **UPI**: szhe560 (Leader) (center)
+**Samuel Zheng** : **GitHub Username**: samuelzheng11
 
-**Edwar Zhang** : **GitHub Username**: Eddiwar, **UID**: 78468327, **UPI**: ezha219 (close Right)
+**Edwar Zhang** : **GitHub Username**: Eddiwar
 
-**Alex Morgan** : **GitHub Username**: AlexRMorgan, **UID**: 5577546, **UPI**: amor789 (far left)
+**Alex Morgan** : **GitHub Username**: AlexRMorgan
 
-**Cameron Scoular** : **GitHub Username**: cameronscoular, **UID**: 139876164, **UPI**: csco768 (far right)
+**Cameron Scoular** : **GitHub Username**: cameronscoular
 
-**Andrew Fairweather** : **GitHub Username**: theandrewfairweather, **UID**: 518641205, **UPI**: afai640 (close left)
+**Andrew Fairweather** : **GitHub Username**: theandrewfairweather
 
 ## The Scheduling Problem
 The problem description is given a certain number of processors and a number of tasks to scheduled on the processor, 
